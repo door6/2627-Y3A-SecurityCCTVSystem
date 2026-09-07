@@ -1,0 +1,14 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\doras\\documents\\github\\year3\\blocka\\2627-y3a-securitycctvsystem\\securitysystemdemo\\plugins\\securitycctvsystem\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\securitycctvsystem\\permoduleinline.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\doras\\documents\\github\\year3\\blocka\\2627-y3a-securitycctvsystem\\securitysystemdemo\\intermediate\\build\\win64\\x64\\securitysystemdemoeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\doras\\documents\\github\\year3\\blocka\\2627-y3a-securitycctvsystem\\securitysystemdemo\\plugins\\securitycctvsystem\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\securitycctvsystem\\definitions.securitycctvsystem.h",
+            "c:\\program files\\epic games\\ue_5.5\\engine\\source\\runtime\\core\\public\\hal\\permoduleinline.inl"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

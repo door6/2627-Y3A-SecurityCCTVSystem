@@ -1,0 +1,19 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\doras\\documents\\unreal projects\\securitysystemdemo\\plugins\\securitycctvsystem\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\securitycctvsystem\\module.securitycctvsystem.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\doras\\documents\\unreal projects\\securitysystemdemo\\intermediate\\build\\win64\\x64\\securitysystemdemoeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\doras\\documents\\unreal projects\\securitysystemdemo\\plugins\\securitycctvsystem\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\securitycctvsystem\\definitions.securitycctvsystem.h",
+            "c:\\users\\doras\\documents\\unreal projects\\securitysystemdemo\\plugins\\securitycctvsystem\\intermediate\\build\\win64\\unrealeditor\\inc\\securitycctvsystem\\uht\\printscreen.gen.cpp",
+            "c:\\users\\doras\\documents\\unreal projects\\securitysystemdemo\\plugins\\securitycctvsystem\\source\\securitycctvsystem\\public\\printscreen.h",
+            "c:\\users\\doras\\documents\\unreal projects\\securitysystemdemo\\plugins\\securitycctvsystem\\intermediate\\build\\win64\\unrealeditor\\inc\\securitycctvsystem\\uht\\printscreen.generated.h",
+            "c:\\users\\doras\\documents\\unreal projects\\securitysystemdemo\\plugins\\securitycctvsystem\\intermediate\\build\\win64\\unrealeditor\\inc\\securitycctvsystem\\uht\\securitycctvsystem.init.gen.cpp",
+            "c:\\users\\doras\\documents\\unreal projects\\securitysystemdemo\\plugins\\securitycctvsystem\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\securitycctvsystem\\permoduleinline.gen.cpp",
+            "c:\\program files\\epic games\\ue_5.5\\engine\\source\\runtime\\core\\public\\hal\\permoduleinline.inl"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

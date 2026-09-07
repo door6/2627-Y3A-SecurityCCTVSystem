@@ -1,0 +1,16 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-SecurityCCTVSystem.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\doras\Documents\GitHub\Year3\BlockA\2627-Y3A-SecurityCCTVSystem\SecuritySystemDemo\Intermediate\Build\Win64\x64\SecuritySystemDemoEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h.obj"
+"C:\Users\doras\Documents\GitHub\Year3\BlockA\2627-Y3A-SecurityCCTVSystem\SecuritySystemDemo\Plugins\SecurityCCTVSystem\Intermediate\Build\Win64\x64\UnrealEditor\Development\SecurityCCTVSystem\PrintScreen.cpp.obj"
+"C:\Users\doras\Documents\GitHub\Year3\BlockA\2627-Y3A-SecurityCCTVSystem\SecuritySystemDemo\Plugins\SecurityCCTVSystem\Intermediate\Build\Win64\x64\UnrealEditor\Development\SecurityCCTVSystem\SecurityCCTVSystem.cpp.obj"
+"C:\Users\doras\Documents\GitHub\Year3\BlockA\2627-Y3A-SecurityCCTVSystem\SecuritySystemDemo\Plugins\SecurityCCTVSystem\Intermediate\Build\Win64\x64\UnrealEditor\Development\SecurityCCTVSystem\PerModuleInline.gen.cpp.obj"
+"C:\Users\doras\Documents\GitHub\Year3\BlockA\2627-Y3A-SecurityCCTVSystem\SecuritySystemDemo\Plugins\SecurityCCTVSystem\Intermediate\Build\Win64\x64\UnrealEditor\Development\SecurityCCTVSystem\PrintScreen.gen.cpp.obj"
+"C:\Users\doras\Documents\GitHub\Year3\BlockA\2627-Y3A-SecurityCCTVSystem\SecuritySystemDemo\Plugins\SecurityCCTVSystem\Intermediate\Build\Win64\x64\UnrealEditor\Development\SecurityCCTVSystem\SecurityCCTVSystem.init.gen.cpp.obj"
+"C:\Users\doras\Documents\GitHub\Year3\BlockA\2627-Y3A-SecurityCCTVSystem\SecuritySystemDemo\Plugins\SecurityCCTVSystem\Intermediate\Build\Win64\x64\UnrealEditor\Development\SecurityCCTVSystem\Default.rc2.res"
+/OUT:"C:\Users\doras\Documents\GitHub\Year3\BlockA\2627-Y3A-SecurityCCTVSystem\SecuritySystemDemo\Plugins\SecurityCCTVSystem\Intermediate\Build\Win64\x64\UnrealEditor\Development\SecurityCCTVSystem\UnrealEditor-SecurityCCTVSystem.lib"

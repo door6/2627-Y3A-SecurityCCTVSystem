@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "SecuritySystemDemo",
+			"Path": "..\\Source\\SecuritySystemDemo.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "SecuritySystemDemoEditor",
+			"Path": "..\\Source\\SecuritySystemDemoEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}

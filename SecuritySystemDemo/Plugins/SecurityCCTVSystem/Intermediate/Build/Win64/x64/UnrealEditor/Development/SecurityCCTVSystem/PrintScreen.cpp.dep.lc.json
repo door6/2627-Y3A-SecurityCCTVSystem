@@ -1,0 +1,15 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\doras\\documents\\unreal projects\\securitysystemdemo\\plugins\\securitycctvsystem\\source\\securitycctvsystem\\private\\printscreen.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\doras\\documents\\unreal projects\\securitysystemdemo\\intermediate\\build\\win64\\x64\\securitysystemdemoeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\doras\\documents\\unreal projects\\securitysystemdemo\\plugins\\securitycctvsystem\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\securitycctvsystem\\definitions.securitycctvsystem.h",
+            "c:\\users\\doras\\documents\\unreal projects\\securitysystemdemo\\plugins\\securitycctvsystem\\source\\securitycctvsystem\\public\\printscreen.h",
+            "c:\\users\\doras\\documents\\unreal projects\\securitysystemdemo\\plugins\\securitycctvsystem\\intermediate\\build\\win64\\unrealeditor\\inc\\securitycctvsystem\\uht\\printscreen.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
