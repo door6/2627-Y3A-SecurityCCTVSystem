@@ -1,9 +1,0 @@
-{
-	"SourceFiles": [
-		"C:\\Users\\doras\\Documents\\GitHub\\Year3\\BlockA\\2627-Y3A-SecurityCCTVSystem\\SecuritySystemDemo\\Source\\SecuritySystemDemo\\SecuritySystemDemo.Build.cs",
-		"C:\\Users\\doras\\Documents\\GitHub\\Year3\\BlockA\\2627-Y3A-SecurityCCTVSystem\\SecuritySystemDemo\\Plugins\\SecurityCCTVSystem\\Source\\SecurityCCTVSystem\\SecurityCCTVSystem.Build.cs",
-		"C:\\Users\\doras\\Documents\\GitHub\\Year3\\BlockA\\2627-Y3A-SecurityCCTVSystem\\SecuritySystemDemo\\Source\\SecuritySystemDemo.Target.cs",
-		"C:\\Users\\doras\\Documents\\GitHub\\Year3\\BlockA\\2627-Y3A-SecurityCCTVSystem\\SecuritySystemDemo\\Source\\SecuritySystemDemoEditor.Target.cs"
-	],
-	"EngineVersion": "5.5.4"
-}
