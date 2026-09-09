@@ -27,7 +27,7 @@ public class SecurityCCTVSystem : ModuleRules
 			{
 				"Core",
                 "InputCore",
-                "UMG",
+				"UMG",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
