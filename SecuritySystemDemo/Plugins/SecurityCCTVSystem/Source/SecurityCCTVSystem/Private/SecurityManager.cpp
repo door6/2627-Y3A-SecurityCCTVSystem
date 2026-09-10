@@ -25,6 +25,11 @@ void ASecurityManager::Tick(float DeltaTime)
 
 }
 
+void ASecurityManager::TestBP(float& inputVals1, float& inputVals2, float& targetVals)
+{
+	//testing, not working
+}
+
 void ASecurityManager::BindResponderToDetector(const FString& DetectorName, UResponder& Responder)
 {
 	DetectorDelegates[DetectorName].AddDynamic(&Responder, &UResponder::Respond);

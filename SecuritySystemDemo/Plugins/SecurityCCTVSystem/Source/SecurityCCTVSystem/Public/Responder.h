@@ -27,6 +27,8 @@ public:
 
 	virtual void Respond(ESecurityState SecurityState);
 
-	ESecurityState CurrentState = ESecurityState::Neutral;
+	UPROPERTY(EditAnywhere)
 	float CooldownTimer = 3.0f;
+
+	ESecurityState CurrentState = ESecurityState::Neutral;	
 };

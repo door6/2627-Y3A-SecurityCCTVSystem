@@ -26,6 +26,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintPure)
+	void TestBP(float& inputVals1, float& inputVals2, float& targetVals);
+
 	void BindResponderToDetector(const FString& DetectorName, UResponder& Responder);
 	void RemoveDetectorResponder(const FString& DetectorName, UResponder& Responder);
 	void TriggerResponders(const FString& DetectorName, ESecurityState SecurityState);
