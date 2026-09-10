@@ -34,6 +34,9 @@ void UDetector::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 void UDetector::TriggerResponders(ESecurityState SecurityState)
 {
-	NotifyManagerDelegate.Broadcast(GetOwner()->GetFullName(), SecurityState);
+	//temp testing
+	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Green, GetOwner()->GetName());
+
+	NotifyManagerDelegate.Broadcast(GetOwner()->GetName(), SecurityState);
 }
 

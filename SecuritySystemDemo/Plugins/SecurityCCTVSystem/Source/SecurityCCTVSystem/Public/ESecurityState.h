@@ -32,6 +32,6 @@ public:
 UENUM(BlueprintType)
 enum class ESecurityState : uint8
 {
-    Alarm UMETA(DisplayName = "Alarm"),
-    Neutral UMETA(DisplayName = "Neutral")
+    Neutral UMETA(DisplayName = "Neutral"),
+    Alarm UMETA(DisplayName = "Alarm")  
 };

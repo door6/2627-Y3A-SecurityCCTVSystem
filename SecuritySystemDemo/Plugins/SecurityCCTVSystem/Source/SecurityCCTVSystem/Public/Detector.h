@@ -27,7 +27,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Detector")
 	void TriggerResponders(ESecurityState SecurityState);
 
 	ESecurityState CurrentState = ESecurityState::Neutral;

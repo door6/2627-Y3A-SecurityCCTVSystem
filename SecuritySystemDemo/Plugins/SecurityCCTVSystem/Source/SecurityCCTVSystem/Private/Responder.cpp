@@ -37,8 +37,7 @@ void UResponder::Respond(ESecurityState SecurityState)
 	//temp testing
 	FString message = "Neutral";
 	if (SecurityState == ESecurityState::Alarm) message = "Alarm";
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, GetOwner()->GetFullName());
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, message);
-	//GetOwner()->GetUniqueID();
+	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, GetOwner()->GetName());
+	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, message);
 }
 
