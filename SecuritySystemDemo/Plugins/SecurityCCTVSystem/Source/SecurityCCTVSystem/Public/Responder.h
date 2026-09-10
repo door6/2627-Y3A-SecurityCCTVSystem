@@ -27,5 +27,6 @@ public:
 
 	virtual void Respond(ESecurityState SecurityState);
 
-		
+	ESecurityState CurrentState = ESecurityState::Neutral;
+	float CooldownTimer = 3.0f;
 };
