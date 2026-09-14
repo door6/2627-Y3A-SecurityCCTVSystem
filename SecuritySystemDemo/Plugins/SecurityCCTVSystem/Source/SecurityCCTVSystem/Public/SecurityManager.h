@@ -7,10 +7,25 @@
 #include "Responder.h"
 #include "SecurityManager.generated.h"
 
+/*DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDetectorDelegate, ESecurityState, SecurityState);
+
+USTRUCT()
+struct SECURITYCCTVSYSTEM_API FRespondersDelegate
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	TArray<TSoftObjectPtr<UResponder>> Responders;
+	FDetectorDelegate Delegate;
+};*/
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDetectorDelegate, ESecurityState, SecurityState);
+
 UCLASS()
 class SECURITYCCTVSYSTEM_API ASecurityManager : public AActor
 {
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDetectorDelegate, ESecurityState, SecurityState);
+	
+
 
 	GENERATED_BODY()
 	
@@ -26,13 +41,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintPure)
-	void TestBP(float& inputVals1, float& inputVals2, float& targetVals);
-
 	void BindResponderToDetector(const FString& DetectorName, UResponder& Responder);
 	void RemoveDetectorResponder(const FString& DetectorName, UResponder& Responder);
 	void TriggerResponders(const FString& DetectorName, ESecurityState SecurityState);
 
+	//UPROPERTY(EditAnywhere)
 	TMap<FString, FDetectorDelegate> DetectorDelegates;
+	//TMap<FString, FRespondersDelegate> DetectorResponders;
 	
 };
