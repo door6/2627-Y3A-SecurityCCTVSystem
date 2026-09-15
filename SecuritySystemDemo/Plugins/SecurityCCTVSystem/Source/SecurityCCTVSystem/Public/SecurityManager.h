@@ -41,11 +41,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//not sure should this exist or not
+	FDetectorDelegate* GetDetectorDelegate(const FString& DetectorName);
+
 	void BindResponderToDetector(const FString& DetectorName, UResponder& Responder);
 	void RemoveDetectorResponder(const FString& DetectorName, UResponder& Responder);
 	void TriggerResponders(const FString& DetectorName, ESecurityState SecurityState);
 
-	//UPROPERTY(EditAnywhere)
+private:
 	TMap<FString, FDetectorDelegate> DetectorDelegates;
 	//TMap<FString, FRespondersDelegate> DetectorResponders;
 	

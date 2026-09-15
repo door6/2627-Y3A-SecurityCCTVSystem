@@ -25,9 +25,17 @@ void ASecurityManager::Tick(float DeltaTime)
 
 }
 
+FDetectorDelegate* ASecurityManager::GetDetectorDelegate(const FString& DetectorName)
+{
+	return DetectorDelegates.Find(DetectorName);
+}
+
 void ASecurityManager::BindResponderToDetector(const FString& DetectorName, UResponder& Responder)
 {
-	DetectorDelegates[DetectorName].AddDynamic(&Responder, &UResponder::Respond);
+	FDetectorDelegate& Delegate = DetectorDelegates.FindOrAdd(DetectorName);
+
+	Delegate.AddUniqueDynamic(&Responder, &UResponder::Respond);
+
 	/*DetectorResponders[DetectorName].Responders;
 	DetectorResponders[DetectorName].Delegate.AddDynamic(&Responder, &UResponder::Respond);
 	DetectorResponders[DetectorName].Delegate.*/
