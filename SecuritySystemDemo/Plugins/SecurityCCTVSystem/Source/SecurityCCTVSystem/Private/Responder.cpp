@@ -2,6 +2,7 @@
 
 
 #include "Responder.h"
+#include "SecuritySystemLog.h"
 
 // Sets default values for this component's properties
 UResponder::UResponder()
@@ -39,5 +40,7 @@ void UResponder::Respond(ESecurityState SecurityState)
 	if (SecurityState == ESecurityState::Alarm) message = "Alarm";
 	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, GetOwner()->GetName());
 	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, message);
+
+	UE_LOG(SecuritySystem, Display, TEXT("%s: Responed: switch to %s"), *GetOwner()->GetActorLabel(), *message);
 }
 

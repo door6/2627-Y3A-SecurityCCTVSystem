@@ -30,7 +30,7 @@ protected:
     TArray<AActor*> GetResponderCandidates() const;
     //FText GetResponderDisplayText(AActor* DetectorActor, int32 Index) const;
     void OnResponderSelected(AActor* NewResponder, UResponder* SelectedResponder);
-    void OnResponderSelectedTest(FString DetectorName, AActor* Responder);
+    void OnResponderSelectedTest(AActor* DetectorActor, AActor* Responder);
 
 private:
 

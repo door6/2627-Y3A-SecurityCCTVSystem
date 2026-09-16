@@ -2,6 +2,7 @@
 
 
 #include "SecurityManager.h"
+#include "SecuritySystemLog.h"
 
 // Sets default values
 ASecurityManager::ASecurityManager()
@@ -15,6 +16,11 @@ ASecurityManager::ASecurityManager()
 void ASecurityManager::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (DetectorDelegates.IsEmpty())
+	{
+		UE_LOG(SecuritySystem, Warning, TEXT("DetectorDelegates map is EMPTY"));
+	}
 	
 }
 

@@ -8,6 +8,7 @@
 #include "Detector.h"
 #include "IDetailGroup.h"
 #include "DetailWidgetRow.h"
+#include "SecuritySystemLog.h"
 
 TSharedRef<IDetailCustomization> FSecurityManagerInterface::MakeInstance()
 {
@@ -133,7 +134,7 @@ TSharedRef<SWidget> FSecurityManagerInterface::BuildResponderDropdown(AActor* De
                             //this, &FSecurityManagerInterface::OnResponderSelected,
                             //Candidate, CurrentSelectedResponder))
                             this, &FSecurityManagerInterface::OnResponderSelectedTest,
-                            DetectorActor->GetName(), Candidate))
+                            DetectorActor, Candidate))
                     );
                 }
                 return MenuBuilder.MakeWidget();
@@ -157,13 +158,13 @@ FReply FSecurityManagerInterface::OnAddResponderClicked(FString DetectorName, UR
 
     if (!Responder)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Responder NULLPTR"));
+        UE_LOG(SecuritySystem, Error, TEXT("Responder NULLPTR"));
         return FReply::Handled();
     }
 
     SecurityManager->BindResponderToDetector(DetectorName, *Responder);
 
-    UE_LOG(LogTemp, Warning, TEXT("Change Responder NULLPTR"));
+    UE_LOG(SecuritySystem, Log, TEXT("Change Responder to NULLPTR"));
     CurrentSelectedResponder = nullptr;
 
     // Adding a row changes the layout structure -> full rebuild required
@@ -195,29 +196,28 @@ TArray<AActor*> FSecurityManagerInterface::GetResponderCandidates() const
 
 void FSecurityManagerInterface::OnResponderSelected(AActor* NewResponder, UResponder* SelectedResponder)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Responder Selected"));
+    UE_LOG(SecuritySystem, Log, TEXT("Responder Selected"));
 
     SelectedResponder = NewResponder->GetComponentByClass<UResponder>();
 
-    if (NewResponder)
-        UE_LOG(LogTemp, Warning, TEXT("Responder NULLPTR"));
-
-
 }
 
-void FSecurityManagerInterface::OnResponderSelectedTest(FString DetectorName, AActor* Responder)
+void FSecurityManagerInterface::OnResponderSelectedTest(AActor* DetectorActor, AActor* Responder)
 {
     if (!Responder)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Responder NULLPTR"));
+        UE_LOG(SecuritySystem, Error, TEXT("Responder NULLPTR"));
         return;
     }
 
     //UE_LOG(LogTemp, Warning, TEXT("%s"), *DetectorName);
 
-    SecurityManager->BindResponderToDetector(DetectorName, *Responder->GetComponentByClass<UResponder>());
+    SecurityManager->BindResponderToDetector(DetectorActor->GetName(), *Responder->GetComponentByClass<UResponder>());
 
-    UE_LOG(LogTemp, Warning, TEXT("Change Responder NULLPTR"));
+    UDetector* Detector = DetectorActor->FindComponentByClass<UDetector>();
+    Detector->NotifyManagerDelegate.AddUniqueDynamic(SecurityManager, &ASecurityManager::TriggerResponders);
+
+    UE_LOG(SecuritySystem, Log, TEXT("Change Responder to NULLPTR"));
     CurrentSelectedResponder = nullptr;
 
     // Adding a row changes the layout structure -> full rebuild required

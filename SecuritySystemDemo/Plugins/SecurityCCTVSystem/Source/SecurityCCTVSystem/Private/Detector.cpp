@@ -2,6 +2,8 @@
 
 
 #include "Detector.h"
+#include "Kismet/GameplayStatics.h"
+#include "SecuritySystemLog.h"
 
 // Sets default values for this component's properties
 UDetector::UDetector()
@@ -20,7 +22,6 @@ void UDetector::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
 }
 
 
@@ -37,6 +38,9 @@ void UDetector::TriggerResponders(ESecurityState SecurityState)
 	//temp testing
 	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Green, GetOwner()->GetName());
 
+	UE_LOG(SecuritySystem, Display, TEXT("%s: TriggerResponders"), *GetOwner()->GetActorLabel());
+
 	NotifyManagerDelegate.Broadcast(GetOwner()->GetName(), SecurityState);
 }
 
+//DEFINE_LOG_CATEGORY(SecuritySystem);

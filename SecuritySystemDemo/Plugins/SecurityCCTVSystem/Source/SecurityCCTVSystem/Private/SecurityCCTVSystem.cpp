@@ -6,6 +6,7 @@
 #include "SecurityManager.h"
 #include "SecurityManagerInterface.h"
 #include "Modules/ModuleManager.h"
+#include "SecuritySystemLog.h"
 
 #define LOCTEXT_NAMESPACE "FSecurityCCTVSystemModule"
 
@@ -37,3 +38,5 @@ void FSecurityCCTVSystemModule::ShutdownModule()
 #undef LOCTEXT_NAMESPACE
 	
 IMPLEMENT_MODULE(FSecurityCCTVSystemModule, SecurityCCTVSystem)
+
+DEFINE_LOG_CATEGORY(SecuritySystem);

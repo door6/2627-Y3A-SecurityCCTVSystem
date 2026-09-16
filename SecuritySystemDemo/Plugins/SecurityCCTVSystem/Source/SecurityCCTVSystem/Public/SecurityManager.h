@@ -46,6 +46,8 @@ public:
 
 	void BindResponderToDetector(const FString& DetectorName, UResponder& Responder);
 	void RemoveDetectorResponder(const FString& DetectorName, UResponder& Responder);
+
+	UFUNCTION(BlueprintCallable, Category = "Security System")
 	void TriggerResponders(const FString& DetectorName, ESecurityState SecurityState);
 
 private:
