@@ -39,4 +39,4 @@ void FSecurityCCTVSystemModule::ShutdownModule()
 	
 IMPLEMENT_MODULE(FSecurityCCTVSystemModule, SecurityCCTVSystem)
 
-DEFINE_LOG_CATEGORY(SecuritySystem);
+DEFINE_LOG_CATEGORY(LogSecuritySystem);

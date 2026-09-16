@@ -22,6 +22,8 @@ void UDetector::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+
+	UE_LOG(LogSecuritySystem, Display, TEXT("Detector: BeginPlay"));
 }
 
 
@@ -36,9 +38,14 @@ void UDetector::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 void UDetector::TriggerResponders(ESecurityState SecurityState)
 {
 	//temp testing
-	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Green, GetOwner()->GetName());
+	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Green, GetOwner()->GetName());	
 
-	UE_LOG(SecuritySystem, Display, TEXT("%s: TriggerResponders"), *GetOwner()->GetActorLabel());
+	if (!NotifyManagerDelegate.IsBound())
+	{
+		UE_LOG(LogSecuritySystem, Error, TEXT("%s: Manager is NOT bound"), *GetOwner()->GetActorLabel());
+	}
+
+	UE_LOG(LogSecuritySystem, Display, TEXT("%s: TriggerResponders"), *GetOwner()->GetActorLabel());
 
 	NotifyManagerDelegate.Broadcast(GetOwner()->GetName(), SecurityState);
 }

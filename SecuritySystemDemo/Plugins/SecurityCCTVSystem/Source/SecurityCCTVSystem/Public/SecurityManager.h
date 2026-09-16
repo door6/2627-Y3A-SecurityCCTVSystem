@@ -21,17 +21,25 @@ struct SECURITYCCTVSYSTEM_API FRespondersDelegate
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDetectorDelegate, ESecurityState, SecurityState);
 
+USTRUCT()
+struct FResponders
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, Category = "Security System")
+	TArray<UResponder*> Array;
+};
+
 UCLASS()
 class SECURITYCCTVSYSTEM_API ASecurityManager : public AActor
 {
-	
-
 
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
 	ASecurityManager();
+	~ASecurityManager();
 
 protected:
 	// Called when the game starts or when spawned
@@ -41,8 +49,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	//not sure should this exist or not
-	FDetectorDelegate* GetDetectorDelegate(const FString& DetectorName);
+	//FResponders* GetDetectorResponders(const FString& DetectorName);
 
 	void BindResponderToDetector(const FString& DetectorName, UResponder& Responder);
 	void RemoveDetectorResponder(const FString& DetectorName, UResponder& Responder);
@@ -50,7 +57,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Security System")
 	void TriggerResponders(const FString& DetectorName, ESecurityState SecurityState);
 
-private:
+
+	
+	//TMap<FString, FResponders> DetectorRespondersMap;
+
+	UPROPERTY(EditAnywhere, Category = "Security System")
 	TMap<FString, FDetectorDelegate> DetectorDelegates;
 	//TMap<FString, FRespondersDelegate> DetectorResponders;
 	

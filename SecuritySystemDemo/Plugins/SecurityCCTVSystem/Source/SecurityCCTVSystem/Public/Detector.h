@@ -30,10 +30,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Security System")
 	void TriggerResponders(ESecurityState SecurityState);
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Security System")
 	float CooldownTimer = 2.0f;
 
 	ESecurityState CurrentState = ESecurityState::Neutral;
+
+
+	UPROPERTY(EditAnywhere, Category = "Security System")
 	FNotifyManagerDelegate NotifyManagerDelegate;
 
 };

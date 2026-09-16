@@ -23,7 +23,7 @@ protected:
 
     //void GenerateRecipeArrayElementWidget(TSharedRef<IPropertyHandle> ChildHandle, int32 ArrayIndex, IDetailChildrenBuilder& ChildrenBuilder, IDetailLayoutBuilder* DetailLayout);
 
-    FReply OnDeleteResponderClicked(FString DetectorName, FWeakObjectPtr* Responder);
+    FReply OnDeleteResponderClicked(FString DetectorName, UResponder* Responder);
 
     TSharedRef<SWidget> BuildResponderDropdown(AActor* DetectorActor, UResponder* SeelectedResponder);
     FReply OnAddResponderClicked(FString DetectorName, UResponder* Responder);

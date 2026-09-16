@@ -22,6 +22,7 @@ void UResponder::BeginPlay()
 
 	// ...
 	
+	UE_LOG(LogSecuritySystem, Display, TEXT("Responder: BeginPlay"));
 }
 
 
@@ -41,6 +42,6 @@ void UResponder::Respond(ESecurityState SecurityState)
 	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, GetOwner()->GetName());
 	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, message);
 
-	UE_LOG(SecuritySystem, Display, TEXT("%s: Responed: switch to %s"), *GetOwner()->GetActorLabel(), *message);
+	UE_LOG(LogSecuritySystem, Display, TEXT("%s: Responed: switch to %s"), *GetOwner()->GetActorLabel(), *message);
 }
 

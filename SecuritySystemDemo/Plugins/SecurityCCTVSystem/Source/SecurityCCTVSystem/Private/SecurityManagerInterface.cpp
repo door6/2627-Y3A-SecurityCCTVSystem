@@ -10,6 +10,8 @@
 #include "DetailWidgetRow.h"
 #include "SecuritySystemLog.h"
 
+#include "Kismet/GameplayStatics.h" //temp
+
 TSharedRef<IDetailCustomization> FSecurityManagerInterface::MakeInstance()
 {
     return MakeShareable(new FSecurityManagerInterface);
@@ -46,6 +48,11 @@ void FSecurityManagerInterface::CustomizeDetails(IDetailLayoutBuilder& DetailBui
     if (!CurrentSecurityManager) return;
     SecurityManager = CurrentSecurityManager;
 
+    //temp check
+    TArray<AActor*> FoundActors;
+    UGameplayStatics::GetAllActorsOfClass(SecurityManager->GetWorld(), SecurityManager->GetClass(), FoundActors);
+    UE_LOG(LogSecuritySystem, Warning, TEXT("Number of SecurityManagers = %d"), FoundActors.Num());
+
     // Find every actor in the world with a DetectorComponent
     for (TObjectIterator<AActor> It; It; ++It)
     {
@@ -55,26 +62,34 @@ void FSecurityManagerInterface::CustomizeDetails(IDetailLayoutBuilder& DetailBui
 
         IDetailGroup& Group = Connections.AddGroup(*Actor->GetName(), FText::FromString(Actor->GetActorLabel()));
 
-        FDetectorDelegate* DetectorDelegate = SecurityManager->GetDetectorDelegate(Actor->GetName());
+        FDetectorDelegate* DetectorDelegate = SecurityManager->DetectorDelegates.Find(Actor->GetName());
+        //FDetectorDelegate* DetectorDelegate = SecurityManager->GetDetectorDelegate(Actor->GetName());
+        //FResponders* DetectorResponders = SecurityManager->GetDetectorResponders(Actor->GetName());
+
         //TArray<FWeakObjectPtr*> Responders = DetectorDelegate->GetAllObjectRefsEvenIfUnreachable();
         TArray<FWeakObjectPtr*> Responders = DetectorDelegate ? DetectorDelegate->GetAllObjectRefsEvenIfUnreachable() : TArray<FWeakObjectPtr*>();
+        //TArray<UResponder*> Responders = DetectorResponders ? DetectorResponders->Array : TArray<UResponder*>();
         //int32 NumResponders = DetectorDelegate ? Responders.Num() : 0;
 
         for (FWeakObjectPtr* Responder : Responders)
+        //for (UResponder* Responder : Responders)
         //for (int32 i = 0; i < NumResponders; ++i)
         {
+            UResponder* ResponderComponent = Cast<UResponder>(Responder->Get());
+
             Group.AddWidgetRow()
                 .NameContent()
                 [
                     //SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("Responder %d"), i)))                  
-                    SNew(STextBlock).Text(FText::FromString(Cast<UActorComponent>(Responder->Get())->GetOwner()->GetActorLabel()))
+                    //SNew(STextBlock).Text(FText::FromString(Responder->GetOwner()->GetActorLabel()))
+                    SNew(STextBlock).Text(FText::FromString(ResponderComponent->GetOwner()->GetActorLabel()))
                 ]
                 .ExtensionContent()
                 [
                     //BuildResponderDropdown(Actor, 0) //i
                     SNew(SButton)
                         //.Text(FText::FromString("Delete"))
-                        .OnClicked(FOnClicked::CreateSP(this, &FSecurityManagerInterface::OnDeleteResponderClicked, Actor->GetName(), Responder))
+                        .OnClicked(FOnClicked::CreateSP(this, &FSecurityManagerInterface::OnDeleteResponderClicked, Actor->GetName(), ResponderComponent))
                         .ContentPadding(FMargin(1.f))
                         [
                             SNew(SImage)
@@ -104,10 +119,14 @@ void FSecurityManagerInterface::CustomizeDetails(IDetailLayoutBuilder& DetailBui
     
 }
 
-FReply FSecurityManagerInterface::OnDeleteResponderClicked(FString DetectorName, FWeakObjectPtr* Responder)
+FReply FSecurityManagerInterface::OnDeleteResponderClicked(FString DetectorName, UResponder* Responder)
 {
-    UResponder* ResponderComponent = Cast<UResponder>(Responder->Get());
-    SecurityManager->RemoveDetectorResponder(DetectorName, *ResponderComponent);
+    SecurityManager->Modify();
+
+    //UResponder* ResponderComponent = Cast<UResponder>(Responder->Get());
+    SecurityManager->RemoveDetectorResponder(DetectorName, *Responder);
+
+    UE_LOG(LogSecuritySystem, Log, TEXT("%s removed from %s"), *Responder->GetOwner()->GetActorLabel(), *DetectorName);
 
     if (CachedDetailBuilder)
         CachedDetailBuilder->ForceRefreshDetails();
@@ -158,14 +177,15 @@ FReply FSecurityManagerInterface::OnAddResponderClicked(FString DetectorName, UR
 
     if (!Responder)
     {
-        UE_LOG(SecuritySystem, Error, TEXT("Responder NULLPTR"));
+        UE_LOG(LogSecuritySystem, Error, TEXT("Responder NULLPTR"));
         return FReply::Handled();
     }
 
     SecurityManager->BindResponderToDetector(DetectorName, *Responder);
 
-    UE_LOG(SecuritySystem, Log, TEXT("Change Responder to NULLPTR"));
+    UE_LOG(LogSecuritySystem, Log, TEXT("Bind %s to %s"), *DetectorName, *Responder->GetOwner()->GetActorLabel());
     CurrentSelectedResponder = nullptr;
+    UE_LOG(LogSecuritySystem, Log, TEXT("Change Responder to NULLPTR"));
 
     // Adding a row changes the layout structure -> full rebuild required
     if (CachedDetailBuilder)
@@ -196,7 +216,7 @@ TArray<AActor*> FSecurityManagerInterface::GetResponderCandidates() const
 
 void FSecurityManagerInterface::OnResponderSelected(AActor* NewResponder, UResponder* SelectedResponder)
 {
-    UE_LOG(SecuritySystem, Log, TEXT("Responder Selected"));
+    UE_LOG(LogSecuritySystem, Log, TEXT("Responder Selected"));
 
     SelectedResponder = NewResponder->GetComponentByClass<UResponder>();
 
@@ -206,19 +226,33 @@ void FSecurityManagerInterface::OnResponderSelectedTest(AActor* DetectorActor, A
 {
     if (!Responder)
     {
-        UE_LOG(SecuritySystem, Error, TEXT("Responder NULLPTR"));
+        UE_LOG(LogSecuritySystem, Error, TEXT("Responder NULLPTR"));
         return;
     }
 
     //UE_LOG(LogTemp, Warning, TEXT("%s"), *DetectorName);
 
+    SecurityManager->Modify();
+
     SecurityManager->BindResponderToDetector(DetectorActor->GetName(), *Responder->GetComponentByClass<UResponder>());
 
     UDetector* Detector = DetectorActor->FindComponentByClass<UDetector>();
+    DetectorActor->Modify();
+    Detector->Modify();
     Detector->NotifyManagerDelegate.AddUniqueDynamic(SecurityManager, &ASecurityManager::TriggerResponders);
 
-    UE_LOG(SecuritySystem, Log, TEXT("Change Responder to NULLPTR"));
+    if (!Detector->NotifyManagerDelegate.IsBound())
+    {
+        UE_LOG(LogSecuritySystem, Error, TEXT("Manager did NOT bound to %s"), *DetectorActor->GetActorLabel());
+    }
+    else
+        UE_LOG(LogSecuritySystem, Log, TEXT("Manager bound to %s"), *DetectorActor->GetActorLabel());
+
+
+    UE_LOG(LogSecuritySystem, Log, TEXT("Bind %s to %s"), *Responder->GetActorLabel(), *DetectorActor->GetActorLabel());
+
     CurrentSelectedResponder = nullptr;
+    UE_LOG(LogSecuritySystem, Log, TEXT("Change CurrentSelectedResponder to NULLPTR"));
 
     // Adding a row changes the layout structure -> full rebuild required
     if (CachedDetailBuilder)
