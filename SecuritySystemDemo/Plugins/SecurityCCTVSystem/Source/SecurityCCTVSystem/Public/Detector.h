@@ -7,12 +7,12 @@
 #include "ESecurityState.h"
 #include "Detector.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNotifyManagerDelegate, FString, DetectorName, ESecurityState, SecurityState);
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SECURITYCCTVSYSTEM_API UDetector : public UActorComponent
 {
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNotifyManagerDelegate, FString, DetectorName, ESecurityState, SecurityState);
-
 	GENERATED_BODY()
 
 public:	
@@ -27,7 +27,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UFUNCTION(BlueprintCallable, Category = "Detector")
+	UFUNCTION(BlueprintCallable, Category = "Security System")
 	void TriggerResponders(ESecurityState SecurityState);
 
 	UPROPERTY(EditAnywhere)

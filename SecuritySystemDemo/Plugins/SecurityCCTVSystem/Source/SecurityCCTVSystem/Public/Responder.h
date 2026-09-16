@@ -25,7 +25,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UFUNCTION(BlueprintCallable, Category = "Responder")
+	UFUNCTION(BlueprintCallable, Category = "Security System")
 	virtual void Respond(ESecurityState SecurityState);
 
 	UPROPERTY(EditAnywhere)
