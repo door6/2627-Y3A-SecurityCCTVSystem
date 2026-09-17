@@ -4,6 +4,7 @@
 #include "SecurityManager.h"
 #include "SecuritySystemLog.h"
 
+#include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -56,7 +57,7 @@ void ASecurityManager::BeginPlay()
 
 	FString Check;
 
-	for (TObjectIterator<AActor> It; It; ++It)
+	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
 	{
 		AActor* Actor = *It;
 		if (!Actor->FindComponentByClass<UResponder>())
@@ -68,7 +69,7 @@ void ASecurityManager::BeginPlay()
 		{
 			Delegate->AddUniqueDynamic(Responder, &UResponder::Respond);
 
-			Check = Actor->GetActorLabel();
+			Check = Actor->GetName();
 			UE_LOG(LogSecuritySystem, Log, TEXT("BeginPlay:  Manager: Bound to %s"), *Check);
 		}
 	}
@@ -115,8 +116,8 @@ void ASecurityManager::RemoveDetectorResponder(const FString& DetectorName, URes
 
 void ASecurityManager::TriggerResponders(const FString& DetectorName, ESecurityState SecurityState)
 {
-	DetectorDelegates[DetectorName].Broadcast(SecurityState);
-
 	UE_LOG(LogSecuritySystem, Log, TEXT("Manager: Trigger responders of %s"), *DetectorName);
+
+	DetectorDelegates[DetectorName].Broadcast(SecurityState);
 }
 

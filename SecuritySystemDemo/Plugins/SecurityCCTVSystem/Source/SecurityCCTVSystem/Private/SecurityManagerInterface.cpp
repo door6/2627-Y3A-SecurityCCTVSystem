@@ -10,6 +10,7 @@
 #include "DetailWidgetRow.h"
 #include "SecuritySystemLog.h"
 
+#include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h" //temp
 
 TSharedRef<IDetailCustomization> FSecurityManagerInterface::MakeInstance()
@@ -54,7 +55,7 @@ void FSecurityManagerInterface::CustomizeDetails(IDetailLayoutBuilder& DetailBui
     UE_LOG(LogSecuritySystem, Warning, TEXT("Number of SecurityManagers = %d"), FoundActors.Num());
 
     // Find every actor in the world with a DetectorComponent
-    for (TObjectIterator<AActor> It; It; ++It)
+    for (TActorIterator<AActor> It(SecurityManager->GetWorld()); It; ++It)
     {
         AActor* Actor = *It;
         if (!Actor->FindComponentByClass<UDetector>())
