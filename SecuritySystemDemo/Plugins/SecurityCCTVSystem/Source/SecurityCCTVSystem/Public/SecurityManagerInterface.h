@@ -21,30 +21,20 @@ public:
     virtual void CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) override;
 protected:
 
-    //void GenerateRecipeArrayElementWidget(TSharedRef<IPropertyHandle> ChildHandle, int32 ArrayIndex, IDetailChildrenBuilder& ChildrenBuilder, IDetailLayoutBuilder* DetailLayout);
-
     FReply OnDeleteResponderClicked(FString DetectorName, UResponder* Responder);
 
     TSharedRef<SWidget> BuildResponderDropdown(AActor* DetectorActor, UResponder* SeelectedResponder);
     FReply OnAddResponderClicked(FString DetectorName, UResponder* Responder);
     TArray<AActor*> GetResponderCandidates() const;
-    //FText GetResponderDisplayText(AActor* DetectorActor, int32 Index) const;
     void OnResponderSelected(AActor* NewResponder, UResponder* SelectedResponder);
     void OnResponderSelectedTest(AActor* DetectorActor, AActor* Responder);
 
 private:
 
-    //void ShareRecipeKeys();
-
-    //TArray<TSharedPtr<FName>> RecipeKeys;
-
-    //TSharedPtr<IPropertyHandle> CurrentHandle;
-
     UResponder* CurrentSelectedResponder = nullptr;
 
     IDetailLayoutBuilder* CachedDetailBuilder = nullptr;
-    ASecurityManager* SecurityManager = nullptr;
+    //ASecurityManager* SecurityManager = nullptr;
+    USecurityManagerSubsystem* SecurityManager = nullptr;
 
-
-    //TMap<FString, TArray<TWeakObjectPtr<UResponder>>> DetectorResponders;
 };

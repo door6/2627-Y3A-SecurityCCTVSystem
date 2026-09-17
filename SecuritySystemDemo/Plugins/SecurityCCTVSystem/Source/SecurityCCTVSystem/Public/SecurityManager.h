@@ -1,15 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Subsystems/WorldSubsystem.h"
 #include "Responder.h"
 #include "SecurityManager.generated.h"
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDetectorDelegate, ESecurityState, SecurityState);
 
+#if 0
 USTRUCT()
 struct SECURITYCCTVSYSTEM_API FRespondersDelegate
 {
@@ -54,8 +57,8 @@ public:
 	void BindResponderToDetector(const FString& DetectorName, UResponder& Responder);
 	void RemoveDetectorResponder(const FString& DetectorName, UResponder& Responder);
 
-	UFUNCTION()
-	void TriggerResponders(const FString& DetectorName, ESecurityState SecurityState);
+	/*UFUNCTION()
+	void TriggerResponders(const FString& DetectorName, ESecurityState SecurityState);*/
 
 
 	
@@ -68,4 +71,32 @@ public:
 	UPROPERTY()
 	FString DetectorNameTemp; //temp for testing
 	
+};
+#endif
+
+
+
+
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDetectorDelegate, ESecurityState, SecurityState);
+
+
+UCLASS()
+class SECURITYCCTVSYSTEM_API USecurityManagerSubsystem : public UWorldSubsystem
+{
+	GENERATED_BODY()
+
+public:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
+	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
+
+	void BindResponderToDetector(const FString& DetectorName, UResponder& Responder);
+	void RemoveDetectorResponder(const FString& DetectorName, UResponder& Responder);
+
+	UFUNCTION()
+	void TriggerResponders(const FString& DetectorName, ESecurityState SecurityState);
+
+	UPROPERTY()
+	TMap<FString, FDetectorDelegate> DetectorDelegates;
+
 };

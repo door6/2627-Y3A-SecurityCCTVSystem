@@ -31,10 +31,13 @@ void UDetector::BeginPlay()
 
 	if (IsBound)
 	{
-		TArray<AActor*> FoundActors;
+		/*TArray<AActor*> FoundActors;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASecurityManager::StaticClass(), FoundActors);
 		ASecurityManager* SecurityManager = Cast<ASecurityManager>(FoundActors[0]);
-		NotifyManagerDelegate.AddUniqueDynamic(SecurityManager, &ASecurityManager::TriggerResponders);
+		NotifyManagerDelegate.AddUniqueDynamic(SecurityManager, &ASecurityManager::TriggerResponders);*/
+
+		USecurityManagerSubsystem* SecurityManager= GetWorld()->GetSubsystem<USecurityManagerSubsystem>();
+		NotifyManagerDelegate.AddUniqueDynamic(SecurityManager, &USecurityManagerSubsystem::TriggerResponders);
 	}
 
 

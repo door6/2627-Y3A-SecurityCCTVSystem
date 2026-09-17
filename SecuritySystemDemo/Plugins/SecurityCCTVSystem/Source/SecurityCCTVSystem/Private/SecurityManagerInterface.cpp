@@ -11,7 +11,7 @@
 #include "SecuritySystemLog.h"
 
 #include "EngineUtils.h"
-#include "Kismet/GameplayStatics.h" //temp
+//#include "Kismet/GameplayStatics.h" //temp
 
 TSharedRef<IDetailCustomization> FSecurityManagerInterface::MakeInstance()
 {
@@ -20,24 +20,6 @@ TSharedRef<IDetailCustomization> FSecurityManagerInterface::MakeInstance()
 
 void FSecurityManagerInterface::CustomizeDetails(IDetailLayoutBuilder& DetailBuilder)
 {
-    //ShareRecipeKeys();
-    // Create a category so this is displayed early in the properties
-    //IDetailCategoryBuilder& CraftingCategory = DetailBuilder.EditCategory("Crafting", FText::FromString(TEXT("Crafting")), ECategoryPriority::Important);
-
-    //You can get properties using the detailbuilder
-    //MyProperty= DetailBuilder.GetProperty(GET_MEMBER_NAME_CHECKED(MyClass, MyClassPropertyName));
-    //TSharedPtr<IPropertyHandle> RecipesProperty = DetailBuilder.GetProperty("Recipes");
-    //TSharedRef<FDetailArrayBuilder> RecipesArrayPropertyBuilder = MakeShareable(new FDetailArrayBuilder(RecipesProperty.ToSharedRef()));
-
-    //RecipesArrayPropertyBuilder->OnGenerateArrayElementWidget(FOnGenerateArrayElementWidget::CreateSP(this, &FResourceGeneratorDetails::GenerateRecipeArrayElementWidget, &DetailBuilder));
-    //CraftingCategory.AddCustomBuilder(RecipesArrayPropertyBuilder, false);
-
-
-
-
-
-    //DetailBuilder.GetProperty(GET_MEMBER_NAME_CHECKED(ASecurityManager, CooldownTimer));
-
     CachedDetailBuilder = &DetailBuilder;
 
     IDetailCategoryBuilder& Connections = DetailBuilder.EditCategory(TEXT("Security System"));
@@ -45,14 +27,25 @@ void FSecurityManagerInterface::CustomizeDetails(IDetailLayoutBuilder& DetailBui
     TArray<TWeakObjectPtr<UObject>> SelectedObjects;
     DetailBuilder.GetObjectsBeingCustomized(SelectedObjects);
 
-    ASecurityManager* CurrentSecurityManager = Cast<ASecurityManager>(SelectedObjects[0].Get());
+    /*ASecurityManager* CurrentSecurityManager = Cast<ASecurityManager>(SelectedObjects[0].Get());
     if (!CurrentSecurityManager) return;
-    SecurityManager = CurrentSecurityManager;
+    SecurityManager = CurrentSecurityManager;*/
+
+    USecurityManagerSubsystem* Subsystem = Cast<USecurityManagerSubsystem>(SelectedObjects[0].Get());
+    if (!Subsystem) return;
+
+    //not sure if this is needed
+    UWorld* World = Subsystem->GetWorld();
+    if (!World) return;
+
+    SecurityManager = Subsystem;
 
     //temp check
-    TArray<AActor*> FoundActors;
+    /*TArray<AActor*> FoundActors;
     UGameplayStatics::GetAllActorsOfClass(SecurityManager->GetWorld(), SecurityManager->GetClass(), FoundActors);
-    UE_LOG(LogSecuritySystem, Warning, TEXT("Number of SecurityManagers = %d"), FoundActors.Num());
+    UE_LOG(LogSecuritySystem, Warning, TEXT("Number of SecurityManagers = %d"), FoundActors.Num());*/
+
+    UE_LOG(LogSecuritySystem, Log, TEXT("Number of detectors in manager map = %d"), SecurityManager->DetectorDelegates.Num());
 
     // Find every actor in the world with a DetectorComponent
     for (TActorIterator<AActor> It(SecurityManager->GetWorld()); It; ++It)
@@ -62,78 +55,58 @@ void FSecurityManagerInterface::CustomizeDetails(IDetailLayoutBuilder& DetailBui
             continue;
 
         //temp for testing
-        if (!Actor->FindComponentByClass<UDetector>()->IsBound)
+        /*if (!Actor->FindComponentByClass<UDetector>()->IsBound)
         {
             UE_LOG(LogSecuritySystem, Error, TEXT("Editor: Manager is NOT bound to %s"), *Actor->GetActorLabel());
         }
         else
-            UE_LOG(LogSecuritySystem, Log, TEXT("Editor: Manager is bound to %s"), *Actor->GetActorLabel());
+            UE_LOG(LogSecuritySystem, Log, TEXT("Editor: Manager is bound to %s"), *Actor->GetActorLabel());*/
 
 
         IDetailGroup& Group = Connections.AddGroup(*Actor->GetName(), FText::FromString(Actor->GetActorLabel()));
 
         FDetectorDelegate* DetectorDelegate = SecurityManager->DetectorDelegates.Find(Actor->GetName());
-        //FDetectorDelegate* DetectorDelegate = SecurityManager->GetDetectorDelegate(Actor->GetName());
-        //FResponders* DetectorResponders = SecurityManager->GetDetectorResponders(Actor->GetName());
 
-        //TArray<FWeakObjectPtr*> Responders = DetectorDelegate->GetAllObjectRefsEvenIfUnreachable();
         TArray<FWeakObjectPtr*> Responders = DetectorDelegate ? DetectorDelegate->GetAllObjectRefsEvenIfUnreachable() : TArray<FWeakObjectPtr*>();
-        //TArray<UResponder*> Responders = DetectorResponders ? DetectorResponders->Array : TArray<UResponder*>();
-        //int32 NumResponders = DetectorDelegate ? Responders.Num() : 0;
 
         for (FWeakObjectPtr* Responder : Responders)
-        //for (UResponder* Responder : Responders)
-        //for (int32 i = 0; i < NumResponders; ++i)
         {
             UResponder* ResponderComponent = Cast<UResponder>(Responder->Get());
 
             Group.AddWidgetRow()
                 .NameContent()
                 [
-                    //SNew(STextBlock).Text(FText::FromString(FString::Printf(TEXT("Responder %d"), i)))                  
-                    //SNew(STextBlock).Text(FText::FromString(Responder->GetOwner()->GetActorLabel()))
                     SNew(STextBlock).Text(FText::FromString(ResponderComponent->GetOwner()->GetActorLabel()))
                 ]
                 .ExtensionContent()
                 [
-                    //BuildResponderDropdown(Actor, 0) //i
                     SNew(SButton)
-                        //.Text(FText::FromString("Delete"))
                         .OnClicked(FOnClicked::CreateSP(this, &FSecurityManagerInterface::OnDeleteResponderClicked, Actor->GetName(), ResponderComponent))
                         .ContentPadding(FMargin(1.f))
                         [
                             SNew(SImage)
                                 .Image(FAppStyle::GetBrush("Icons.Delete"))
                         ]
-                    
                 ];
         }
-
-        // "Add Responder" button per detector
-        //UResponder* SelectedResponder = nullptr;
 
         Group.AddWidgetRow()
             .NameContent()
             [
-                //SNew(SButton)
-                   // .Text(FText::FromString("Add Responder"))
-                   // .OnClicked(FOnClicked::CreateSP(this, &FSecurityManagerInterface::OnAddResponderClicked, Actor->GetName(), CurrentSelectedResponder))
                 SNew(STextBlock).Text(FText::FromString("Add Responder"))
                 
             ]
             .ValueContent()
             [
-                BuildResponderDropdown(Actor, CurrentSelectedResponder) //SelectedResponder
+                BuildResponderDropdown(Actor, CurrentSelectedResponder)
             ];
-    }
-    
+    }  
 }
 
 FReply FSecurityManagerInterface::OnDeleteResponderClicked(FString DetectorName, UResponder* Responder)
 {
     SecurityManager->Modify();
 
-    //UResponder* ResponderComponent = Cast<UResponder>(Responder->Get());
     SecurityManager->RemoveDetectorResponder(DetectorName, *Responder);
 
     Responder->Modify();
@@ -149,9 +122,6 @@ FReply FSecurityManagerInterface::OnDeleteResponderClicked(FString DetectorName,
 
 TSharedRef<SWidget> FSecurityManagerInterface::BuildResponderDropdown(AActor* DetectorActor, UResponder* SelectedResponder)
 {
-    //return FMenuBuilder(true, nullptr).MakeWidget();
-
-
     return SNew(SComboButton)
         .OnGetMenuContent_Lambda([this, DetectorActor, SelectedResponder]() -> TSharedRef<SWidget>
             {
@@ -163,8 +133,6 @@ TSharedRef<SWidget> FSecurityManagerInterface::BuildResponderDropdown(AActor* De
                         FText::GetEmpty(),
                         FSlateIcon(),
                         FUIAction(FExecuteAction::CreateSP(
-                            //this, &FSecurityManagerInterface::OnResponderSelected,
-                            //Candidate, CurrentSelectedResponder))
                             this, &FSecurityManagerInterface::OnResponderSelectedTest,
                             DetectorActor, Candidate))
                     );
@@ -176,7 +144,6 @@ TSharedRef<SWidget> FSecurityManagerInterface::BuildResponderDropdown(AActor* De
             SNew(STextBlock)
                 .Text_Lambda([this, SelectedResponder]()
                     {
-                        //return GetResponderDisplayText(DetectorActor, ResponderIndex);
                         return CurrentSelectedResponder ? FText::FromString(CurrentSelectedResponder->GetOwner()->GetName()) : FText::FromString("None");
                     })
         ];
@@ -184,10 +151,6 @@ TSharedRef<SWidget> FSecurityManagerInterface::BuildResponderDropdown(AActor* De
 
 FReply FSecurityManagerInterface::OnAddResponderClicked(FString DetectorName, UResponder* Responder)
 {
-    // not sure if this check is needed
-    //ASecurityManager* SecurityManager = Cast<ASecurityManager>(electedObjects[0].Get());
-    //if (!SecurityManager) return FReply::Handled();
-
     if (!Responder)
     {
         UE_LOG(LogSecuritySystem, Error, TEXT("Responder NULLPTR"));
@@ -209,15 +172,7 @@ FReply FSecurityManagerInterface::OnAddResponderClicked(FString DetectorName, UR
 
 TArray<AActor*> FSecurityManagerInterface::GetResponderCandidates() const
 {
-    //return TArray<AActor*>();
-
-    //dont think i need this
-    //TArray<AActor*> Result;
-    //if (!SelectedObjects.IsValidIndex(0)) return Result;
-
     TArray<AActor*> Responders;
-    //UWorld* World = SecurityManager ? SecurityManager->GetWorld() : nullptr;
-    //if (!World) return Result;
 
     for (TObjectIterator<AActor> It; It; ++It)
     {
@@ -243,8 +198,6 @@ void FSecurityManagerInterface::OnResponderSelectedTest(AActor* DetectorActor, A
         return;
     }
 
-    //UE_LOG(LogTemp, Warning, TEXT("%s"), *DetectorName);
-
     SecurityManager->Modify();
 
     SecurityManager->BindResponderToDetector(DetectorActor->GetName(), *Responder->GetComponentByClass<UResponder>());
@@ -258,19 +211,6 @@ void FSecurityManagerInterface::OnResponderSelectedTest(AActor* DetectorActor, A
 
     Detector->Modify();
     Detector->IsBound = true;
-
-    /*UDetector* Detector = DetectorActor->FindComponentByClass<UDetector>();
-    DetectorActor->Modify();
-    Detector->Modify();
-    Detector->NotifyManagerDelegate.AddUniqueDynamic(SecurityManager, &ASecurityManager::TriggerResponders);
-
-    if (!Detector->NotifyManagerDelegate.IsBound())
-    {
-        UE_LOG(LogSecuritySystem, Error, TEXT("Manager did NOT bound to %s"), *DetectorActor->GetActorLabel());
-    }
-    else
-        UE_LOG(LogSecuritySystem, Log, TEXT("Manager bound to %s"), *DetectorActor->GetActorLabel());*/
-
 
     UE_LOG(LogSecuritySystem, Log, TEXT("Bind %s to %s"), *Responder->GetActorLabel(), *DetectorActor->GetActorLabel());
 

@@ -5,7 +5,6 @@
 #include "PropertyEditorModule.h"
 #include "SecurityManager.h"
 #include "SecurityManagerInterface.h"
-#include "Modules/ModuleManager.h"
 #include "SecuritySystemLog.h"
 
 #define LOCTEXT_NAMESPACE "FSecurityCCTVSystemModule"
@@ -17,9 +16,15 @@ void FSecurityCCTVSystemModule::StartupModule()
 	FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
 
 	PropertyModule.RegisterCustomClassLayout(
-		ASecurityManager::StaticClass()->GetFName(),
+		USecurityManagerSubsystem::StaticClass()->GetFName(),
 		FOnGetDetailCustomizationInstance::CreateStatic(&FSecurityManagerInterface::MakeInstance)
 	);
+
+	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(
+		"SecuritySystemPanel",
+		FOnSpawnTab::CreateStatic(&FSecurityCCTVSystemModule::SpawnSecuritySystemTab))
+		.SetDisplayName(FText::FromString("Security Manager"))
+		.SetMenuType(ETabSpawnerMenuType::Enabled);
 }
 
 void FSecurityCCTVSystemModule::ShutdownModule()
@@ -27,12 +32,39 @@ void FSecurityCCTVSystemModule::ShutdownModule()
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
 
+	FGlobalTabmanager::Get()->UnregisterNomadTabSpawner("SecuritySystemPanel");
+
 	if (FModuleManager::Get().IsModuleLoaded("PropertyEditor"))
 	{
-		FPropertyEditorModule& PropertyModule =
-			FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
-		PropertyModule.UnregisterCustomClassLayout(ASecurityManager::StaticClass()->GetFName());
+		FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
+		PropertyModule.UnregisterCustomClassLayout(USecurityManagerSubsystem::StaticClass()->GetFName());
 	}
+}
+
+TSharedRef<SDockTab> FSecurityCCTVSystemModule::SpawnSecuritySystemTab(const FSpawnTabArgs& Args)
+{
+	FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+
+	FDetailsViewArgs DetailsViewArgs;
+	DetailsViewArgs.bAllowSearch = false;
+	DetailsViewArgs.NameAreaSettings = FDetailsViewArgs::HideNameArea;
+
+	TSharedRef<IDetailsView> DetailsView = PropertyModule.CreateDetailView(DetailsViewArgs);
+
+	// Pull the subsystem from the currently active editor world
+	UWorld* EditorWorld = GEditor ? GEditor->GetEditorWorldContext().World() : nullptr;
+	USecurityManagerSubsystem* Subsystem = EditorWorld ? EditorWorld->GetSubsystem<USecurityManagerSubsystem>() : nullptr;
+
+	if (Subsystem)
+	{
+		DetailsView->SetObject(Subsystem);
+	}
+
+	return SNew(SDockTab)
+		.TabRole(ETabRole::NomadTab)
+		[
+			DetailsView
+		];
 }
 
 #undef LOCTEXT_NAMESPACE
