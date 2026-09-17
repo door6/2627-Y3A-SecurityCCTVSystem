@@ -7,6 +7,9 @@
 #include "SecurityManagerInterface.h"
 #include "SecuritySystemLog.h"
 
+#include "WorkspaceMenuStructure.h"
+#include "WorkspaceMenuStructureModule.h"
+
 #define LOCTEXT_NAMESPACE "FSecurityCCTVSystemModule"
 
 void FSecurityCCTVSystemModule::StartupModule()
@@ -24,6 +27,8 @@ void FSecurityCCTVSystemModule::StartupModule()
 		"SecuritySystemPanel",
 		FOnSpawnTab::CreateStatic(&FSecurityCCTVSystemModule::SpawnSecuritySystemTab))
 		.SetDisplayName(FText::FromString("Security Manager"))
+		.SetTooltipText(FText::FromString("Security System"))
+		.SetGroup(WorkspaceMenu::GetMenuStructure().GetLevelEditorCategory())
 		.SetMenuType(ETabSpawnerMenuType::Enabled);
 }
 
