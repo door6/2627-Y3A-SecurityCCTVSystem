@@ -32,4 +32,7 @@ public:
 	float CooldownTimer = 3.0f;
 
 	ESecurityState CurrentState = ESecurityState::Neutral;	
+
+	UPROPERTY(EditAnywhere, Category = "Security System")
+	FString ConnectedDetector = "";		//this needs to be an array or manager needs to store it (responders should be able to be connected to multiple detectors)
 };

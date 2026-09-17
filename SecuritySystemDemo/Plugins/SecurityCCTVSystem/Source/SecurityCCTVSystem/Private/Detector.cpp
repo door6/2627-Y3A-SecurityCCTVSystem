@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "SecuritySystemLog.h"
 
+#include "SecurityManager.h"
+
 // Sets default values for this component's properties
 UDetector::UDetector()
 {
@@ -13,6 +15,8 @@ UDetector::UDetector()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
+	
+	UE_LOG(LogSecuritySystem, Display, TEXT("Detector: Init"));
 }
 
 
@@ -24,6 +28,23 @@ void UDetector::BeginPlay()
 	// ...
 
 	UE_LOG(LogSecuritySystem, Display, TEXT("Detector: BeginPlay"));
+
+	if (IsBound)
+	{
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASecurityManager::StaticClass(), FoundActors);
+		ASecurityManager* SecurityManager = Cast<ASecurityManager>(FoundActors[0]);
+		NotifyManagerDelegate.AddUniqueDynamic(SecurityManager, &ASecurityManager::TriggerResponders);
+	}
+
+
+	if (!NotifyManagerDelegate.IsBound())
+	{
+		UE_LOG(LogSecuritySystem, Error, TEXT("BeginPlay: %s: Manager is NOT bound"), *GetOwner()->GetActorLabel());
+	}
+	else
+	 UE_LOG(LogSecuritySystem, Display, TEXT("BeginPlay: %s: Manager is bound"), *GetOwner()->GetActorLabel());
+
 }
 
 
@@ -49,5 +70,3 @@ void UDetector::TriggerResponders(ESecurityState SecurityState)
 
 	NotifyManagerDelegate.Broadcast(GetOwner()->GetName(), SecurityState);
 }
-
-//DEFINE_LOG_CATEGORY(SecuritySystem);

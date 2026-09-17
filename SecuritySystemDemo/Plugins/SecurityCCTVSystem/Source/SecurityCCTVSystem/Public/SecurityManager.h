@@ -7,7 +7,8 @@
 #include "Responder.h"
 #include "SecurityManager.generated.h"
 
-/*DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDetectorDelegate, ESecurityState, SecurityState);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDetectorDelegate, ESecurityState, SecurityState);
 
 USTRUCT()
 struct SECURITYCCTVSYSTEM_API FRespondersDelegate
@@ -17,9 +18,8 @@ struct SECURITYCCTVSYSTEM_API FRespondersDelegate
 	UPROPERTY(EditAnywhere)
 	TArray<TSoftObjectPtr<UResponder>> Responders;
 	FDetectorDelegate Delegate;
-};*/
+};
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDetectorDelegate, ESecurityState, SecurityState);
 
 USTRUCT()
 struct FResponders
@@ -54,15 +54,18 @@ public:
 	void BindResponderToDetector(const FString& DetectorName, UResponder& Responder);
 	void RemoveDetectorResponder(const FString& DetectorName, UResponder& Responder);
 
-	UFUNCTION(BlueprintCallable, Category = "Security System")
+	UFUNCTION()
 	void TriggerResponders(const FString& DetectorName, ESecurityState SecurityState);
 
 
 	
 	//TMap<FString, FResponders> DetectorRespondersMap;
 
-	UPROPERTY(EditAnywhere, Category = "Security System")
+	UPROPERTY()
 	TMap<FString, FDetectorDelegate> DetectorDelegates;
 	//TMap<FString, FRespondersDelegate> DetectorResponders;
+
+	UPROPERTY()
+	FString DetectorNameTemp; //temp for testing
 	
 };

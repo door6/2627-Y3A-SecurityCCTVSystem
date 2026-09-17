@@ -12,6 +12,8 @@ UResponder::UResponder()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
+
+	UE_LOG(LogSecuritySystem, Display, TEXT("Responder: Init"));
 }
 
 

@@ -4,6 +4,8 @@
 #include "SecurityManager.h"
 #include "SecuritySystemLog.h"
 
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 ASecurityManager::ASecurityManager()
 {
@@ -46,6 +48,44 @@ void ASecurityManager::BeginPlay()
 	UE_LOG(LogSecuritySystem, Log, TEXT("Filled DetectorDelegates map"));*/
 
 	UE_LOG(LogSecuritySystem, Warning, TEXT("Number of bound detectors during BeginPlay = %d"), DetectorDelegates.Num());	
+
+
+
+	//TArray<AActor*> FoundActors;
+	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), UResponder::StaticClass(), FoundActors);
+
+	FString Check;
+
+	for (TObjectIterator<AActor> It; It; ++It)
+	{
+		AActor* Actor = *It;
+		if (!Actor->FindComponentByClass<UResponder>())
+			continue;
+
+		UResponder* Responder = Actor->FindComponentByClass<UResponder>();
+		FDetectorDelegate* Delegate = DetectorDelegates.Find(Responder->ConnectedDetector);
+		if (Delegate)
+		{
+			Delegate->AddUniqueDynamic(Responder, &UResponder::Respond);
+
+			Check = Actor->GetActorLabel();
+			UE_LOG(LogSecuritySystem, Log, TEXT("BeginPlay:  Manager: Bound to %s"), *Check);
+		}
+	}
+	
+
+
+	if (DetectorDelegates.Find(DetectorNameTemp))
+	{
+		if (!DetectorDelegates.Find(DetectorNameTemp)->IsBound())
+		{
+			UE_LOG(LogSecuritySystem, Error, TEXT("BeginPlay: Manager: DetectorDelegate is NOT bound"));
+		}
+
+		UE_LOG(LogSecuritySystem, Display, TEXT("BeginPlay:  Manager: DetectorDelegate is bound"));
+	}
+	else
+		UE_LOG(LogSecuritySystem, Error, TEXT("BeginPlay:  Manager: DetectorDelegate doesn't exist"));
 }
 
 // Called every frame
@@ -60,8 +100,10 @@ void ASecurityManager::BindResponderToDetector(const FString& DetectorName, URes
 	/*FResponders& Responders = DetectorRespondersMap.FindOrAdd(DetectorName);
 	Responders.Array.AddUnique(&Responder);*/
 
+	DetectorNameTemp = DetectorName;
+
 	FDetectorDelegate& Delegate = DetectorDelegates.FindOrAdd(DetectorName);
-	Delegate.AddUniqueDynamic(&Responder, &UResponder::Respond);
+	Delegate.AddUniqueDynamic(&Responder, &UResponder::Respond);		//leave in for now, need to remove when dropdown gets refactored
 }
 
 void ASecurityManager::RemoveDetectorResponder(const FString& DetectorName, UResponder& Responder)

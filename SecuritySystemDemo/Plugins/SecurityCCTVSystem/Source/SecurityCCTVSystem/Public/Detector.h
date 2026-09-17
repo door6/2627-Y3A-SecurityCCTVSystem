@@ -36,7 +36,10 @@ public:
 	ESecurityState CurrentState = ESecurityState::Neutral;
 
 
-	UPROPERTY(EditAnywhere, Category = "Security System")
+	UPROPERTY()
 	FNotifyManagerDelegate NotifyManagerDelegate;
+
+	UPROPERTY(EditAnywhere, Category = "Security System")
+	bool IsBound = false;
 
 };

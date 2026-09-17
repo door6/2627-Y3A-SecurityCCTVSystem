@@ -60,6 +60,15 @@ void FSecurityManagerInterface::CustomizeDetails(IDetailLayoutBuilder& DetailBui
         if (!Actor->FindComponentByClass<UDetector>())
             continue;
 
+        //temp for testing
+        if (!Actor->FindComponentByClass<UDetector>()->IsBound)
+        {
+            UE_LOG(LogSecuritySystem, Error, TEXT("Editor: Manager is NOT bound to %s"), *Actor->GetActorLabel());
+        }
+        else
+            UE_LOG(LogSecuritySystem, Log, TEXT("Editor: Manager is bound to %s"), *Actor->GetActorLabel());
+
+
         IDetailGroup& Group = Connections.AddGroup(*Actor->GetName(), FText::FromString(Actor->GetActorLabel()));
 
         FDetectorDelegate* DetectorDelegate = SecurityManager->DetectorDelegates.Find(Actor->GetName());
@@ -125,6 +134,9 @@ FReply FSecurityManagerInterface::OnDeleteResponderClicked(FString DetectorName,
 
     //UResponder* ResponderComponent = Cast<UResponder>(Responder->Get());
     SecurityManager->RemoveDetectorResponder(DetectorName, *Responder);
+
+    Responder->Modify();
+    Responder->ConnectedDetector = "";
 
     UE_LOG(LogSecuritySystem, Log, TEXT("%s removed from %s"), *Responder->GetOwner()->GetActorLabel(), *DetectorName);
 
@@ -236,7 +248,17 @@ void FSecurityManagerInterface::OnResponderSelectedTest(AActor* DetectorActor, A
 
     SecurityManager->BindResponderToDetector(DetectorActor->GetName(), *Responder->GetComponentByClass<UResponder>());
 
+    UResponder* ResponderComponent = Responder->FindComponentByClass<UResponder>();
+    ResponderComponent->Modify();
+    ResponderComponent->ConnectedDetector = DetectorActor->GetName();
+
+
     UDetector* Detector = DetectorActor->FindComponentByClass<UDetector>();
+
+    Detector->Modify();
+    Detector->IsBound = true;
+
+    /*UDetector* Detector = DetectorActor->FindComponentByClass<UDetector>();
     DetectorActor->Modify();
     Detector->Modify();
     Detector->NotifyManagerDelegate.AddUniqueDynamic(SecurityManager, &ASecurityManager::TriggerResponders);
@@ -246,7 +268,7 @@ void FSecurityManagerInterface::OnResponderSelectedTest(AActor* DetectorActor, A
         UE_LOG(LogSecuritySystem, Error, TEXT("Manager did NOT bound to %s"), *DetectorActor->GetActorLabel());
     }
     else
-        UE_LOG(LogSecuritySystem, Log, TEXT("Manager bound to %s"), *DetectorActor->GetActorLabel());
+        UE_LOG(LogSecuritySystem, Log, TEXT("Manager bound to %s"), *DetectorActor->GetActorLabel());*/
 
 
     UE_LOG(LogSecuritySystem, Log, TEXT("Bind %s to %s"), *Responder->GetActorLabel(), *DetectorActor->GetActorLabel());
