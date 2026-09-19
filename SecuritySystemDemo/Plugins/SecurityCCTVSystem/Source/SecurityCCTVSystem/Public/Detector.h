@@ -39,7 +39,7 @@ public:
 	UPROPERTY()
 	FNotifyManagerDelegate NotifyManagerDelegate;
 
-	UPROPERTY(EditAnywhere, Category = "Security System")
-	bool IsBound = false;
+	/*UPROPERTY(VisibleAnywhere, Category = "Security System")
+	TArray<FString> ConnectedResponders = TArray<FString>();*/
 
 };

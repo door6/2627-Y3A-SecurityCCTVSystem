@@ -28,11 +28,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Security System")
 	virtual void Respond(ESecurityState SecurityState);
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Security System")
 	float CooldownTimer = 3.0f;
 
-	ESecurityState CurrentState = ESecurityState::Neutral;	
+	ESecurityState CurrentState = ESecurityState::Neutral;
 
-	UPROPERTY(EditAnywhere, Category = "Security System")
-	FString ConnectedDetector = "";		//this needs to be an array or manager needs to store it (responders should be able to be connected to multiple detectors)
 };

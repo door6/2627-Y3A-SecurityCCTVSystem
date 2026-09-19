@@ -15,8 +15,6 @@ UDetector::UDetector()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
-	
-	UE_LOG(LogSecuritySystem, Display, TEXT("Detector: Init"));
 }
 
 
@@ -29,7 +27,7 @@ void UDetector::BeginPlay()
 
 	UE_LOG(LogSecuritySystem, Display, TEXT("Detector: BeginPlay"));
 
-	if (IsBound)
+	//if (!ConnectedResponders.IsEmpty())
 	{
 		/*TArray<AActor*> FoundActors;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASecurityManager::StaticClass(), FoundActors);

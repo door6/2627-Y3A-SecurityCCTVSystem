@@ -6,6 +6,7 @@
 #include "IDetailCustomization.h"
 #include "Input/Reply.h"
 #include "SecurityManager.h"
+
 class IPropertyHandle;
 class IDetailChildrenBuilder;
 
@@ -21,7 +22,7 @@ public:
     virtual void CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) override;
 protected:
 
-    FReply OnDeleteResponderClicked(FString DetectorName, UResponder* Responder);
+    FReply OnDeleteResponderClicked(FString DetectorName, AActor* ResponderActor);   //FString DetectorName, UResponder* Responder
 
     TSharedRef<SWidget> BuildResponderDropdown(AActor* DetectorActor, UResponder* SeelectedResponder);
     FReply OnAddResponderClicked(FString DetectorName, UResponder* Responder);

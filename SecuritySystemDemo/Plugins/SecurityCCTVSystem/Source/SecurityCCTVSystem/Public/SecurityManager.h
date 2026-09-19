@@ -23,16 +23,6 @@ struct SECURITYCCTVSYSTEM_API FRespondersDelegate
 	FDetectorDelegate Delegate;
 };
 
-
-USTRUCT()
-struct FResponders
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, Category = "Security System")
-	TArray<UResponder*> Array;
-};
-
 UCLASS()
 class SECURITYCCTVSYSTEM_API ASecurityManager : public AActor
 {
@@ -75,12 +65,23 @@ public:
 #endif
 
 
+USTRUCT()
+struct FResponders
+{
+	GENERATED_BODY()
+
+	FDetectorDelegate Delegate;
+
+	UPROPERTY(VisibleAnywhere, Config, Category = "Security System")	//BlueprintReadOnly
+	TArray<FString> NameArray = TArray<FString>();
+};
+
 
 
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDetectorDelegate, ESecurityState, SecurityState);
 
 
-UCLASS()
+UCLASS(/*Config = Game*/)
 class SECURITYCCTVSYSTEM_API USecurityManagerSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
@@ -90,13 +91,15 @@ public:
 
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
-	void BindResponderToDetector(const FString& DetectorName, UResponder& Responder);
-	void RemoveDetectorResponder(const FString& DetectorName, UResponder& Responder);
+	void BindResponderToDetector(const FString& DetectorName, const FString& ResponderName);
+	void RemoveDetectorResponder(const FString& DetectorName, const FString& ResponderName);
 
 	UFUNCTION()
 	void TriggerResponders(const FString& DetectorName, ESecurityState SecurityState);
 
-	UPROPERTY()
+	//UPROPERTY(VisibleAnywhere, Config, Category = "Security System")
+	//TMap<FString, FResponders> DetectorResponders;
+
 	TMap<FString, FDetectorDelegate> DetectorDelegates;
 
 };
