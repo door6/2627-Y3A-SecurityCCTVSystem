@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Detector.h"
 #include "MotionDetector.generated.h"
 
 UCLASS()
@@ -24,9 +26,18 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void DetectIntruder(const TArray<AActor*>& DetectedActors);
+	void DetectIntruderArray(const TArray<AActor*>& DetectedActors);
+
+	UFUNCTION()
+	void DetectIntruder(AActor* Actor, FAIStimulus Stimulus);
 
 
 	UPROPERTY(EditAnywhere, Category = "Mesh")
 	UStaticMeshComponent* CubeMeshComponent;
+
+	UPROPERTY(EditAnywhere, Category = "Perception")
+
+	UAIPerceptionComponent* PerceptionComponent;
+
+	UDetector* DetectorComponent;
 };

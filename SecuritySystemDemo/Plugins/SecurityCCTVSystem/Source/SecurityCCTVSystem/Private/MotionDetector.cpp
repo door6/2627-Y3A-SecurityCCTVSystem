@@ -2,7 +2,6 @@
 
 
 #include "MotionDetector.h"
-#include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "SecuritySystemLog.h"
 
@@ -17,30 +16,32 @@ AMotionDetector::AMotionDetector()
 	Root->SetMobility(EComponentMobility::Static);
 	SetRootComponent(Root);
 
-	//add a cube mesh
+	//add a cube mesh component
 	CubeMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
 	UStaticMesh* CubeMesh = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object;
 	CubeMeshComponent->SetStaticMesh(CubeMesh);
 	CubeMeshComponent->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 
-	//create sight configuration for ai perception component
-	UAIPerceptionComponent* PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception Component"));
+	//add ai perception component and create sight configuration for it
+	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception Component"));
 	UAISenseConfig_Sight* SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
 	PerceptionComponent->ConfigureSense(*SightConfig);
 	PerceptionComponent->SetDominantSense(SightConfig->GetSenseImplementation());
-	PerceptionComponent->OnPerceptionUpdated.AddUniqueDynamic(this, &AMotionDetector::DetectIntruder);
-	//PerceptionComponent->OnTargetPerceptionUpdated.AddUnique(this, &AMotionDetector::DetectIntruder);
+	PerceptionComponent->OnPerceptionUpdated.AddUniqueDynamic(this, &AMotionDetector::DetectIntruderArray);
+	//PerceptionComponent->OnTargetPerceptionUpdated.AddUniqueDynamic(this, &AMotionDetector::DetectIntruder);
 
 	//set sight sense properties
-	SightConfig->SightRadius = 20.0f;
-	SightConfig->LoseSightRadius = SightConfig->SightRadius + 20.0f;
-	SightConfig->PeripheralVisionAngleDegrees = 90.0f;
+	SightConfig->SightRadius = 500.0f;
+	SightConfig->LoseSightRadius = SightConfig->SightRadius + 100.0f;
+	SightConfig->PeripheralVisionAngleDegrees = 45.0f;
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 	PerceptionComponent->ConfigureSense(*SightConfig);
 
-	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, SightConfig->GetSenseImplementation(), this);
+	//add detector component
+	DetectorComponent = CreateDefaultSubobject<UDetector>(TEXT("Detector Component"));
+
 
 }
 
@@ -49,6 +50,8 @@ void AMotionDetector::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	//PerceptionComponent->OnPerceptionUpdated.AddUniqueDynamic(this, &AMotionDetector::DetectIntruderArray);
+	//PerceptionComponent->OnTargetPerceptionUpdated.AddUniqueDynamic(this, &AMotionDetector::DetectIntruder);
 }
 
 // Called every frame
@@ -58,14 +61,74 @@ void AMotionDetector::Tick(float DeltaTime)
 
 }
 
-void AMotionDetector::DetectIntruder(const TArray<AActor*>& DetectedActors)
+void AMotionDetector::DetectIntruderArray(const TArray<AActor*>& DetectedActors)
 {
-	for (AActor* Actor : DetectedActors)
+	TArray<AActor*> PerceivedActors;	
+	PerceptionComponent->GetCurrentlyPerceivedActors(PerceptionComponent->GetSenseConfig<UAISenseConfig_Sight>()->GetSenseImplementation(), PerceivedActors);
+
+	FString Message = this->GetActorLabel() + ": Switch to ";
+
+	switch (DetectorComponent->CurrentState)
 	{
+	case ESecurityState::Neutral:
+		if (PerceivedActors.IsEmpty())
+		{
+			UE_LOG(LogSecuritySystem, Log, TEXT("State: Neutral, ActorArray: Empty"));
+			return;
+		}
+		DetectorComponent->CurrentState = ESecurityState::Alarm;
+		Message += "Alarm";
+		break;
+	case ESecurityState::Alarm:
+		if (!PerceivedActors.IsEmpty())
+		{
+			UE_LOG(LogSecuritySystem, Log, TEXT("State: Alarm, ActorArray: Not empty"));
+			Message = "";
+			for (AActor* Actor : PerceivedActors)
+			{
+				Message += Actor->GetActorLabel() + ", ";
+			}
+			UE_LOG(LogSecuritySystem, Log, TEXT("%s"), *Message);
+			return;
+		}
+		DetectorComponent->CurrentState = ESecurityState::Neutral;
+		Message += "Neutral";
+		break;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Message);
+	UE_LOG(LogSecuritySystem, Display, TEXT("%s"), *Message);
+
+	DetectorComponent->TriggerResponders(DetectorComponent->CurrentState);
+
+
+	/*for (AActor* Actor : DetectedActors)
+	{
+		DetectorComponent->TriggerResponders(ESecurityState::Alarm);
+
 		FString Message = Actor->GetActorLabel() + ": Detected intruder";
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Message);
 
 		UE_LOG(LogSecuritySystem, Display, TEXT("%s"), *Message);
+	}*/
+}
+
+void AMotionDetector::DetectIntruder(AActor* Actor, FAIStimulus Stimulus)
+{
+	if (Stimulus.SensingSucceeded)
+	{
+		if (DetectorComponent->CurrentState != ESecurityState::Alarm)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Detected");
+		}
+	}
+	else
+	{
+		if (DetectorComponent->CurrentState != ESecurityState::Neutral)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Forgotten");
+		}
+
 	}
 }
 
