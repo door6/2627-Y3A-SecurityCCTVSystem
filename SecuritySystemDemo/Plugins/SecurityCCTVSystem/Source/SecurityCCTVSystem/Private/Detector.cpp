@@ -34,17 +34,18 @@ void UDetector::BeginPlay()
 		ASecurityManager* SecurityManager = Cast<ASecurityManager>(FoundActors[0]);
 		NotifyManagerDelegate.AddUniqueDynamic(SecurityManager, &ASecurityManager::TriggerResponders);*/
 
-		USecurityManagerSubsystem* SecurityManager= GetWorld()->GetSubsystem<USecurityManagerSubsystem>();
-		NotifyManagerDelegate.AddUniqueDynamic(SecurityManager, &USecurityManagerSubsystem::TriggerResponders);
+
+		//USecurityManagerSubsystem* SecurityManager= GetWorld()->GetSubsystem<USecurityManagerSubsystem>();
+		//NotifyManagerDelegate.AddUniqueDynamic(SecurityManager, &USecurityManagerSubsystem::TriggerResponders);
 	}
 
 
-	if (!NotifyManagerDelegate.IsBound())
+	/*if (!NotifyManagerDelegate.IsBound())
 	{
 		UE_LOG(LogSecuritySystem, Error, TEXT("BeginPlay: %s: Manager is NOT bound"), *GetOwner()->GetActorLabel());
 	}
 	else
-	 UE_LOG(LogSecuritySystem, Display, TEXT("BeginPlay: %s: Manager is bound"), *GetOwner()->GetActorLabel());
+	 UE_LOG(LogSecuritySystem, Display, TEXT("BeginPlay: %s: Manager is bound"), *GetOwner()->GetActorLabel());*/
 
 }
 
@@ -60,7 +61,7 @@ void UDetector::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 void UDetector::TriggerResponders(ESecurityState SecurityState)
 {
 	//temp testing
-	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Green, GetOwner()->GetName());	
+	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Green, GetOwner()->GetActorLabel());
 
 	if (!NotifyManagerDelegate.IsBound())
 	{
@@ -69,5 +70,5 @@ void UDetector::TriggerResponders(ESecurityState SecurityState)
 
 	UE_LOG(LogSecuritySystem, Display, TEXT("%s: TriggerResponders"), *GetOwner()->GetActorLabel());
 
-	NotifyManagerDelegate.Broadcast(GetOwner()->GetName(), SecurityState);
+	NotifyManagerDelegate.Broadcast(GetOwner()->GetActorLabel(), SecurityState); //GetName()
 }

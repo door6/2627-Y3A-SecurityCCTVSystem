@@ -37,11 +37,12 @@ void UResponder::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 void UResponder::Respond(ESecurityState SecurityState)
 {
 	//temp testing
-	FString message = "Neutral";
-	if (SecurityState == ESecurityState::Alarm) message = "Alarm";
-	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, GetOwner()->GetName());
+	FString message = GetOwner()->GetActorLabel() + ": Responed: switch to ";
+	if (SecurityState == ESecurityState::Alarm) message += "Alarm";
+	else message += "Neutral";
+	//GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, GetOwner()->GetName());
 	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, message);
 
-	UE_LOG(LogSecuritySystem, Display, TEXT("%s: Responed: switch to %s"), *GetOwner()->GetActorLabel(), *message);
+	UE_LOG(LogSecuritySystem, Display, TEXT("%s"), *message);
 }
 

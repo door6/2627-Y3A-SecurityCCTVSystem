@@ -120,12 +120,19 @@ void USecurityManagerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 		TArray<AActor*> FoundActors;
 		UGameplayStatics::GetAllActorsWithTag(Actor->GetWorld(), FName(Actor->GetActorLabel()), FoundActors);
 
+		if (!FoundActors.IsEmpty())
+		{
+			Detector->NotifyManagerDelegate.AddUniqueDynamic(this, &USecurityManagerSubsystem::TriggerResponders);
+
+			UE_LOG(LogSecuritySystem, Log, TEXT("BeginPlay: Manager: Bound to %s"), *Actor->GetActorLabel());
+		}
+
 		for (AActor* ResponderActor : FoundActors)
 		{
-			FDetectorDelegate& Delegate = DetectorDelegates.FindOrAdd(Actor->GetName());
+			FDetectorDelegate& Delegate = DetectorDelegates.FindOrAdd(Actor->GetActorLabel());	//Actor->GetName()
 			Delegate.AddUniqueDynamic(ResponderActor->FindComponentByClass<UResponder>(), &UResponder::Respond);
 
-			UE_LOG(LogSecuritySystem, Log, TEXT("BeginPlay:  Manager: Bound to %s"), *Actor->GetName());
+			//UE_LOG(LogSecuritySystem, Log, TEXT("BeginPlay:  Manager: Bound to %s"), *Actor->GetName());
 		}
 
 		/*for (FString ResponderName : Detector->ConnectedResponders)
