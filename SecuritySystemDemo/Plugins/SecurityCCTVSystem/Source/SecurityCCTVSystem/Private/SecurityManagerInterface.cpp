@@ -270,7 +270,7 @@ void FSecurityManagerInterface::OnResponderSelectedTest(AActor* DetectorActor, A
     UE_LOG(LogSecuritySystem, Log, TEXT("Bind %s to %s"), *Responder->GetActorLabel(), *DetectorActor->GetActorLabel());
 
     CurrentSelectedResponder = nullptr;
-    UE_LOG(LogSecuritySystem, Log, TEXT("Change CurrentSelectedResponder to NULLPTR"));
+    //UE_LOG(LogSecuritySystem, Log, TEXT("Change CurrentSelectedResponder to NULLPTR"));
 
     // Adding a row changes the layout structure -> full rebuild required
     if (CachedDetailBuilder)

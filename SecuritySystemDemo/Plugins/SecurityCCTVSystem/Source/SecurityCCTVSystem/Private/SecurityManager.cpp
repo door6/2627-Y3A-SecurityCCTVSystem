@@ -124,7 +124,7 @@ void USecurityManagerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 		{
 			Detector->NotifyManagerDelegate.AddUniqueDynamic(this, &USecurityManagerSubsystem::TriggerResponders);
 
-			UE_LOG(LogSecuritySystem, Log, TEXT("BeginPlay: Manager: Bound to %s"), *Actor->GetActorLabel());
+			UE_LOG(LogSecuritySystem, Log, TEXT("Manager: BeginPlay: Bound to %s"), *Actor->GetActorLabel());
 		}
 
 		for (AActor* ResponderActor : FoundActors)
@@ -209,7 +209,7 @@ void USecurityManagerSubsystem::TriggerResponders(const FString& DetectorName, E
 	if (!DetectorDelegates.Find(DetectorName))
 	//if (!DetectorResponders.Find(DetectorName))
 	{
-		UE_LOG(LogSecuritySystem, Error, TEXT("Manager: TriggerResponders: %s is NOT bound"), *DetectorName);
+		UE_LOG(LogSecuritySystem, Warning, TEXT("Manager: TriggerResponders: %s is NOT bound"), *DetectorName);
 		return;
 	}
 

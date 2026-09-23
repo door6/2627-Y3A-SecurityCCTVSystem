@@ -4,6 +4,10 @@
 #include "Responder.h"
 #include "SecuritySystemLog.h"
 
+#if WITH_GAMEPLAY_DEBUGGER_MENU
+#include "GameplayDebugger_SecuritySystem.h"
+#endif // WITH_GAMEPLAY_DEBUGGER_MENU
+
 // Sets default values for this component's properties
 UResponder::UResponder()
 {
@@ -22,7 +26,7 @@ void UResponder::BeginPlay()
 
 	// ...
 	
-	UE_LOG(LogSecuritySystem, Display, TEXT("Responder: BeginPlay"));
+	//UE_LOG(LogSecuritySystem, Log, TEXT("Responder: BeginPlay"));
 }
 
 
@@ -37,12 +41,26 @@ void UResponder::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 void UResponder::Respond(ESecurityState SecurityState)
 {
 	//temp testing
-	FString message = GetOwner()->GetActorLabel() + ": Responed: switch to ";
-	if (SecurityState == ESecurityState::Alarm) message += "Alarm";
-	else message += "Neutral";
+	FString DebugMessage = "{yellow}" + GetOwner()->GetActorLabel() + ": {white} Responed: switch to ";
+	FString LogMessage = GetOwner()->GetActorLabel() + ": Responed: switch to ";
+	if (SecurityState == ESecurityState::Alarm)
+	{
+		LogMessage += "Alarm";
+		DebugMessage += "{red} Alarm";
+	}
+	else 
+	{ 
+		LogMessage += "Neutral";
+		DebugMessage += "{green} Neutral";
+	}
 	//GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, GetOwner()->GetName());
-	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, message);
 
-	UE_LOG(LogSecuritySystem, Display, TEXT("%s"), *message);
+#if WITH_GAMEPLAY_DEBUGGER_MENU
+	FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage(DebugMessage);
+#endif // WITH_GAMEPLAY_DEBUGGER_MENU
+
+	//GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Red, Message);
+
+	UE_LOG(LogSecuritySystem, Log, TEXT("%s"), *LogMessage);
 }
 

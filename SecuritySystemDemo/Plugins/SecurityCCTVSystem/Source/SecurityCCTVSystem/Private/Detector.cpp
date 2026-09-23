@@ -34,7 +34,7 @@ void UDetector::BeginPlay()
 
 	// ...
 
-	UE_LOG(LogSecuritySystem, Display, TEXT("Detector: BeginPlay"));
+	//UE_LOG(LogSecuritySystem, Log, TEXT("Detector: BeginPlay"));
 
 	//if (!ConnectedResponders.IsEmpty())
 	{
@@ -72,16 +72,35 @@ void UDetector::TriggerResponders(ESecurityState SecurityState)
 	//temp testing
 	//GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Green, GetOwner()->GetActorLabel());
 
+	FString DebugMessage = "{yellow}" + GetOwner()->GetActorLabel() + ": {white} Switch to ";
+	FString LogMessage = GetOwner()->GetActorLabel() + ": Switch to ";
+	switch (SecurityState)
+	{
+	case ESecurityState::Neutral:
+		DebugMessage += "{green} Neutral";
+		LogMessage += "Neutral";
+		break;
+	case ESecurityState::Alarm:
+		DebugMessage += "{red} Alarm";
+		LogMessage += " Alarm";
+		break;
+	}
+
 #if WITH_GAMEPLAY_DEBUGGER_MENU
-	FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage(GetOwner()->GetActorLabel());
+	FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage(DebugMessage);
 #endif // WITH_GAMEPLAY_DEBUGGER_MENU
+
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Message);
+	UE_LOG(LogSecuritySystem, Log, TEXT("%s"), *LogMessage);
+
 
 	if (!NotifyManagerDelegate.IsBound())
 	{
-		UE_LOG(LogSecuritySystem, Error, TEXT("%s: Manager is NOT bound"), *GetOwner()->GetActorLabel());
+		UE_LOG(LogSecuritySystem, Warning, TEXT("%s: Manager is NOT bound"), *GetOwner()->GetActorLabel());
+		return;
 	}
 
-	UE_LOG(LogSecuritySystem, Display, TEXT("%s: TriggerResponders"), *GetOwner()->GetActorLabel());
+	UE_LOG(LogSecuritySystem, Log, TEXT("%s: TriggerResponders"), *GetOwner()->GetActorLabel());
 
 	NotifyManagerDelegate.Broadcast(GetOwner()->GetActorLabel(), SecurityState); //GetName()
 }

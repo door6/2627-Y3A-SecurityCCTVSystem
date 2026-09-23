@@ -73,24 +73,24 @@ void AMotionDetector::DetectIntruderArray(const TArray<AActor*>& DetectedActors)
 	TArray<AActor*> PerceivedActors;	
 	PerceptionComponent->GetCurrentlyPerceivedActors(PerceptionComponent->GetSenseConfig<UAISenseConfig_Sight>()->GetSenseImplementation(), PerceivedActors);
 
-	FString Message = this->GetActorLabel() + ": Switch to ";
+	//FString Message = "{yellow}" + this->GetActorLabel() + ": {white} Switch to ";
 
 	switch (DetectorComponent->CurrentState)
 	{
 	case ESecurityState::Neutral:
 		if (PerceivedActors.IsEmpty())
 		{
-			UE_LOG(LogSecuritySystem, Log, TEXT("State: Neutral, ActorArray: Empty"));
+			UE_LOG(LogSecuritySystem, Log, TEXT("%s: State: Neutral, ActorArray: Empty"), *GetActorLabel());
 			return;
 		}
 		DetectorComponent->CurrentState = ESecurityState::Alarm;
-		Message += "Alarm";
+		//Message += "{red} Alarm";
 		break;
 	case ESecurityState::Alarm:
 		if (!PerceivedActors.IsEmpty())
 		{
-			UE_LOG(LogSecuritySystem, Log, TEXT("State: Alarm, ActorArray: Not empty"));
-			Message = "";
+			UE_LOG(LogSecuritySystem, Log, TEXT("%s: State: Alarm, ActorArray: Not empty"), *GetActorLabel());
+			FString Message = "Perceived actors: ";
 			for (AActor* Actor : PerceivedActors)
 			{
 				Message += Actor->GetActorLabel() + ", ";
@@ -99,16 +99,16 @@ void AMotionDetector::DetectIntruderArray(const TArray<AActor*>& DetectedActors)
 			return;
 		}
 		DetectorComponent->CurrentState = ESecurityState::Neutral;
-		Message += "Neutral";
+		//Message += "{green} Neutral";
 		break;
 	}
 
-#if WITH_GAMEPLAY_DEBUGGER_MENU
+/*#if WITH_GAMEPLAY_DEBUGGER_MENU
 	FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage(Message);
 #endif // WITH_GAMEPLAY_DEBUGGER_MENU
 
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Message);
-	UE_LOG(LogSecuritySystem, Display, TEXT("%s"), *Message);
+	UE_LOG(LogSecuritySystem, Log, TEXT("%s"), *Message);*/
 
 	DetectorComponent->TriggerResponders(DetectorComponent->CurrentState);
 
@@ -182,6 +182,35 @@ void AMotionDetector::DescribeSelfToGameplayDebugger(FGameplayDebuggerCategory* 
 		}
 	}
 
-	PerceptionComponent->GetSenseConfig<UAISenseConfig_Sight>()->DescribeSelfToGameplayDebugger(PerceptionComponent, DebuggerCategory);
+	//PerceptionComponent->GetSenseConfig<UAISenseConfig_Sight>()->DescribeSelfToGameplayDebugger(PerceptionComponent, DebuggerCategory);
+	UAISenseConfig_Sight* SightConfig = PerceptionComponent->GetSenseConfig<UAISenseConfig_Sight>();
+
+	if (PerceptionComponent == nullptr || DebuggerCategory == nullptr)
+	{
+		return;
+	}
+
+	FColor SightRangeColor = FColor::Green;
+	FColor LoseSightRangeColor = FColorList::NeonPink;
+
+	const AActor* BodyActor = PerceptionComponent->GetBodyActor();
+	if (BodyActor != nullptr)
+	{
+		FVector BodyLocation, BodyFacing;
+		PerceptionComponent->GetLocationAndDirection(BodyLocation, BodyFacing);
+
+		DebuggerCategory->AddShape(FGameplayDebuggerShape::MakeCylinder(BodyLocation, SightConfig->LoseSightRadius, 25.0f, LoseSightRangeColor));
+		DebuggerCategory->AddShape(FGameplayDebuggerShape::MakeCylinder(BodyLocation, SightConfig->SightRadius, 25.0f, SightRangeColor));
+
+		const float SightPieLength = FMath::Max(SightConfig->LoseSightRadius, SightConfig->SightRadius) + SightConfig->PointOfViewBackwardOffset;
+		const FVector RootLocation = BodyLocation - (BodyFacing * SightConfig->PointOfViewBackwardOffset);
+		const FVector LeftDirection = BodyFacing.RotateAngleAxis(SightConfig->PeripheralVisionAngleDegrees, FVector::UpVector);
+		const FVector RightDirection = BodyFacing.RotateAngleAxis(-SightConfig->PeripheralVisionAngleDegrees, FVector::UpVector);
+		DebuggerCategory->AddShape(FGameplayDebuggerShape::MakeSegment(RootLocation + (BodyFacing * SightConfig->NearClippingRadius), RootLocation + (BodyFacing * SightPieLength), SightRangeColor));
+		DebuggerCategory->AddShape(FGameplayDebuggerShape::MakeSegment(RootLocation + (LeftDirection * SightConfig->NearClippingRadius), RootLocation + (LeftDirection * SightPieLength), SightRangeColor));
+		DebuggerCategory->AddShape(FGameplayDebuggerShape::MakeSegment(RootLocation + (RightDirection * SightConfig->NearClippingRadius), RootLocation + (RightDirection * SightPieLength), SightRangeColor));
+		DebuggerCategory->AddShape(FGameplayDebuggerShape::MakeSegment(RootLocation + (LeftDirection * SightConfig->NearClippingRadius), RootLocation + (BodyFacing * SightConfig->NearClippingRadius), SightRangeColor));
+		DebuggerCategory->AddShape(FGameplayDebuggerShape::MakeSegment(RootLocation + (BodyFacing * SightConfig->NearClippingRadius), RootLocation + (RightDirection * SightConfig->NearClippingRadius), SightRangeColor));
+	}
 }
 #endif // WITH_GAMEPLAY_DEBUGGER_MENU
