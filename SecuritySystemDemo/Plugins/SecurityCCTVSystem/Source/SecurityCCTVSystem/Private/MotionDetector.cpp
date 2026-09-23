@@ -5,6 +5,13 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "SecuritySystemLog.h"
 
+#if WITH_GAMEPLAY_DEBUGGER_MENU
+#include "GameplayDebuggerTypes.h"
+#include "GameplayDebuggerCategory.h"
+
+#include "GameplayDebugger_SecuritySystem.h"
+#endif // WITH_GAMEPLAY_DEBUGGER_MENU
+
 // Sets default values
 AMotionDetector::AMotionDetector()
 {
@@ -96,7 +103,11 @@ void AMotionDetector::DetectIntruderArray(const TArray<AActor*>& DetectedActors)
 		break;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Message);
+#if WITH_GAMEPLAY_DEBUGGER_MENU
+	FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage(Message);
+#endif // WITH_GAMEPLAY_DEBUGGER_MENU
+
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Message);
 	UE_LOG(LogSecuritySystem, Display, TEXT("%s"), *Message);
 
 	DetectorComponent->TriggerResponders(DetectorComponent->CurrentState);
@@ -119,16 +130,58 @@ void AMotionDetector::DetectIntruder(AActor* Actor, FAIStimulus Stimulus)
 	{
 		if (DetectorComponent->CurrentState != ESecurityState::Alarm)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Detected");
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Detected");
+
+#if WITH_GAMEPLAY_DEBUGGER_MENU
+			FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage("Detected");
+#endif // WITH_GAMEPLAY_DEBUGGER_MENU
 		}
 	}
 	else
 	{
 		if (DetectorComponent->CurrentState != ESecurityState::Neutral)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Forgotten");
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Forgotten");
+
+#if WITH_GAMEPLAY_DEBUGGER_MENU
+			FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage("Forgotten");
+#endif // WITH_GAMEPLAY_DEBUGGER_MENU
 		}
 
 	}
 }
 
+#if WITH_GAMEPLAY_DEBUGGER_MENU
+void AMotionDetector::DescribeSelfToGameplayDebugger(FGameplayDebuggerCategory* DebuggerCategory) const
+{
+	if (DebuggerCategory == nullptr)
+	{
+		return;
+	}
+
+	for (UAIPerceptionComponent::FActorPerceptionContainer::TConstIterator It(PerceptionComponent->GetPerceptualDataConstIterator()); It; ++It)
+	{
+		const FActorPerceptionInfo& ActorPerceptionInfo = It->Value;
+		const AActor* Target = ActorPerceptionInfo.Target.Get();
+		if (Target != nullptr)
+		{
+			const FVector TargetLocation = Target->GetActorLocation();
+			for (const FAIStimulus& Stimulus : ActorPerceptionInfo.LastSensedStimuli)
+			{
+				const UAISenseConfig* SenseConfig = PerceptionComponent->GetSenseConfig(Stimulus.Type);
+				if (Stimulus.IsValid() && (Stimulus.IsExpired() == false) && SenseConfig)
+				{
+					const FString Description = FString::Printf(TEXT("%s: %.2f age:%.2f"), *SenseConfig->GetSenseName(), Stimulus.Strength, Stimulus.GetAge());
+					const FColor DebugColor = SenseConfig->GetDebugColor();
+
+					DebuggerCategory->AddShape(FGameplayDebuggerShape::MakePoint(Stimulus.StimulusLocation + FVector(0, 0, 30), 30.0f, DebugColor, Description));
+					DebuggerCategory->AddShape(FGameplayDebuggerShape::MakeSegment(Stimulus.ReceiverLocation, Stimulus.StimulusLocation, DebugColor));
+					DebuggerCategory->AddShape(FGameplayDebuggerShape::MakeSegment(TargetLocation, Stimulus.StimulusLocation, FColor::Black));
+				}
+			}
+		}
+	}
+
+	PerceptionComponent->GetSenseConfig<UAISenseConfig_Sight>()->DescribeSelfToGameplayDebugger(PerceptionComponent, DebuggerCategory);
+}
+#endif // WITH_GAMEPLAY_DEBUGGER_MENU

@@ -7,6 +7,15 @@
 
 #include "SecurityManager.h"
 
+#if WITH_GAMEPLAY_DEBUGGER_MENU
+#include "GameplayDebugger_SecuritySystem.h"
+#endif // WITH_GAMEPLAY_DEBUGGER_MENU
+
+//#if WITH_GAMEPLAY_DEBUGGER_MENU
+//#include "GameplayDebuggerTypes.h"
+//#include "GameplayDebuggerCategory.h"
+//#endif // WITH_GAMEPLAY_DEBUGGER_MENU
+
 // Sets default values for this component's properties
 UDetector::UDetector()
 {
@@ -61,7 +70,11 @@ void UDetector::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 void UDetector::TriggerResponders(ESecurityState SecurityState)
 {
 	//temp testing
-	GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Green, GetOwner()->GetActorLabel());
+	//GEngine->AddOnScreenDebugMessage(-1, 30.0f, FColor::Green, GetOwner()->GetActorLabel());
+
+#if WITH_GAMEPLAY_DEBUGGER_MENU
+	FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage(GetOwner()->GetActorLabel());
+#endif // WITH_GAMEPLAY_DEBUGGER_MENU
 
 	if (!NotifyManagerDelegate.IsBound())
 	{

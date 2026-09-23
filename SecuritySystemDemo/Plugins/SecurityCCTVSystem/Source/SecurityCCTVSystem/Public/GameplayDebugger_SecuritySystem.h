@@ -9,6 +9,13 @@
 
 class AActor;
 class APlayerController;
+class USecurityManagerSubsystem;
+
+struct SECURITYCCTVSYSTEM_API FDebugMessage
+{
+	FString Message;
+	float Timer;
+};
 
 class SECURITYCCTVSYSTEM_API FGameplayDebuggerCategory_SecuritySystem : public FGameplayDebuggerCategory
 {
@@ -18,6 +25,15 @@ public:
 	virtual void CollectData(APlayerController* OwnerPC, AActor* DebugActor) override;
 
 	static TSharedRef<FGameplayDebuggerCategory> MakeInstance();
+
+	static void AddOnScreenDebugMessage(const FString& Message, float DelayTime = 5.0f);
+
+private:
+	TArray<AActor*> Detectors;
+	TArray<AActor*> Responders;
+	USecurityManagerSubsystem* SecurityManager = nullptr;
+
+	static inline TArray<FDebugMessage> PendingMessages;
 };
 
 #endif // WITH_GAMEPLAY_DEBUGGER_MENU
