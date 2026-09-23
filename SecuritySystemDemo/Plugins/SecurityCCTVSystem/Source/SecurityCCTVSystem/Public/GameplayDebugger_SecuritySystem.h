@@ -4,12 +4,20 @@
 
 #include "CoreMinimal.h"
 
-/**
- * 
- */
-class SECURITYCCTVSYSTEM_API GameplayDebugger_SecuritySystem
+#if WITH_GAMEPLAY_DEBUGGER_MENU
+#include "GameplayDebuggerCategory.h"
+
+class AActor;
+class APlayerController;
+
+class SECURITYCCTVSYSTEM_API FGameplayDebuggerCategory_SecuritySystem : public FGameplayDebuggerCategory
 {
 public:
-	GameplayDebugger_SecuritySystem();
-	~GameplayDebugger_SecuritySystem();
+	FGameplayDebuggerCategory_SecuritySystem();
+
+	virtual void CollectData(APlayerController* OwnerPC, AActor* DebugActor) override;
+
+	static TSharedRef<FGameplayDebuggerCategory> MakeInstance();
 };
+
+#endif // WITH_GAMEPLAY_DEBUGGER_MENU

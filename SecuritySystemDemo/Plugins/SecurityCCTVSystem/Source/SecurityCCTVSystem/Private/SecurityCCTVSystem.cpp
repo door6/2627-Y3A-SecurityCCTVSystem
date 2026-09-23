@@ -10,6 +10,14 @@
 #include "WorkspaceMenuStructure.h"
 #include "WorkspaceMenuStructureModule.h"
 
+#if WITH_GAMEPLAY_DEBUGGER_CORE
+#include "GameplayDebugger.h"
+#endif // WITH_GAMEPLAY_DEBUGGER_CORE
+
+#if WITH_GAMEPLAY_DEBUGGER
+#include "GameplayDebugger_SecuritySystem.h"
+#endif // WITH_GAMEPLAY_DEBUGGER
+
 #define LOCTEXT_NAMESPACE "FSecurityCCTVSystemModule"
 
 void FSecurityCCTVSystemModule::StartupModule()
@@ -30,6 +38,13 @@ void FSecurityCCTVSystemModule::StartupModule()
 		.SetTooltipText(FText::FromString("Security System"))
 		.SetGroup(WorkspaceMenu::GetMenuStructure().GetLevelEditorCategory())
 		.SetMenuType(ETabSpawnerMenuType::Enabled);
+
+
+#if WITH_GAMEPLAY_DEBUGGER
+	IGameplayDebugger& GameplayDebuggerModule = IGameplayDebugger::Get();
+	GameplayDebuggerModule.RegisterCategory("SecuritySystem", IGameplayDebugger::FOnGetCategory::CreateStatic(&FGameplayDebuggerCategory_SecuritySystem::MakeInstance));
+	GameplayDebuggerModule.NotifyCategoriesChanged();
+#endif // WITH_GAMEPLAY_DEBUGGER
 }
 
 void FSecurityCCTVSystemModule::ShutdownModule()
@@ -44,6 +59,15 @@ void FSecurityCCTVSystemModule::ShutdownModule()
 		FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
 		PropertyModule.UnregisterCustomClassLayout(USecurityManagerSubsystem::StaticClass()->GetFName());
 	}
+
+#if WITH_GAMEPLAY_DEBUGGER
+	if (IGameplayDebugger::IsAvailable())
+	{
+		IGameplayDebugger& GameplayDebuggerModule = IGameplayDebugger::Get();
+		GameplayDebuggerModule.UnregisterCategory("SecuritySystem");
+		GameplayDebuggerModule.NotifyCategoriesChanged();
+	}
+#endif // WITH_GAMEPLAY_DEBUGGER
 }
 
 TSharedRef<SDockTab> FSecurityCCTVSystemModule::SpawnSecuritySystemTab(const FSpawnTabArgs& Args)
