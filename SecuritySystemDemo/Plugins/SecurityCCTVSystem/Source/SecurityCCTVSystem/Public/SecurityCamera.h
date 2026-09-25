@@ -25,9 +25,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, Category = "Mesh")
+	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* CubeMeshComponent;
 
+	UPROPERTY(EditAnywhere, Category = "Security System")
 	USceneCaptureComponent2D* SceneCaptureComponent2D;
+
+	UPROPERTY(VisibleAnywhere, Category = "Detector")
 	UDetector* DetectorComponent;
 };
