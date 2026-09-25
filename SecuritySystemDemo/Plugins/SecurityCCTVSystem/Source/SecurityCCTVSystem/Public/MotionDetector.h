@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
 #include "Detector.h"
 #include "MotionDetector.generated.h"
 
@@ -38,12 +39,20 @@ public:
 #endif // WITH_GAMEPLAY_DEBUGGER_MENU
 
 
-	UPROPERTY(EditAnywhere, Category = "Mesh")
+	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* CubeMeshComponent;
-
-	UPROPERTY(EditAnywhere, Category = "Perception")
 
 	UAIPerceptionComponent* PerceptionComponent;
 
+	UPROPERTY(EditAnywhere, Category = "Security System", Instanced)
+	UAISenseConfig_Sight* SightConfig;
+
+	UPROPERTY(EditAnywhere, Category = "Security System")
+	FColor LoseSightRangeDebugColor;
+
+	UPROPERTY(EditAnywhere, Category = "Security System")
+	FColor DetectionDebugColor;
+
+	UPROPERTY(VisibleAnywhere, Category = "Detector")
 	UDetector* DetectorComponent;
 };

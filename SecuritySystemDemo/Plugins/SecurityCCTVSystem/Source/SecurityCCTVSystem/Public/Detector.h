@@ -11,7 +11,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNotifyManagerDelegate, const FStri
 
 //class FGameplayDebuggerCategory;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent, DisplayName = "Detector"))
 class SECURITYCCTVSYSTEM_API UDetector : public UActorComponent
 {
 	GENERATED_BODY()

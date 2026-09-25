@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/SceneCaptureComponent2D.h"
+#include "Detector.h"
 #include "SecurityCamera.generated.h"
 
 UCLASS()
@@ -23,4 +25,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, Category = "Mesh")
+	UStaticMeshComponent* CubeMeshComponent;
+
+	USceneCaptureComponent2D* SceneCaptureComponent2D;
+	UDetector* DetectorComponent;
 };

@@ -39,6 +39,9 @@ void FSecurityCCTVSystemModule::StartupModule()
 		.SetGroup(WorkspaceMenu::GetMenuStructure().GetLevelEditorCategory())
 		.SetMenuType(ETabSpawnerMenuType::Enabled);
 
+	TSharedRef<FPropertySection> Section = PropertyModule.FindOrCreateSection("MotionDetector", "Security System", NSLOCTEXT("FSecurityCCTVSystemModule", "SecuritySection", "Security System"));
+	Section->AddCategory("Security System");
+
 
 #if WITH_GAMEPLAY_DEBUGGER
 	IGameplayDebugger& GameplayDebuggerModule = IGameplayDebugger::Get();
@@ -58,6 +61,8 @@ void FSecurityCCTVSystemModule::ShutdownModule()
 	{
 		FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
 		PropertyModule.UnregisterCustomClassLayout(USecurityManagerSubsystem::StaticClass()->GetFName());
+
+		PropertyModule.RemoveSection("MotionDetector", "Security System");
 	}
 
 #if WITH_GAMEPLAY_DEBUGGER
