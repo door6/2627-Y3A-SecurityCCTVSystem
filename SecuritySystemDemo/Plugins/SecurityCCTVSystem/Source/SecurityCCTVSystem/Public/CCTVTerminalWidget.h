@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
+#include "Components/Image.h"
 #include "CCTVTerminalWidget.generated.h"
 
 class ACCTVTerminal;
@@ -26,6 +27,9 @@ class SECURITYCCTVSYSTEM_API UCCTVTerminalWidget : public UUserWidget
 	UButton* PreviousCameraButton = nullptr;
 	UPROPERTY()
 	UButton* TriggerRespondersButton = nullptr;
+
+	UPROPERTY()
+	UImage* Screen = nullptr;
 
 public:
 	ACCTVTerminal* CCTVTerminal = nullptr;
