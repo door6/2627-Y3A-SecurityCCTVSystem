@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/SceneCaptureComponent2D.h"
-#include "Detector.h"
-#include "SecurityCamera.generated.h"
+#include "Engine/TextureRenderTarget2D.h"
+#include "Materials/Material.h"
+#include "CCTVTerminal.generated.h"
 
 UCLASS()
-class SECURITYCCTVSYSTEM_API ASecurityCamera : public AActor
+class SECURITYCCTVSYSTEM_API ACCTVTerminal : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ASecurityCamera();
+	ACCTVTerminal();
 
 protected:
 	// Called when the game starts or when spawned
@@ -26,11 +26,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* CubeMeshComponent;
+	UStaticMeshComponent* MeshComponent;
 
-	UPROPERTY(EditAnywhere, Category = "Security System")
-	USceneCaptureComponent2D* SceneCaptureComponent;
+	UTextureRenderTarget2D* TextureRenderTarget;
+	UMaterial* RenderMaterial;
+	UMaterialInstanceDynamic* DynamicMaterialInstance;
 
-	UPROPERTY(VisibleAnywhere, Category = "Detector")
-	UDetector* DetectorComponent;
 };

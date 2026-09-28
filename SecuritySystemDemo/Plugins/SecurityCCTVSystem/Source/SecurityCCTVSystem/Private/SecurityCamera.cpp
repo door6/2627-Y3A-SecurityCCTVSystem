@@ -2,6 +2,8 @@
 
 
 #include "SecurityCamera.h"
+#include "Kismet/GameplayStatics.h"
+#include "CCTVTerminal.h"
 
 // Sets default values
 ASecurityCamera::ASecurityCamera()
@@ -21,7 +23,7 @@ ASecurityCamera::ASecurityCamera()
 	CubeMeshComponent->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 
 	//add scene capture component 2d
-	SceneCaptureComponent2D = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Scene Capture Component 2D"));
+	SceneCaptureComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Scene Capture Component 2D"));
 	//SceneCaptureComponent2D->SetupAttachment(Root);
 	//SceneCaptureComponent2D->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 
@@ -34,6 +36,14 @@ ASecurityCamera::ASecurityCamera()
 void ASecurityCamera::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACCTVTerminal::StaticClass(), FoundActors);
+	for (AActor* Actor : FoundActors)
+	{
+		ACCTVTerminal* CCTVTerminal = Cast<ACCTVTerminal>(Actor);
+		SceneCaptureComponent->TextureTarget = CCTVTerminal->TextureRenderTarget;	//can have only one texture target, if there are multiple cctvs it will be displayed only to the last one
+	}
 	
 }
 
