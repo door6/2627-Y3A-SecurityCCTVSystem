@@ -3,6 +3,8 @@
 
 #include "CCTVTerminal.h"
 #include "Kismet/KismetRenderingLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "SecuritySystemLog.h"
 
 // Sets default values
 ACCTVTerminal::ACCTVTerminal()
@@ -53,6 +55,19 @@ void ACCTVTerminal::BeginPlay()
 
 	//RenderMaterial = new UMaterial();
 	//UMaterialInstanceDynamic* ExampleMID = UMaterialInstanceDynamic::Create(ExampleMaterial);
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASecurityCamera::StaticClass(), FoundActors);
+	for (AActor* Actor : FoundActors)
+	{
+		ASecurityCamera* SecurityCamera = Cast<ASecurityCamera>(Actor);
+		SecurityCamera->SceneCaptureComponent->TextureTarget = TextureRenderTarget;	//can have only one texture target, if there are multiple cctvs it will be displayed only to the last one
+		
+		SecurityCameras.AddUnique(SecurityCamera);
+	}
+	//CurrentCamera = SecurityCameras[0];
+
+	TurnOn(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	
 }
 
@@ -63,3 +78,65 @@ void ACCTVTerminal::Tick(float DeltaTime)
 
 }
 
+void ACCTVTerminal::TurnOn(APlayerController* PlayerController)
+{
+	TerminalWidget = CreateWidget<UCCTVTerminalWidget>(PlayerController, UCCTVTerminalWidget::StaticClass());
+	if (!TerminalWidget)
+		UE_LOG(LogSecuritySystem, Error, TEXT("TerminalWidget is NULL"));
+	if (!PlayerController)
+		UE_LOG(LogSecuritySystem, Error, TEXT("PlayerController is NULL"));
+
+	TerminalWidget->CCTVTerminal = this;	//bind delegates to widget buttons after this
+	FInputModeGameAndUI Mode;
+	Mode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
+	Mode.SetHideCursorDuringCapture(false);
+	PlayerController->SetInputMode(Mode);
+	TerminalWidget->AddToViewport(); // Z-order, this just makes it render on the very top.	9999
+	UE_LOG(LogSecuritySystem, Log, TEXT("AddToViewport called, IsInViewport: %s"), TerminalWidget->IsInViewport() ? TEXT("true") : TEXT("false"));
+}
+
+void ACCTVTerminal::TurnOff(APlayerController* PlayerController)
+{
+	//TerminalWidget->RemoveFromViewport();		//maybe pass widget as parameter?
+	TerminalWidget->RemoveFromParent();
+	TerminalWidget = nullptr;
+	FInputModeGameOnly GameMode;
+	PlayerController->SetInputMode(GameMode);
+	//FSlateApplication::Get().SetFocusToGameViewport();
+	//bShowMouseCursor = false;
+}
+
+void ACCTVTerminal::SwitchToNextCamera()
+{
+	if (++CurrentCameraIndex >= SecurityCameras.Num())
+		CurrentCameraIndex = 0;
+
+	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal: SwitchToNextCamera"));
+}
+
+void ACCTVTerminal::SwitchToPreviousCamera()
+{
+	if (--CurrentCameraIndex <= -1)
+		CurrentCameraIndex = SecurityCameras.Num() - 1;
+
+	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal: SwitchToPreviousCamera"));
+}
+
+void ACCTVTerminal::TriggerResponders()
+{
+	UDetector* DetectorComponent = SecurityCameras[CurrentCameraIndex]->DetectorComponent;
+	ESecurityState NewSecurityState;
+	switch (DetectorComponent->CurrentState)
+	{
+	case ESecurityState::Neutral:
+		NewSecurityState = ESecurityState::Alarm;
+		break;
+	case ESecurityState::Alarm:
+		NewSecurityState = ESecurityState::Neutral;
+		break;
+	}
+
+	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal: TriggerResponders"));
+
+	DetectorComponent->TriggerResponders(NewSecurityState);
+}

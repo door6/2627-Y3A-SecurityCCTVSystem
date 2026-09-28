@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "Materials/Material.h"
+#include "CCTVTerminalWidget.h"
+#include "SecurityCamera.h"
 #include "CCTVTerminal.generated.h"
 
 UCLASS()
@@ -25,6 +27,16 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void TurnOn(APlayerController* PlayerController);
+	void TurnOff(APlayerController* PlayerController);
+
+	UFUNCTION()
+	void SwitchToNextCamera();
+	UFUNCTION()
+	void SwitchToPreviousCamera();
+	UFUNCTION()
+	void TriggerResponders();
+
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* MeshComponent;
 
@@ -37,4 +49,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UMaterialInstanceDynamic* DynamicMaterialInstance;
 
+	UPROPERTY()
+	UCCTVTerminalWidget* TerminalWidget;
+
+	TArray<ASecurityCamera*> SecurityCameras;
+	int CurrentCameraIndex = 0;;
 };
