@@ -21,8 +21,15 @@ ACCTVTerminal::ACCTVTerminal()
 	MeshComponent->SetStaticMesh(Mesh);
 	MeshComponent->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 	//MeshComponent->SetupAttachment(Root);
+
 	MeshComponent->SetRelativeScale3D(FVector(2.0f, 3.0f, 1.0f));
 	MeshComponent->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MaterialFinder(TEXT("/SecurityCCTVSystem/M_Screen.M_Screen"));
+	if (MaterialFinder.Succeeded())
+	{
+		RenderMaterial = MaterialFinder.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -34,7 +41,11 @@ void ACCTVTerminal::BeginPlay()
 	TextureRenderTarget = UKismetRenderingLibrary::CreateRenderTarget2D(this, 1024, 1024, ETextureRenderTargetFormat::RTF_RGBA32f, FLinearColor::Black, false);
 
 	//DynamicMaterialInstance = UMaterialInstanceDynamic::Create(ParentMaterial, this);
-	DynamicMaterialInstance = MeshComponent->CreateAndSetMaterialInstanceDynamic(0);
+	//DynamicMaterialInstance = MeshComponent->CreateAndSetMaterialInstanceDynamic(0);
+	//DynamicMaterialInstance->SetTextureParameterValue(FName("ScreenTexture"), TextureRenderTarget);
+
+	DynamicMaterialInstance = UMaterialInstanceDynamic::Create(RenderMaterial, this);
+	MeshComponent->SetMaterial(0, DynamicMaterialInstance);
 	DynamicMaterialInstance->SetTextureParameterValue(FName("ScreenTexture"), TextureRenderTarget);
 
 	//material->SetTextureParameterValue(TEXT("TextureInput"), RenderTarget2D);

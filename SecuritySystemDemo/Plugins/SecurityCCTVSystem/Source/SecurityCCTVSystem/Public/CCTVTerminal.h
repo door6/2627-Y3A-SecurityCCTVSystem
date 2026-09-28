@@ -28,8 +28,13 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* MeshComponent;
 
+	UPROPERTY(VisibleAnywhere)
 	UTextureRenderTarget2D* TextureRenderTarget;
-	UMaterial* RenderMaterial;
+
+	UPROPERTY(VisibleAnywhere)
+	UMaterialInterface* RenderMaterial;
+
+	UPROPERTY(VisibleAnywhere)
 	UMaterialInstanceDynamic* DynamicMaterialInstance;
 
 };
