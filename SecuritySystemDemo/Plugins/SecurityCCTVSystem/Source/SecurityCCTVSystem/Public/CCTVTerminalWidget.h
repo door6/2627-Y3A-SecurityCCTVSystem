@@ -27,6 +27,8 @@ class SECURITYCCTVSYSTEM_API UCCTVTerminalWidget : public UUserWidget
 	UButton* PreviousCameraButton = nullptr;
 	UPROPERTY()
 	UButton* TriggerRespondersButton = nullptr;
+	UPROPERTY()
+	UButton* ExitButton = nullptr;
 
 	UPROPERTY()
 	UImage* Screen = nullptr;

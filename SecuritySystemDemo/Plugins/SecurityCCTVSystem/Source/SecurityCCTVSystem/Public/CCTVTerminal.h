@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "Materials/Material.h"
+//#include "InputAction.h"
 #include "CCTVTerminalWidget.h"
 #include "SecurityCamera.h"
 #include "CCTVTerminal.generated.h"
@@ -27,8 +28,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void TurnOn(APlayerController* PlayerController);
-	void TurnOff(APlayerController* PlayerController);
+	UFUNCTION()
+	void TurnOn();
+
+	UFUNCTION()
+	void TurnOff();
 
 	UFUNCTION()
 	void SwitchToNextCamera();
@@ -52,6 +56,16 @@ public:
 	UPROPERTY()
 	UCCTVTerminalWidget* TerminalWidget;
 
+
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	//UInputAction* InteractInputAction;
+
+
+
+	UPROPERTY(EditAnywhere)
+	float InteractRadius = 50.f;
+
 	TArray<ASecurityCamera*> SecurityCameras;
-	int CurrentCameraIndex = 0;;
+	int CurrentCameraIndex = 0;
+	bool InUse = false;
 };

@@ -24,23 +24,34 @@ TSharedRef<SWidget> UCCTVTerminalWidget::RebuildWidget()
 	//NextCameraButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::SwitchToNextCamera);
 	//NextCameraButton->SetBackgroundColor(FLinearColor::Red);
 	//RootWidget->AddChild(NextCameraButton);
+	NextCameraButton->SetBackgroundColor(FLinearColor::Blue);
 	UCanvasPanelSlot* CanvasSlot = Root->AddChildToCanvas(NextCameraButton);
-	CanvasSlot->SetPosition(FVector2D(100.f, 100.f));
-	CanvasSlot->SetSize(FVector2D(200.f, 50.f));
+	CanvasSlot->SetPosition(FVector2D(1400.f, 600.f));
+	CanvasSlot->SetSize(FVector2D(50.f, 50.f));
 
 	PreviousCameraButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("PreviousCameraButton"));
 	//PreviousCameraButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::SwitchToPreviousCamera);
 	//RootWidget->AddChild(PreviousCameraButton);
+	PreviousCameraButton->SetBackgroundColor(FLinearColor::Blue);
 	CanvasSlot = Root->AddChildToCanvas(PreviousCameraButton);
-	CanvasSlot->SetPosition(FVector2D(100.f, 200.f));
-	CanvasSlot->SetSize(FVector2D(200.f, 50.f));
+	CanvasSlot->SetPosition(FVector2D(100.f, 600.f));
+	CanvasSlot->SetSize(FVector2D(50.f, 50.f));
 
 	TriggerRespondersButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("TriggerRespondersButton"));
 	//TriggerRespondersButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::TriggerResponders);
 	//RootWidget->AddChild(TriggerRespondersButton);
+	TriggerRespondersButton->SetBackgroundColor(FLinearColor::Green);
 	CanvasSlot = Root->AddChildToCanvas(TriggerRespondersButton);
-	CanvasSlot->SetPosition(FVector2D(100.f, 300.f));
-	CanvasSlot->SetSize(FVector2D(200.f, 50.f));
+	CanvasSlot->SetPosition(FVector2D(1400.f, 100.f));
+	CanvasSlot->SetSize(FVector2D(50.f, 50.f));
+
+	ExitButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("ExitButton"));
+	//TriggerRespondersButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::TriggerResponders);
+	//RootWidget->AddChild(TriggerRespondersButton);
+	ExitButton->SetBackgroundColor(FLinearColor::Red);
+	CanvasSlot = Root->AddChildToCanvas(ExitButton);
+	CanvasSlot->SetPosition(FVector2D(100.f, 100.f));
+	CanvasSlot->SetSize(FVector2D(50.f, 50.f));
 
 	Screen = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass());
 	//Screen->SetDesiredSizeOverride(FVector2D(2.0f, 3.0f));
@@ -69,13 +80,13 @@ TSharedRef<SWidget> UCCTVTerminalWidget::RebuildWidget()
 	{
 		Screen->SetBrushFromMaterial(MaterialFinder.Object);
 	}*/
-	
+
 	//DebugBG->SetColorAndOpacity(FLinearColor::Red);
 	CanvasSlot = Root->AddChildToCanvas(Screen);
-	CanvasSlot->SetPosition(FVector2D(300.f, 400.f));
-	CanvasSlot->SetSize(FVector2D(600.f, 400.f));
-	//BGSlot->SetAnchors(FAnchors(0.f, 0.f, 1.f, 1.f)); // stretch full screen
-	//BGSlot->SetOffsets(FMargin(0.f));
+	//CanvasSlot->SetPosition(FVector2D(300.f, 400.f));
+	//CanvasSlot->SetSize(FVector2D(600.f, 400.f));
+	CanvasSlot->SetAnchors(FAnchors(0.f, 0.f, 1.f, 1.f)); // stretch full screen
+	CanvasSlot->SetOffsets(FMargin(170.f, 90.0f, 170.f, 20.0f));
 
 	return Super::RebuildWidget();
 }
@@ -92,5 +103,7 @@ void UCCTVTerminalWidget::NativeConstruct()
 		PreviousCameraButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::SwitchToPreviousCamera);
 	if (TriggerRespondersButton)
 		TriggerRespondersButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::TriggerResponders);
+	if (ExitButton)
+		ExitButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::TurnOff);
 }
 

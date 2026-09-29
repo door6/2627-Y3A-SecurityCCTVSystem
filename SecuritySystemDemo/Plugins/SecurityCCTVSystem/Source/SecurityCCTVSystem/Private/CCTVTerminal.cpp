@@ -4,6 +4,8 @@
 #include "CCTVTerminal.h"
 #include "Kismet/KismetRenderingLibrary.h"
 #include "Kismet/GameplayStatics.h"
+//#include "Components/EnhancedInputComponent.h"
+//#include "InputTriggers.h"
 #include "SecuritySystemLog.h"
 
 // Sets default values
@@ -67,7 +69,27 @@ void ACCTVTerminal::BeginPlay()
 	}
 	//CurrentCamera = SecurityCameras[0];
 
-	TurnOn(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	TurnOn();
+
+	/*bBlockInput = false;
+	EnableInput(GetWorld()->GetFirstPlayerController());
+	UInputComponent* InputComponent = this->InputComponent;
+	InputComponent->BindAction("InteractKey", IE_Pressed, this, &ACCTVTerminal::TurnOn);*/
+
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerController->InputComponent->BindAction("CCTVTerminalInteractKey", IE_Pressed, this, &ACCTVTerminal::TurnOn);
+
+	/*APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
+	if (PlayerController)
+	{
+		EnableInput(PlayerController);
+	}
+	if (InputComponent)
+	{
+		UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
+		EnhancedInputComponent->BindAction(InteractInputAction, ETriggerEvent::Triggered, this, &ACCTVTerminal::TurnOn);
+	}*/
 	
 }
 
@@ -76,10 +98,23 @@ void ACCTVTerminal::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (InUse)
+		return;
+
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	//FVector PlayerLocation = PlayerController->GetOwner()->GetActorLocation();
+	FVector PlayerLocation = PlayerController->LastSpectatorSyncLocation;
+
+	double SquaredDistance = FVector::DistSquared(PlayerLocation, GetActorLocation());
+	if (SquaredDistance < FMath::Square(InteractRadius)) {}
+		//if (PlayerController->)
+
 }
 
-void ACCTVTerminal::TurnOn(APlayerController* PlayerController)
+void ACCTVTerminal::TurnOn()
 {
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
 	TerminalWidget = CreateWidget<UCCTVTerminalWidget>(PlayerController, UCCTVTerminalWidget::StaticClass());
 	if (!TerminalWidget)
 		UE_LOG(LogSecuritySystem, Error, TEXT("TerminalWidget is NULL"));
@@ -93,10 +128,14 @@ void ACCTVTerminal::TurnOn(APlayerController* PlayerController)
 	PlayerController->SetInputMode(Mode);
 	TerminalWidget->AddToViewport(); // Z-order, this just makes it render on the very top.	9999
 	UE_LOG(LogSecuritySystem, Log, TEXT("AddToViewport called, IsInViewport: %s"), TerminalWidget->IsInViewport() ? TEXT("true") : TEXT("false"));
+
+	InUse = true;
 }
 
-void ACCTVTerminal::TurnOff(APlayerController* PlayerController)
+void ACCTVTerminal::TurnOff()
 {
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
 	//TerminalWidget->RemoveFromViewport();		//maybe pass widget as parameter?
 	TerminalWidget->RemoveFromParent();
 	TerminalWidget = nullptr;
@@ -104,6 +143,8 @@ void ACCTVTerminal::TurnOff(APlayerController* PlayerController)
 	PlayerController->SetInputMode(GameMode);
 	//FSlateApplication::Get().SetFocusToGameViewport();
 	//bShowMouseCursor = false;
+
+	InUse = false;
 }
 
 void ACCTVTerminal::SwitchToNextCamera()
@@ -125,6 +166,10 @@ void ACCTVTerminal::SwitchToPreviousCamera()
 void ACCTVTerminal::TriggerResponders()
 {
 	UDetector* DetectorComponent = SecurityCameras[CurrentCameraIndex]->DetectorComponent;
+
+	if (!DetectorComponent)
+		UE_LOG(LogSecuritySystem, Error, TEXT("ACCTVTerminal: DetectorComponent is NULL"));
+
 	ESecurityState NewSecurityState;
 	switch (DetectorComponent->CurrentState)
 	{
@@ -135,6 +180,7 @@ void ACCTVTerminal::TriggerResponders()
 		NewSecurityState = ESecurityState::Neutral;
 		break;
 	}
+	DetectorComponent->CurrentState = NewSecurityState;
 
 	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal: TriggerResponders"));
 

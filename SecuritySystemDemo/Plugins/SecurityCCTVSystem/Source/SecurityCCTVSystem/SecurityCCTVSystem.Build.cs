@@ -29,7 +29,7 @@ public class SecurityCCTVSystem : ModuleRules
                 "InputCore",
 				"UMG",
                 "AIModule",
-                "GameplayDebugger",
+                "GameplayDebugger"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
