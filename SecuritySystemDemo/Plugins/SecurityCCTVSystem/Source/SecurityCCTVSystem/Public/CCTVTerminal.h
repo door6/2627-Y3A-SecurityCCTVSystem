@@ -7,6 +7,8 @@
 #include "Engine/TextureRenderTarget2D.h"
 #include "Materials/Material.h"
 //#include "InputAction.h"
+#include "CCTVInteractInputAction.h"
+#include "CCTVInputMappingContext.h"
 #include "CCTVTerminalWidget.h"
 #include "SecurityCamera.h"
 #include "CCTVTerminal.generated.h"
@@ -29,7 +31,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void TurnOn();
+	void TurnOn(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void TurnOff();
@@ -57,13 +59,15 @@ public:
 	UCCTVTerminalWidget* TerminalWidget;
 
 
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	//UInputAction* InteractInputAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UCCTVInteractInputAction* InteractInputAction;
+
+	UPROPERTY(EditAnywhere, Category = "Security System")
+	UCCTVInputMappingContext* InputMapping;
 
 
-
-	UPROPERTY(EditAnywhere)
-	float InteractRadius = 50.f;
+	UPROPERTY(EditAnywhere, Category = "Security System")
+	float InteractRadius = 400.f;
 
 	TArray<ASecurityCamera*> SecurityCameras;
 	int CurrentCameraIndex = 0;
