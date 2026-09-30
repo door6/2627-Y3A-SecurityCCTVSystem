@@ -67,7 +67,7 @@ public:
 
 
 	UPROPERTY(EditAnywhere, Category = "Security System")
-	float InteractRadius = 400.f;
+	float InteractRadius = 500.f;
 
 	TArray<ASecurityCamera*> SecurityCameras;
 	int CurrentCameraIndex = 0;

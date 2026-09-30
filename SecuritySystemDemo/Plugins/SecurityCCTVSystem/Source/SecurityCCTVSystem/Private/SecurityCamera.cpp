@@ -22,8 +22,9 @@ ASecurityCamera::ASecurityCamera()
 
 	//add scene capture component 2d
 	SceneCaptureComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Scene Capture Component 2D"));
-	//SceneCaptureComponent2D->SetupAttachment(Root);
+	SceneCaptureComponent->SetupAttachment(Root);
 	//SceneCaptureComponent2D->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	SceneCaptureComponent->HiddenActors.AddUnique(this);
 
 	//add detector component
 	DetectorComponent = CreateDefaultSubobject<UDetector>(TEXT("Detector Component"));

@@ -28,7 +28,7 @@ ACCTVTerminal::ACCTVTerminal()
 	MeshComponent->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 	//MeshComponent->SetupAttachment(Root);
 
-	MeshComponent->SetRelativeScale3D(FVector(2.0f, 3.0f, 1.0f));
+	MeshComponent->SetRelativeScale3D(FVector(3.0f, 3.0f, 1.0f));
 	MeshComponent->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
 
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MaterialFinder(TEXT("/SecurityCCTVSystem/M_Screen.M_Screen"));
@@ -225,12 +225,25 @@ void ACCTVTerminal::TurnOn(const FInputActionValue& Value)
 		return;
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	//FVector PlayerLocation = PlayerController->GetOwner()->GetActorLocation();
+
+	//check whether player is inside terminals interact radius
 	FVector PlayerLocation = PlayerController->PlayerCameraManager->GetCameraLocation();
-	UE_LOG(LogSecuritySystem, Log, TEXT("PlayerLocation: %f %f %f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z);
+	//radius check
+	/*UE_LOG(LogSecuritySystem, Log, TEXT("PlayerLocation: %f %f %f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z);
 	double SquaredDistance = FVector::DistSquared(PlayerLocation, this->GetActorLocation());
-	UE_LOG(LogSecuritySystem, Log, TEXT("TreminalLocation: %f %f %f"), this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
+	UE_LOG(LogSecuritySystem, Log, TEXT("TerminalLocation: %f %f %f"), this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
 	if (SquaredDistance >= FMath::Square(InteractRadius))
+		return;*/
+
+	//interact radius check	
+	FVector PlayerToTerminalVector = this->GetActorLocation() - PlayerLocation;
+	double SquaredDistance = PlayerToTerminalVector.SizeSquared();
+	if (SquaredDistance >= FMath::Square(InteractRadius))
+		return;
+	//dot product check	
+	PlayerToTerminalVector.Normalize();
+	FVector PlayerForwardVector = PlayerController->PlayerCameraManager->GetActorForwardVector();
+	if (FVector::DotProduct(PlayerForwardVector, PlayerToTerminalVector) <= 0.8f)
 		return;
 	
 
@@ -240,12 +253,17 @@ void ACCTVTerminal::TurnOn(const FInputActionValue& Value)
 	if (!PlayerController)
 		UE_LOG(LogSecuritySystem, Error, TEXT("PlayerController is NULL"));
 
-	TerminalWidget->CCTVTerminal = this;	//bind delegates to widget buttons after this
-	FInputModeGameAndUI Mode;
-	Mode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
-	Mode.SetHideCursorDuringCapture(false);
-	PlayerController->SetInputMode(Mode);
-	TerminalWidget->AddToViewport(); // Z-order, this just makes it render on the very top.	9999
+	TerminalWidget->CCTVTerminal = this;
+	PlayerController->FlushPressedKeys();
+	PlayerController->bShowMouseCursor = true;
+	//FInputModeGameAndUI Mode;
+	FInputModeUIOnly InputMode;
+	InputMode.SetWidgetToFocus(TerminalWidget->TakeWidget());
+	//Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
+	//Mode.SetHideCursorDuringCapture(false);
+	PlayerController->SetInputMode(InputMode);
+	TerminalWidget->AddToViewport();
 	UE_LOG(LogSecuritySystem, Log, TEXT("AddToViewport called, IsInViewport: %s"), TerminalWidget->IsInViewport() ? TEXT("true") : TEXT("false"));
 
 	InUse = true;
@@ -264,7 +282,9 @@ void ACCTVTerminal::TurnOff()
 	FInputModeGameOnly GameMode;
 	PlayerController->SetInputMode(GameMode);
 	//FSlateApplication::Get().SetFocusToGameViewport();
-	//bShowMouseCursor = false;
+	PlayerController->bShowMouseCursor = false;
+	FInputModeGameOnly InputMode;
+	PlayerController->SetInputMode(InputMode);
 
 	InUse = false;
 }
