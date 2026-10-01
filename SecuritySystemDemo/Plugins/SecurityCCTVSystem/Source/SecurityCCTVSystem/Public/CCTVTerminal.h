@@ -47,7 +47,8 @@ public:
 	UStaticMeshComponent* MeshComponent;
 
 	UPROPERTY(VisibleAnywhere)
-	UTextureRenderTarget2D* TextureRenderTarget;
+	TObjectPtr<UTextureRenderTarget2D> TextureRenderTarget;
+	//UTextureRenderTarget2D* TextureRenderTarget;
 
 	UPROPERTY(VisibleAnywhere)
 	UMaterialInterface* RenderMaterial;

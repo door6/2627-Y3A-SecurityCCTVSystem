@@ -40,6 +40,11 @@ void FSecurityManagerInterface::CustomizeDetails(IDetailLayoutBuilder& DetailBui
 
     SecurityManager = Subsystem;
 
+
+    //temp for testing
+    TSharedRef<IPropertyHandle> KeyHandle = DetailBuilder.GetProperty(GET_MEMBER_NAME_CHECKED(USecurityManagerSubsystem, MyKey));
+
+
     //temp check
     /*TArray<AActor*> FoundActors;
     UGameplayStatics::GetAllActorsOfClass(SecurityManager->GetWorld(), SecurityManager->GetClass(), FoundActors);

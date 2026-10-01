@@ -7,6 +7,9 @@
 #include "GameFramework/Actor.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Responder.h"
+
+#include "CCTVInputMappingContext.h" //temp for testing
+
 #include "SecurityManager.generated.h"
 
 
@@ -101,5 +104,9 @@ public:
 	//TMap<FString, FResponders> DetectorResponders;
 
 	TMap<FString, FDetectorDelegate> DetectorDelegates;
+
+	//temp for testing
+	UPROPERTY(EditAnywhere)
+	FKey MyKey = EKeys::E;
 
 };

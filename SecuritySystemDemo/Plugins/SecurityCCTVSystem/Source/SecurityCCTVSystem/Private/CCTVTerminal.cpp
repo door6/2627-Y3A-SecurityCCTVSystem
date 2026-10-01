@@ -78,7 +78,15 @@ void ACCTVTerminal::BeginPlay()
 	Super::BeginPlay();
 
 	//TextureRenderTarget->ConstructTexture2D(this, "RenderTexture", RF_NoFlags);
-	TextureRenderTarget = UKismetRenderingLibrary::CreateRenderTarget2D(this, 1024, 1024, ETextureRenderTargetFormat::RTF_RGBA32f, FLinearColor::Black, false);
+	//TextureRenderTarget = UKismetRenderingLibrary::CreateRenderTarget2D(this, 1024, 1024, ETextureRenderTargetFormat::RTF_RGBA32f, FLinearColor::Black, false);
+	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), this->StaticClass());
+	if (FoundActor && FoundActor != this)
+	{
+		TObjectPtr<ACCTVTerminal> OtherCCTVTerminal = Cast<ACCTVTerminal>(FoundActor);
+		TextureRenderTarget = OtherCCTVTerminal->TextureRenderTarget;
+	}
+	else
+		TextureRenderTarget = UKismetRenderingLibrary::CreateRenderTarget2D(this, 1024, 1024, ETextureRenderTargetFormat::RTF_RGBA32f, FLinearColor::Black, false);
 
 	//DynamicMaterialInstance = UMaterialInstanceDynamic::Create(ParentMaterial, this);
 	//DynamicMaterialInstance = MeshComponent->CreateAndSetMaterialInstanceDynamic(0);
@@ -242,15 +250,22 @@ void ACCTVTerminal::TurnOn(const FInputActionValue& Value)
 		return;*/
 
 	//interact radius check	
+	UE_LOG(LogSecuritySystem, Log, TEXT("TerminalLocation: %f %f %f"), GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z);
 	FVector PlayerToTerminalVector = this->GetActorLocation() - PlayerLocation;
 	double SquaredDistance = PlayerToTerminalVector.SizeSquared();
 	if (SquaredDistance >= FMath::Square(InteractRadius))
+	{
+		UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal too far away from the player"));
 		return;
+	}
 	//dot product check	
 	PlayerToTerminalVector.Normalize();
 	FVector PlayerForwardVector = PlayerController->PlayerCameraManager->GetActorForwardVector();
 	if (FVector::DotProduct(PlayerForwardVector, PlayerToTerminalVector) <= 0.8f)
+	{
+		UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal not in front of the player"));
 		return;
+	}
 	
 
 	TerminalWidget = CreateWidget<UCCTVTerminalWidget>(PlayerController, UCCTVTerminalWidget::StaticClass());
