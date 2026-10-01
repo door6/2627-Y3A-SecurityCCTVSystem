@@ -37,6 +37,9 @@ ACCTVTerminal::ACCTVTerminal()
 		RenderMaterial = MaterialFinder.Object;
 	}
 
+
+	InputMapping = NewObject<UCCTVInputMappingContext>();
+
 #if 0
 	InputMapping = NewObject<UCCTVInputMappingContext>();
 	//UE_LOG(LogSecuritySystem, Log, TEXT("Creation: Mappings size: %d"), InputMapping->GetMappings().Num());
@@ -96,13 +99,13 @@ void ACCTVTerminal::BeginPlay()
 	for (AActor* Actor : FoundActors)
 	{
 		ASecurityCamera* SecurityCamera = Cast<ASecurityCamera>(Actor);
-		SecurityCamera->SceneCaptureComponent->TextureTarget = TextureRenderTarget;	//can have only one texture target, if there are multiple cctvs it will be displayed only to the last one
 		
 		SecurityCameras.AddUnique(SecurityCamera);
 	}
 	//CurrentCamera = SecurityCameras[0];
+	SecurityCameras[CurrentCameraIndex]->SceneCaptureComponent->TextureTarget = TextureRenderTarget;	//can have only one texture target, if there are multiple cctvs it will be displayed only to the last one
 
-	TurnOn(FInputActionValue());
+
 
 	//InteractInputAction = NewObject<UCCTVInteractInputAction>();
 	//InteractInputAction->ValueType = EInputActionValueType::Boolean;
@@ -188,7 +191,7 @@ void ACCTVTerminal::BeginPlay()
 
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 
-	InputMapping = NewObject<UCCTVInputMappingContext>();
+	//InputMapping = NewObject<UCCTVInputMappingContext>();
 	if (ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController())
 	{
 		UE_LOG(LogSecuritySystem, Log, TEXT("Local player found"));
@@ -201,8 +204,11 @@ void ACCTVTerminal::BeginPlay()
 				InputSystem->AddMappingContext(InputMapping, 0);
 				UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
 
+				FEnhancedActionKeyMapping CCTVMapping = InputMapping->InteractMapping;
 				//FEnhancedActionKeyMapping CCTVMapping = InputMapping->GetMapping(InputMapping->InteractKeyIndex);
-				FEnhancedActionKeyMapping& CCTVMapping = InputMapping->GetInteractKeyMapping();
+				//FEnhancedActionKeyMapping& CCTVMapping = InputMapping->GetInteractKeyMapping();
+				FString Name = CCTVMapping.GetDisplayName().ToString();
+				UE_LOG(LogSecuritySystem, Warning, TEXT("CCTVMapping DisplayName: %s"), *Name);		//display name returns nothing
 				if (!CCTVMapping.Action)
 					UE_LOG(LogSecuritySystem, Error, TEXT("CCTVMapping.Action is NULL"));
 
@@ -291,16 +297,24 @@ void ACCTVTerminal::TurnOff()
 
 void ACCTVTerminal::SwitchToNextCamera()
 {
+	SecurityCameras[CurrentCameraIndex]->SceneCaptureComponent->TextureTarget = nullptr;
+
 	if (++CurrentCameraIndex >= SecurityCameras.Num())
 		CurrentCameraIndex = 0;
+
+	SecurityCameras[CurrentCameraIndex]->SceneCaptureComponent->TextureTarget = TextureRenderTarget;
 
 	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal: SwitchToNextCamera"));
 }
 
 void ACCTVTerminal::SwitchToPreviousCamera()
 {
+	SecurityCameras[CurrentCameraIndex]->SceneCaptureComponent->TextureTarget = nullptr;
+
 	if (--CurrentCameraIndex <= -1)
 		CurrentCameraIndex = SecurityCameras.Num() - 1;
+
+	SecurityCameras[CurrentCameraIndex]->SceneCaptureComponent->TextureTarget = TextureRenderTarget;
 
 	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal: SwitchToPreviousCamera"));
 }

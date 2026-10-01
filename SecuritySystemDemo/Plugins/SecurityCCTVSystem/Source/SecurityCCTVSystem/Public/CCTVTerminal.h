@@ -62,7 +62,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UCCTVInteractInputAction* InteractInputAction;
 
-	UPROPERTY(EditAnywhere, Category = "Security System")
+	UPROPERTY(EditAnywhere, Blueprintable, BlueprintType, Category = "Security System")
 	UCCTVInputMappingContext* InputMapping;
 
 

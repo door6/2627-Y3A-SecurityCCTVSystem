@@ -16,7 +16,7 @@ UCCTVInputMappingContext::UCCTVInputMappingContext()
 
 FEnhancedActionKeyMapping& UCCTVInputMappingContext::GetInteractKeyMapping()
 {
-	return InteractKey;
+	return InteractMapping;
 }
 
 void UCCTVInputMappingContext::PostInitProperties()
@@ -25,9 +25,19 @@ void UCCTVInputMappingContext::PostInitProperties()
 
     if (!HasAnyFlags(RF_ClassDefaultObject))
     {
-        CCTVInteractInputAction = NewObject<UCCTVInteractInputAction>(this);
-        InteractKey = FEnhancedActionKeyMapping(CCTVInteractInputAction, EKeys::E);
-        InteractKeyIndex = DefaultKeyMappings.Mappings.Add(InteractKey);
+        UCCTVInteractInputAction* CCTVInteractInputAction = NewObject<UCCTVInteractInputAction>(this);
+        UCCTVNextCamInputAction* CCTVNextCamInputAction = NewObject<UCCTVNextCamInputAction>(this);
+        UCCTVPrevCamInputAction* CCTVPrevCamInputAction = NewObject<UCCTVPrevCamInputAction>(this);
+        UCCTVTriggerInputAction* CCTVTriggerInputAction = NewObject<UCCTVTriggerInputAction>(this);
+        UCCTVExitInputAction* CCTVExitInputAction = NewObject<UCCTVExitInputAction>(this);
+
+        InteractMapping = FEnhancedActionKeyMapping(CCTVInteractInputAction, EKeys::E);
+        /*InteractKeyIndex =*/ DefaultKeyMappings.Mappings.Add(InteractMapping);
+
+        DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVNextCamInputAction, EKeys::Right));
+        DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVPrevCamInputAction, EKeys::Left));
+        DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVTriggerInputAction, EKeys::F));
+        DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVExitInputAction, EKeys::Escape));
 
         UE_LOG(LogSecuritySystem, Log, TEXT("1 Mappings size: %d"), Mappings.Num());
         UE_LOG(LogSecuritySystem, Log, TEXT("2 Mappings size: %d"), GetMappings().Num());

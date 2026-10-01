@@ -26,10 +26,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* CubeMeshComponent;
+	UStaticMeshComponent* CubeMeshComponent = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Security System")
-	USceneCaptureComponent2D* SceneCaptureComponent;
+	USceneCaptureComponent2D* SceneCaptureComponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, Category = "Detector")
 	UDetector* DetectorComponent;
