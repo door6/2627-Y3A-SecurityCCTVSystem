@@ -12,6 +12,7 @@
 
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h" //temp
+#include "InputManager.h"
 
 TSharedRef<IDetailCustomization> FSecurityManagerInterface::MakeInstance()
 {
@@ -42,7 +43,7 @@ void FSecurityManagerInterface::CustomizeDetails(IDetailLayoutBuilder& DetailBui
 
 
     //temp for testing
-    TSharedRef<IPropertyHandle> KeyHandle = DetailBuilder.GetProperty(GET_MEMBER_NAME_CHECKED(USecurityManagerSubsystem, MyKey));
+    TSharedRef<IPropertyHandle> KeyHandle = DetailBuilder.GetProperty(GET_MEMBER_NAME_CHECKED(AInputManager, MyKey));
 
 
     //temp check

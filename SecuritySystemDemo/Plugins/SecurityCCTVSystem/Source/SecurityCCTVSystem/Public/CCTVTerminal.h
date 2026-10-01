@@ -6,9 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "Materials/Material.h"
-//#include "InputAction.h"
-#include "CCTVInteractInputAction.h"
-#include "CCTVInputMappingContext.h"
 #include "CCTVTerminalWidget.h"
 #include "SecurityCamera.h"
 #include "CCTVTerminal.generated.h"
@@ -58,13 +55,6 @@ public:
 
 	UPROPERTY()
 	UCCTVTerminalWidget* TerminalWidget;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UCCTVInteractInputAction* InteractInputAction;
-
-	UPROPERTY(EditAnywhere, Blueprintable, BlueprintType, Category = "Security System")
-	UCCTVInputMappingContext* InputMapping;
 
 
 	UPROPERTY(EditAnywhere, Category = "Security System")

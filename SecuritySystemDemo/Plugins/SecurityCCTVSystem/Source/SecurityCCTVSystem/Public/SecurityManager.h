@@ -8,7 +8,7 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "Responder.h"
 
-#include "CCTVInputMappingContext.h" //temp for testing
+#include "InputManager.h"
 
 #include "SecurityManager.generated.h"
 
@@ -105,8 +105,7 @@ public:
 
 	TMap<FString, FDetectorDelegate> DetectorDelegates;
 
-	//temp for testing
-	UPROPERTY(EditAnywhere)
-	FKey MyKey = EKeys::E;
+	UPROPERTY()
+	TObjectPtr<AInputManager> InputManager;
 
 };
