@@ -34,5 +34,8 @@ class SECURITYCCTVSYSTEM_API UCCTVTerminalWidget : public UUserWidget
 	UImage* Screen = nullptr;
 
 public:
+	void BindButtonsToOnClicked();
+	void UnbindButtonsFromOnClicked();
+
 	ACCTVTerminal* CCTVTerminal = nullptr;
 };

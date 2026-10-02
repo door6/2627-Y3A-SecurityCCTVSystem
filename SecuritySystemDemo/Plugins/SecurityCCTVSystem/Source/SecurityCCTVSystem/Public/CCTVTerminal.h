@@ -27,17 +27,17 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION()
-	void TurnOn(const FInputActionValue& Value);
+	UFUNCTION(BlueprintCallable, Category = "Security System")
+	void TurnOn();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Security System")
 	void TurnOff();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Security System")
 	void SwitchToNextCamera();
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Security System")
 	void SwitchToPreviousCamera();
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Security System")
 	void TriggerResponders();
 
 	UPROPERTY(VisibleAnywhere)
@@ -54,12 +54,13 @@ public:
 	UMaterialInstanceDynamic* DynamicMaterialInstance;
 
 	UPROPERTY()
-	UCCTVTerminalWidget* TerminalWidget;
+	UCCTVTerminalWidget* TerminalWidget = nullptr;
 
 
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	float InteractRadius = 500.f;
 
+private:
 	TArray<ASecurityCamera*> SecurityCameras;
 	int CurrentCameraIndex = 0;
 	bool InUse = false;

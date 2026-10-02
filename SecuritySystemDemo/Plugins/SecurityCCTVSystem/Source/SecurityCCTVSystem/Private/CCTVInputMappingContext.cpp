@@ -31,12 +31,12 @@ void UCCTVInputMappingContext::PostInitProperties()
         UCCTVTriggerInputAction* CCTVTriggerInputAction = NewObject<UCCTVTriggerInputAction>(this);
         UCCTVExitInputAction* CCTVExitInputAction = NewObject<UCCTVExitInputAction>(this);
 
-        InteractMapping = FEnhancedActionKeyMapping(CCTVInteractInputAction, EKeys::E);
+        InteractMapping = FEnhancedActionKeyMapping(CCTVInteractInputAction, EKeys::F);
         /*InteractKeyIndex =*/ DefaultKeyMappings.Mappings.Add(InteractMapping);
 
         DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVNextCamInputAction, EKeys::Right));
         DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVPrevCamInputAction, EKeys::Left));
-        DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVTriggerInputAction, EKeys::F));
+        DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVTriggerInputAction, EKeys::V));
         DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVExitInputAction, EKeys::Escape));
 
         UE_LOG(LogSecuritySystem, Log, TEXT("1 Mappings size: %d"), Mappings.Num());

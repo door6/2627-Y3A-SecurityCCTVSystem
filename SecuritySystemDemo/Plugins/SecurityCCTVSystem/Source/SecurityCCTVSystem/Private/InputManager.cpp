@@ -65,7 +65,7 @@ void AInputManager::AccessCCTVTerminal()
 	for (AActor* Actor : FoundActors)
 	{
 		TObjectPtr<ACCTVTerminal> CCTVTerminal = Cast<ACCTVTerminal>(Actor);
-		CCTVTerminal->TurnOn(FInputActionValue());
+		CCTVTerminal->TurnOn();
 	}
 
 	//fix widget being bound only to the first terminal

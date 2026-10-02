@@ -58,7 +58,8 @@ TSharedRef<SWidget> UCCTVTerminalWidget::RebuildWidget()
 
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACCTVTerminal::StaticClass(), FoundActors);
-	CCTVTerminal = Cast<ACCTVTerminal>(FoundActors[0]);
+	//CCTVTerminal = Cast<ACCTVTerminal>(FoundActors[0]);
+	ACCTVTerminal* Terminal = Cast<ACCTVTerminal>(FoundActors[0]);
 
 	//UMaterialInterface* Material = ConstructorHelpers::FObjectFinder<UMaterialInterface>(TEXT("/SecurityCCTVSystem/M_Screen.M_Screen")).Object;
 	// 
@@ -70,8 +71,8 @@ TSharedRef<SWidget> UCCTVTerminalWidget::RebuildWidget()
 	//Screen->SetBrushFromTexture(CCTVTerminal->TextureRenderTarget);
 	Screen->SetDesiredSizeOverride(FVector2D(600.f, 400.f));*/
 
-	UMaterialInstanceDynamic* DynamicMaterialInstance = UMaterialInstanceDynamic::Create(CCTVTerminal->RenderMaterial, this);
-	DynamicMaterialInstance->SetTextureParameterValue(FName("ScreenTexture"), CCTVTerminal->TextureRenderTarget);
+	UMaterialInstanceDynamic* DynamicMaterialInstance = UMaterialInstanceDynamic::Create(Terminal->RenderMaterial, this);
+	DynamicMaterialInstance->SetTextureParameterValue(FName("ScreenTexture"), Terminal->TextureRenderTarget);
 	DynamicMaterialInstance->SetScalarParameterValue(FName("UVRotation"), 0.0f);
 	Screen->SetBrushFromMaterial(DynamicMaterialInstance);
 
@@ -96,7 +97,19 @@ void UCCTVTerminalWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	// Bind delegates here
+	BindButtonsToOnClicked();
+	/*if (NextCameraButton)
+		NextCameraButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::SwitchToNextCamera);
+	if (PreviousCameraButton)
+		PreviousCameraButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::SwitchToPreviousCamera);
+	if (TriggerRespondersButton)
+		TriggerRespondersButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::TriggerResponders);
+	if (ExitButton)
+		ExitButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::TurnOff);*/
+}
 
+void UCCTVTerminalWidget::BindButtonsToOnClicked()
+{
 	if (NextCameraButton)
 		NextCameraButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::SwitchToNextCamera);
 	if (PreviousCameraButton)
@@ -105,5 +118,21 @@ void UCCTVTerminalWidget::NativeConstruct()
 		TriggerRespondersButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::TriggerResponders);
 	if (ExitButton)
 		ExitButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::TurnOff);
+
+	UE_LOG(LogSecuritySystem, Log, TEXT("Buttons bound"));
+}
+
+void UCCTVTerminalWidget::UnbindButtonsFromOnClicked()
+{
+	if (NextCameraButton)
+		NextCameraButton->OnClicked.Clear();
+	if (PreviousCameraButton)
+		PreviousCameraButton->OnClicked.Clear();
+	if (TriggerRespondersButton)
+		TriggerRespondersButton->OnClicked.Clear();
+	if (ExitButton)
+		ExitButton->OnClicked.Clear();
+
+	UE_LOG(LogSecuritySystem, Log, TEXT("Buttons removed"));
 }
 

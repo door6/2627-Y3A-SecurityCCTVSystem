@@ -201,7 +201,7 @@ void ACCTVTerminal::Tick(float DeltaTime)
 
 }
 
-void ACCTVTerminal::TurnOn(const FInputActionValue& Value)
+void ACCTVTerminal::TurnOn()
 {
 	if (InUse)
 		return;
@@ -218,7 +218,7 @@ void ACCTVTerminal::TurnOn(const FInputActionValue& Value)
 		return;*/
 
 	//interact radius check	
-	UE_LOG(LogSecuritySystem, Log, TEXT("TerminalLocation: %f %f %f"), GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z);
+	UE_LOG(LogSecuritySystem, Log, TEXT("TerminalLocation: %f %f %f"), this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
 	FVector PlayerToTerminalVector = this->GetActorLocation() - PlayerLocation;
 	double SquaredDistance = PlayerToTerminalVector.SizeSquared();
 	if (SquaredDistance >= FMath::Square(InteractRadius))
@@ -243,6 +243,8 @@ void ACCTVTerminal::TurnOn(const FInputActionValue& Value)
 		UE_LOG(LogSecuritySystem, Error, TEXT("PlayerController is NULL"));
 
 	TerminalWidget->CCTVTerminal = this;
+	UE_LOG(LogSecuritySystem, Log, TEXT("Terminal set: %s"), *TerminalWidget->CCTVTerminal->GetName());
+	//TerminalWidget->BindButtonsToOnClicked();
 	PlayerController->FlushPressedKeys();
 	PlayerController->bShowMouseCursor = true;
 	//FInputModeGameAndUI Mode;
@@ -256,16 +258,31 @@ void ACCTVTerminal::TurnOn(const FInputActionValue& Value)
 	UE_LOG(LogSecuritySystem, Log, TEXT("AddToViewport called, IsInViewport: %s"), TerminalWidget->IsInViewport() ? TEXT("true") : TEXT("false"));
 
 	InUse = true;
+	UE_LOG(LogSecuritySystem, Log, TEXT("InUse: %s"), InUse ? TEXT("true") : TEXT("false"));
 }
 
 void ACCTVTerminal::TurnOff()
 {
-	if (!InUse)
+	if (!TerminalWidget)
+	{
+		UE_LOG(LogSecuritySystem, Error, TEXT("TerminalWidget is NULLPTR"));
 		return;
+	}
+	UE_LOG(LogSecuritySystem, Log, TEXT("Attempt to TurnOff: %s"), *TerminalWidget->CCTVTerminal->GetName());
+
+	if (!InUse)
+	{
+		UE_LOG(LogSecuritySystem, Error, TEXT("Terminal NOT InUse"));
+		return;
+	}
+
+	UE_LOG(LogSecuritySystem, Log, TEXT("Terminal turned off"));
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
 	//TerminalWidget->RemoveFromViewport();		//maybe pass widget as parameter?
+	TerminalWidget->UnbindButtonsFromOnClicked();
+	TerminalWidget->CCTVTerminal = nullptr;
 	TerminalWidget->RemoveFromParent();
 	TerminalWidget = nullptr;
 	FInputModeGameOnly GameMode;
