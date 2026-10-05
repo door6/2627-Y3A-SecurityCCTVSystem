@@ -3,10 +3,11 @@
 
 #include "CCTVTerminalWidget.h"
 #include "Blueprint/WidgetTree.h"
-#include "Components/CanvasPanel.h"
+//#include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
 #include "CCTVTerminal.h"	// DONT move this to .h !!!
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetRenderingLibrary.h"
 #include "SecuritySystemLog.h"
 
 TSharedRef<SWidget> UCCTVTerminalWidget::RebuildWidget()
@@ -14,8 +15,9 @@ TSharedRef<SWidget> UCCTVTerminalWidget::RebuildWidget()
 	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminalWidget:NativeConstruct"));
 
 	//UPanelWidget* RootWidget = Cast<UPanelWidget>(GetRootWidget());
-	UCanvasPanel* Root = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass());
-	WidgetTree->RootWidget = Root;
+	/*UCanvasPanel**/ Root = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass());
+	//WidgetTree->RootWidget = Root;
+	WidgetTree->RootWidget = Cast<UWidget>(Root);
 
 	if (!WidgetTree->RootWidget)
 		UE_LOG(LogSecuritySystem, Error, TEXT("RootWidget is NULL"));
@@ -56,10 +58,31 @@ TSharedRef<SWidget> UCCTVTerminalWidget::RebuildWidget()
 	Screen = WidgetTree->ConstructWidget<UImage>(UImage::StaticClass());
 	//Screen->SetDesiredSizeOverride(FVector2D(2.0f, 3.0f));
 
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACCTVTerminal::StaticClass(), FoundActors);
+	UMaterialInterface* RenderMaterial = nullptr;
+	TObjectPtr<UTextureRenderTarget2D> TextureRenderTarget = nullptr;
+
+	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ACCTVTerminal::StaticClass());
 	//CCTVTerminal = Cast<ACCTVTerminal>(FoundActors[0]);
-	ACCTVTerminal* Terminal = Cast<ACCTVTerminal>(FoundActors[0]);
+	if (!FoundActor)
+	{
+		UE_LOG(LogSecuritySystem, Warning, TEXT("NO CCTVTerminal in the scene"));
+
+		RenderMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/SecurityCCTVSystem/M_Screen.M_Screen"));
+		//or move object finder to constructor ?
+		/*static ConstructorHelpers::FObjectFinder<UMaterialInterface> MaterialFinder(TEXT("/SecurityCCTVSystem/M_Screen.M_Screen"));
+		if (MaterialFinder.Succeeded())
+		{
+			RenderMaterial = MaterialFinder.Object;
+		}*/
+		TextureRenderTarget = UKismetRenderingLibrary::CreateRenderTarget2D(this, 1024, 1024, ETextureRenderTargetFormat::RTF_RGBA32f, FLinearColor::Black, false);
+		//return Super::RebuildWidget();
+	}
+	else
+	{
+		ACCTVTerminal* Terminal = Cast<ACCTVTerminal>(FoundActor);
+		RenderMaterial = Terminal->RenderMaterial;
+		TextureRenderTarget = Terminal->TextureRenderTarget;
+	}
 
 	//UMaterialInterface* Material = ConstructorHelpers::FObjectFinder<UMaterialInterface>(TEXT("/SecurityCCTVSystem/M_Screen.M_Screen")).Object;
 	// 
@@ -71,8 +94,8 @@ TSharedRef<SWidget> UCCTVTerminalWidget::RebuildWidget()
 	//Screen->SetBrushFromTexture(CCTVTerminal->TextureRenderTarget);
 	Screen->SetDesiredSizeOverride(FVector2D(600.f, 400.f));*/
 
-	UMaterialInstanceDynamic* DynamicMaterialInstance = UMaterialInstanceDynamic::Create(Terminal->RenderMaterial, this);
-	DynamicMaterialInstance->SetTextureParameterValue(FName("ScreenTexture"), Terminal->TextureRenderTarget);
+	UMaterialInstanceDynamic* DynamicMaterialInstance = UMaterialInstanceDynamic::Create(RenderMaterial, this);	//Terminal->RenderMaterial
+	DynamicMaterialInstance->SetTextureParameterValue(FName("ScreenTexture"), TextureRenderTarget);		//Terminal->TextureRenderTarget
 	DynamicMaterialInstance->SetScalarParameterValue(FName("UVRotation"), 0.0f);
 	Screen->SetBrushFromMaterial(DynamicMaterialInstance);
 

@@ -53,7 +53,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UMaterialInstanceDynamic* DynamicMaterialInstance;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	UCCTVTerminalWidget* TerminalWidget = nullptr;
 
 

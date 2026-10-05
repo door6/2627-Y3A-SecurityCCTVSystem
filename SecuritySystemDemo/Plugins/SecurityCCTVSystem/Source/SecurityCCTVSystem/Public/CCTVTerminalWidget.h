@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/Image.h"
+#include "Components/CanvasPanel.h"
 #include "CCTVTerminalWidget.generated.h"
 
 class ACCTVTerminal;
@@ -20,17 +21,21 @@ class SECURITYCCTVSYSTEM_API UCCTVTerminalWidget : public UUserWidget
 
 	virtual TSharedRef<SWidget> RebuildWidget() override;
 	virtual void NativeConstruct() override;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidgetOptional))
+	UCanvasPanel* Root = nullptr;
+	//UWidget* Root = nullptr;
 	
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, meta = (BindWidgetOptional))
 	UButton* NextCameraButton = nullptr;
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, meta = (BindWidgetOptional))
 	UButton* PreviousCameraButton = nullptr;
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, meta = (BindWidgetOptional))
 	UButton* TriggerRespondersButton = nullptr;
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, meta = (BindWidgetOptional))
 	UButton* ExitButton = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, meta = (BindWidgetOptional))
 	UImage* Screen = nullptr;
 
 public:
