@@ -4,38 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "IDetailCustomization.h"
-#include "Input/Reply.h"
-#include "SecurityManager.h"
 
-class IPropertyHandle;
-class IDetailChildrenBuilder;
+class USecurityManagerSubsystem;
 
-/**
- * 
- */
 class SECURITYCCTVSYSTEM_API FSecurityManagerInterface : public IDetailCustomization
 {
 public:
 
     static TSharedRef<IDetailCustomization> MakeInstance();
-
     virtual void CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) override;
-protected:
-
-    FReply OnDeleteResponderClicked(FString DetectorName, AActor* ResponderActor);   //FString DetectorName, UResponder* Responder
-
-    TSharedRef<SWidget> BuildResponderDropdown(AActor* DetectorActor, UResponder* SeelectedResponder);
-    FReply OnAddResponderClicked(FString DetectorName, UResponder* Responder);
-    TArray<AActor*> GetResponderCandidates() const;
-    void OnResponderSelected(AActor* NewResponder, UResponder* SelectedResponder);
-    void OnResponderSelectedTest(AActor* DetectorActor, AActor* Responder);
 
 private:
+    FReply OnDeleteResponderClicked(FString DetectorName, AActor* ResponderActor, IDetailLayoutBuilder* DetailBuilder);
+    TSharedRef<SWidget> BuildRespondersDropdown(AActor* DetectorActor, IDetailLayoutBuilder* DetailBuilder);
+    TArray<AActor*> GetResponderCandidates() const;
+    void OnResponderSelected(AActor* DetectorActor, AActor* ResponderActor, IDetailLayoutBuilder* DetailBuilder);
 
-    UResponder* CurrentSelectedResponder = nullptr;
-
-    IDetailLayoutBuilder* CachedDetailBuilder = nullptr;
-    //ASecurityManager* SecurityManager = nullptr;
-    USecurityManagerSubsystem* SecurityManager = nullptr;
-
+    TWeakObjectPtr<USecurityManagerSubsystem> SecurityManager;
 };
