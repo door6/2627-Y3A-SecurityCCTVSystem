@@ -51,7 +51,7 @@ AMotionDetector::AMotionDetector()
 	DetectionDebugColor = FColor::Red;
 
 	//add detector component
-	DetectorComponent = CreateDefaultSubobject<UDetector>(TEXT("Detector Component"));
+	DetectorComponent = CreateDefaultSubobject<UDetectorComponent>(TEXT("Detector Component"));
 
 
 }
@@ -80,7 +80,7 @@ void AMotionDetector::DetectIntruderArray(const TArray<AActor*>& DetectedActors)
 
 	//FString Message = "{yellow}" + this->GetActorLabel() + ": {white} Switch to ";
 
-	switch (DetectorComponent->CurrentState)
+	switch (DetectorComponent->GetCurrentState())	//DetectorComponent->CurrentState
 	{
 	case ESecurityState::Neutral:
 		if (PerceivedActors.IsEmpty())
@@ -88,7 +88,8 @@ void AMotionDetector::DetectIntruderArray(const TArray<AActor*>& DetectedActors)
 			UE_LOG(LogSecuritySystem, Log, TEXT("%s: State: Neutral, ActorArray: Empty"), *GetActorLabel());
 			return;
 		}
-		DetectorComponent->CurrentState = ESecurityState::Alarm;
+		//DetectorComponent->CurrentState = ESecurityState::Alarm;
+		DetectorComponent->SetCurrentState(ESecurityState::Alarm);
 		//Message += "{red} Alarm";
 		break;
 	case ESecurityState::Alarm:
@@ -103,7 +104,8 @@ void AMotionDetector::DetectIntruderArray(const TArray<AActor*>& DetectedActors)
 			UE_LOG(LogSecuritySystem, Log, TEXT("%s"), *Message);
 			return;
 		}
-		DetectorComponent->CurrentState = ESecurityState::Neutral;
+		//DetectorComponent->CurrentState = ESecurityState::Neutral;
+		DetectorComponent->SetCurrentState(ESecurityState::Neutral);
 		//Message += "{green} Neutral";
 		break;
 	}
@@ -115,7 +117,7 @@ void AMotionDetector::DetectIntruderArray(const TArray<AActor*>& DetectedActors)
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Message);
 	UE_LOG(LogSecuritySystem, Log, TEXT("%s"), *Message);*/
 
-	DetectorComponent->TriggerResponders(DetectorComponent->CurrentState);
+	DetectorComponent->TriggerResponders(DetectorComponent->GetCurrentState());			//DetectorComponent->CurrentState
 
 
 	/*for (AActor* Actor : DetectedActors)
@@ -133,7 +135,7 @@ void AMotionDetector::DetectIntruder(AActor* Actor, FAIStimulus Stimulus)
 {
 	if (Stimulus.SensingSucceeded)
 	{
-		if (DetectorComponent->CurrentState != ESecurityState::Alarm)
+		if (DetectorComponent->GetCurrentState() != ESecurityState::Alarm)		//DetectorComponent->CurrentState
 		{
 			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Detected");
 
@@ -144,7 +146,7 @@ void AMotionDetector::DetectIntruder(AActor* Actor, FAIStimulus Stimulus)
 	}
 	else
 	{
-		if (DetectorComponent->CurrentState != ESecurityState::Neutral)
+		if (DetectorComponent->GetCurrentState() != ESecurityState::Neutral)		//DetectorComponent->CurrentState
 		{
 			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Forgotten");
 
@@ -204,7 +206,7 @@ void AMotionDetector::DescribeSelfToGameplayDebugger(FGameplayDebuggerCategory* 
 	FColor SightRangeColor = SightConfig->GetDebugColor();
 	FColor LoseSightRangeColor = LoseSightRangeDebugColor;
 
-	if (DetectorComponent->CurrentState == ESecurityState::Alarm)
+	if (DetectorComponent->GetCurrentState() == ESecurityState::Alarm)		//DetectorComponent->CurrentState
 	{
 		SightRangeColor = DetectionDebugColor;
 		LoseSightRangeColor = DetectionDebugColor;

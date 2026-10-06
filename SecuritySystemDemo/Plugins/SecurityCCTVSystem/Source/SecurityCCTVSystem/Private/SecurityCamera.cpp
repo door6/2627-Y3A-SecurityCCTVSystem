@@ -27,7 +27,7 @@ ASecurityCamera::ASecurityCamera()
 	SceneCaptureComponent->HiddenActors.AddUnique(this);
 
 	//add detector component
-	DetectorComponent = CreateDefaultSubobject<UDetector>(TEXT("Detector Component"));
+	DetectorComponent = CreateDefaultSubobject<UDetectorComponent>(TEXT("Detector Component"));
 
 }
 

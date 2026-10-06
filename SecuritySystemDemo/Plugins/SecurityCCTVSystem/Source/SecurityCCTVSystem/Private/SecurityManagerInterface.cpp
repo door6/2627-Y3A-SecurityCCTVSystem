@@ -35,7 +35,7 @@ void FSecurityManagerInterface::CustomizeDetails(IDetailLayoutBuilder& DetailBui
     {
         // get detector
         AActor* DetectorActor = *It;
-        if (!DetectorActor->FindComponentByClass<UDetector>())
+        if (!DetectorActor->FindComponentByClass<UDetectorComponent>())
             continue;
 
         // create detector group

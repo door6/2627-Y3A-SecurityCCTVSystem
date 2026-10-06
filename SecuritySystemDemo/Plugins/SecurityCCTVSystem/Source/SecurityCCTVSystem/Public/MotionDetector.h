@@ -54,5 +54,5 @@ public:
 	FColor DetectionDebugColor;
 
 	UPROPERTY(VisibleAnywhere, Category = "Detector")
-	UDetector* DetectorComponent;
+	UDetectorComponent* DetectorComponent;
 };

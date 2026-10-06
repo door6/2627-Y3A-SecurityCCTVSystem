@@ -51,7 +51,7 @@ void AInputManager::BeginPlay()
 
 void AInputManager::AccessCCTVTerminal()
 {
-	UE_LOG(LogSecuritySystem, Warning, TEXT("AccessCCTVTerminal Triggered"));
+	UE_LOG(LogSecuritySystem, Log, TEXT("AccessCCTVTerminal Triggered"));
 
 	/*AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ACCTVTerminal::StaticClass());
 	if (FoundActor)

@@ -31,6 +31,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	USceneCaptureComponent2D* SceneCaptureComponent = nullptr;
 
-	UPROPERTY(VisibleAnywhere, Category = "Detector")
-	UDetector* DetectorComponent;
+	UPROPERTY(VisibleAnywhere, Category = "Detector Component")
+	UDetectorComponent* DetectorComponent = nullptr;
 };

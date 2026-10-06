@@ -41,7 +41,7 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 		for (TActorIterator<AActor> It(World); It; ++It)
 		{
 			AActor* Actor = *It;
-			if (Actor->FindComponentByClass<UDetector>())
+			if (Actor->FindComponentByClass<UDetectorComponent>())
 			{
 				Detectors.AddUnique(Actor);
 			}

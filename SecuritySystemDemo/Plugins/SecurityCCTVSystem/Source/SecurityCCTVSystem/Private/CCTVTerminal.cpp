@@ -101,6 +101,9 @@ void ACCTVTerminal::BeginPlay()
 	for (AActor* Actor : FoundActors)
 	{
 		ASecurityCamera* SecurityCamera = Cast<ASecurityCamera>(Actor);
+
+		if (!SecurityCamera->DetectorComponent)
+			UE_LOG(LogSecuritySystem, Error, TEXT("NO DETECTOR COMPONENT"));
 		
 		SecurityCameras.AddUnique(SecurityCamera);
 	}
@@ -321,13 +324,16 @@ void ACCTVTerminal::SwitchToPreviousCamera()
 
 void ACCTVTerminal::TriggerResponders()
 {
-	UDetector* DetectorComponent = SecurityCameras[CurrentCameraIndex]->DetectorComponent;
+	UDetectorComponent* DetectorComponent = SecurityCameras[CurrentCameraIndex]->DetectorComponent;
 
 	if (!DetectorComponent)
+	{
 		UE_LOG(LogSecuritySystem, Error, TEXT("ACCTVTerminal: DetectorComponent is NULL"));
+		return;
+	}
 
 	ESecurityState NewSecurityState;
-	switch (DetectorComponent->CurrentState)
+	switch (DetectorComponent->GetCurrentState())		//DetectorComponent->CurrentState
 	{
 	case ESecurityState::Neutral:
 		NewSecurityState = ESecurityState::Alarm;
@@ -336,7 +342,8 @@ void ACCTVTerminal::TriggerResponders()
 		NewSecurityState = ESecurityState::Neutral;
 		break;
 	}
-	DetectorComponent->CurrentState = NewSecurityState;
+	//DetectorComponent->CurrentState = NewSecurityState;
+	DetectorComponent->SetCurrentState(NewSecurityState);
 
 	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal: TriggerResponders"));
 

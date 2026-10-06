@@ -126,7 +126,7 @@ void USecurityManagerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 		}*/
 
 		AActor* Actor = *It;
-		UDetector* Detector = Actor->FindComponentByClass<UDetector>();
+		UDetectorComponent* Detector = Actor->FindComponentByClass<UDetectorComponent>();
 		if (!Detector)
 			continue;
 
@@ -135,7 +135,8 @@ void USecurityManagerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 
 		if (!FoundActors.IsEmpty())
 		{
-			Detector->NotifyManagerDelegate.AddUniqueDynamic(this, &USecurityManagerSubsystem::TriggerResponders);
+			//Detector->NotifyManagerDelegate.AddUniqueDynamic(this, &USecurityManagerSubsystem::TriggerResponders);
+			Detector->BindManager();
 
 			UE_LOG(LogSecuritySystem, Log, TEXT("Manager: BeginPlay: Bound to %s"), *Actor->GetActorLabel());
 		}

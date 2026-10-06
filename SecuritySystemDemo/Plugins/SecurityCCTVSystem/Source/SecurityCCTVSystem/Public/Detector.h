@@ -9,38 +9,34 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNotifyManagerDelegate, const FString&, DetectorName, ESecurityState, SecurityState);
 
-//class FGameplayDebuggerCategory;
-
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent, DisplayName = "Detector"))
-class SECURITYCCTVSYSTEM_API UDetector : public UActorComponent
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+class SECURITYCCTVSYSTEM_API UDetectorComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UDetector();
+	UDetectorComponent();
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	void BindManager();
+	inline const ESecurityState GetCurrentState();
+	inline const void SetCurrentState(ESecurityState NewState);
+
+	UFUNCTION(BlueprintCallable, Category = "Security System")
+	void TriggerResponders(ESecurityState SecurityState);
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	UFUNCTION(BlueprintCallable, Category = "Security System")
-	void TriggerResponders(ESecurityState SecurityState);
-
+private:
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	float CooldownTimer = 2.0f;
 
 	ESecurityState CurrentState = ESecurityState::Neutral;
 
-
 	UPROPERTY()
 	FNotifyManagerDelegate NotifyManagerDelegate;
-
-	/*UPROPERTY(VisibleAnywhere, Category = "Security System")
-	TArray<FString> ConnectedResponders = TArray<FString>();*/
-
 };
