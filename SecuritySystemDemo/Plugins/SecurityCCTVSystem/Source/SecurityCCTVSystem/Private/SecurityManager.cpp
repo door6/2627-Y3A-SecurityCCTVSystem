@@ -2,6 +2,7 @@
 
 
 #include "SecurityManager.h"
+#include "Responder.h"
 #include "SecuritySystemLog.h"
 
 #include "EngineUtils.h"
@@ -144,7 +145,8 @@ void USecurityManagerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 		for (AActor* ResponderActor : FoundActors)
 		{
 			FDetectorDelegate& Delegate = DetectorDelegates.FindOrAdd(Actor->GetActorLabel());	//Actor->GetName()
-			Delegate.AddUniqueDynamic(ResponderActor->FindComponentByClass<UResponder>(), &UResponder::Respond);
+			//Delegate.AddUniqueDynamic(ResponderActor->FindComponentByClass<UResponder>(), &UResponder::Respond);
+			ResponderActor->FindComponentByClass<UResponderComponent>()->BindToManager(Delegate);
 
 			//UE_LOG(LogSecuritySystem, Log, TEXT("BeginPlay:  Manager: Bound to %s"), *Actor->GetName());
 		}

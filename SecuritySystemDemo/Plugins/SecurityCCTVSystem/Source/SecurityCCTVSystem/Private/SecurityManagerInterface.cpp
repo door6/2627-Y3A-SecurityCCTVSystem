@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "SecurityManager.h"
 #include "Detector.h"
+#include "Responder.h"
 #include "SecuritySystemLog.h"
 
 TSharedRef<IDetailCustomization> FSecurityManagerInterface::MakeInstance()
@@ -126,7 +127,7 @@ TArray<AActor*> FSecurityManagerInterface::GetResponderCandidates() const
 
     for (TObjectIterator<AActor> It; It; ++It)
     {
-        if (It->FindComponentByClass<UResponder>())
+        if (It->FindComponentByClass<UResponderComponent>())
             Responders.Add(*It);
     }
     return Responders;

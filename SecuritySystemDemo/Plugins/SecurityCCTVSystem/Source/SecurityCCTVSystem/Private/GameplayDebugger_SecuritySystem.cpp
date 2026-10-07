@@ -10,6 +10,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "SecurityManager.h"
 #include "Detector.h"
+#include "Responder.h"
 #include "EngineUtils.h"
 #include "MotionDetector.h"
 
@@ -45,7 +46,7 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 			{
 				Detectors.AddUnique(Actor);
 			}
-			else if (Actor->FindComponentByClass<UResponder>())
+			else if (Actor->FindComponentByClass<UResponderComponent>())
 			{
 				Responders.AddUnique(Actor);
 			}

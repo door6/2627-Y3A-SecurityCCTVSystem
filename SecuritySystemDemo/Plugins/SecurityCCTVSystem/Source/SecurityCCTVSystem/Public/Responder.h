@@ -5,32 +5,37 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "ESecurityState.h"
+#include "SecurityManager.h"
 #include "Responder.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRespondTriggered, ESecurityState, SecurityState);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class SECURITYCCTVSYSTEM_API UResponder : public UActorComponent
+class SECURITYCCTVSYSTEM_API UResponderComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UResponder();
+	UResponderComponent();
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	void BindToManager(FDetectorDelegate& ManagerDelegate);
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UPROPERTY(BlueprintAssignable, Category = "Security System")
+	FOnRespondTriggered OnRespondTriggered;
 
-	UFUNCTION(BlueprintCallable, Category = "Security System")
-	virtual void Respond(ESecurityState SecurityState);
+private:
+	UFUNCTION(Category = "Security System")
+	void Respond(ESecurityState SecurityState);	
 
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	float CooldownTimer = 3.0f;
 
 	ESecurityState CurrentState = ESecurityState::Neutral;
-
 };
