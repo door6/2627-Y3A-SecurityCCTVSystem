@@ -19,25 +19,23 @@ class SECURITYCCTVSYSTEM_API AMotionDetector : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AMotionDetector();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION()
-	void DetectIntruderArray(const TArray<AActor*>& DetectedActors);
-
-	UFUNCTION()
-	void DetectIntruder(AActor* Actor, FAIStimulus Stimulus);
 
 #if WITH_GAMEPLAY_DEBUGGER_MENU
 	virtual void DescribeSelfToGameplayDebugger(FGameplayDebuggerCategory* DebuggerCategory) const;
 #endif // WITH_GAMEPLAY_DEBUGGER_MENU
 
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+private:
+	UFUNCTION()
+	void DetectIntruders(const TArray<AActor*>& DetectedActors);
+
+	//UFUNCTION()
+	//void DetectIntruderOld(AActor* Actor, FAIStimulus Stimulus);
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* CubeMeshComponent;
@@ -53,6 +51,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	FColor DetectionDebugColor;
 
-	UPROPERTY(VisibleAnywhere, Category = "Detector")
+	UPROPERTY(VisibleAnywhere, Category = "Security System")
 	UDetectorComponent* DetectorComponent;
 };
