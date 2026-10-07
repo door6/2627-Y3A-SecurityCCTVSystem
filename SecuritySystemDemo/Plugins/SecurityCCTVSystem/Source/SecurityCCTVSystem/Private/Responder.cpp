@@ -31,7 +31,7 @@ void UResponderComponent::BeginPlay()
 // Called every frame
 void UResponderComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	//uper::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	//Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
 }
@@ -43,20 +43,6 @@ void UResponderComponent::BindToManager(FDetectorDelegate& ManagerDelegate)
 
 void UResponderComponent::Respond(ESecurityState SecurityState)
 {
-	// return if the new security state is the same as the current state
-	if (CurrentState == SecurityState)
-		return;
-
-	// check if any other detector the responder is connected to is still in alarm
-	AActor* Actor = GetOwner();
-	for (const FName& Tag : Actor->Tags)
-	{
-
-		//UE_LOG(LogTemp, Log, TEXT("Tag: %s"), *Tag.ToString());
-	}
-
-	CurrentState = SecurityState;
-
 	// debug messages
 	FString DebugMessage = "{yellow}" + GetOwner()->GetActorLabel() + ": {white} Responed: switch to ";
 	FString LogMessage = GetOwner()->GetActorLabel() + ": Responed: switch to ";
@@ -64,12 +50,25 @@ void UResponderComponent::Respond(ESecurityState SecurityState)
 	{
 		LogMessage += "Alarm";
 		DebugMessage += "{red} Alarm";
+
+		// increase the count of bound detectors in the alarm state
+		AlarmCounter++;
 	}
 	else 
 	{ 
 		LogMessage += "Neutral";
 		DebugMessage += "{green} Neutral";
+
+		// if there are still bound detectors in the alarm state, return
+		if (--AlarmCounter > 0)
+			return;
 	}
+
+	// return if the new security state is the same as the current state
+	if (CurrentState == SecurityState)
+		return;
+
+	CurrentState = SecurityState;
 
 #if WITH_GAMEPLAY_DEBUGGER_MENU
 	FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage(DebugMessage);

@@ -35,4 +35,7 @@ private:
 	void Respond(ESecurityState SecurityState);
 
 	ESecurityState CurrentState = ESecurityState::Neutral;
+
+	// number of bound detectors currently in alarm state
+	int AlarmCounter = 0;
 };
