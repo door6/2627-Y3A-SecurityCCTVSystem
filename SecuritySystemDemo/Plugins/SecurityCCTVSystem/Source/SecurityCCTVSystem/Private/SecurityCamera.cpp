@@ -28,7 +28,7 @@ ASecurityCamera::ASecurityCamera()
 
 	//add detector component
 	DetectorComponent = CreateDefaultSubobject<UDetectorComponent>(TEXT("Detector Component"));
-
+	DetectorComponent->SetAlertTime(0.0f);	// so the switch between security states is instant
 }
 
 // Called when the game starts or when spawned

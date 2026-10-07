@@ -21,22 +21,26 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void BindManager();
-	inline const ESecurityState GetCurrentState();
-	inline const void SetCurrentState(ESecurityState NewState);
+	inline void SetAlertTime(float NewAlertTime);
 
 	UFUNCTION(BlueprintCallable, Category = "Security System")
-	void TriggerResponders(ESecurityState SecurityState);
+	inline ESecurityState GetCurrentState();
+
+	UFUNCTION(BlueprintCallable, Category = "Security System")
+	void ChangeState(ESecurityState NewState);
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private:
+	void TriggerResponders(ESecurityState SecurityState);		// broadcast new state ( new functio name ? )
+
 	UPROPERTY(EditAnywhere, Category = "Security System")
-	float CooldownTimer = 2.0f;
+	float AlertTime = 2.0f;
 
+	float CooldownTimer = 0.0f;
 	ESecurityState CurrentState = ESecurityState::Neutral;
-
 	UPROPERTY()
 	FNotifyManagerDelegate NotifyManagerDelegate;
 };

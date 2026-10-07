@@ -343,9 +343,10 @@ void ACCTVTerminal::TriggerResponders()
 		break;
 	}
 	//DetectorComponent->CurrentState = NewSecurityState;
-	DetectorComponent->SetCurrentState(NewSecurityState);
+	//DetectorComponent->SetCurrentState(NewSecurityState);
 
 	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal: TriggerResponders"));
 
-	DetectorComponent->TriggerResponders(NewSecurityState);
+	//DetectorComponent->TriggerResponders(NewSecurityState);
+	DetectorComponent->ChangeState(NewSecurityState);
 }

@@ -80,6 +80,8 @@ void AMotionDetector::DetectIntruderArray(const TArray<AActor*>& DetectedActors)
 
 	//FString Message = "{yellow}" + this->GetActorLabel() + ": {white} Switch to ";
 
+	ESecurityState NewSecurityState;
+
 	switch (DetectorComponent->GetCurrentState())	//DetectorComponent->CurrentState
 	{
 	case ESecurityState::Neutral:
@@ -89,7 +91,8 @@ void AMotionDetector::DetectIntruderArray(const TArray<AActor*>& DetectedActors)
 			return;
 		}
 		//DetectorComponent->CurrentState = ESecurityState::Alarm;
-		DetectorComponent->SetCurrentState(ESecurityState::Alarm);
+		//DetectorComponent->SetCurrentState(ESecurityState::Alarm);
+		NewSecurityState = ESecurityState::Alarm;
 		//Message += "{red} Alarm";
 		break;
 	case ESecurityState::Alarm:
@@ -105,7 +108,8 @@ void AMotionDetector::DetectIntruderArray(const TArray<AActor*>& DetectedActors)
 			return;
 		}
 		//DetectorComponent->CurrentState = ESecurityState::Neutral;
-		DetectorComponent->SetCurrentState(ESecurityState::Neutral);
+		//DetectorComponent->SetCurrentState(ESecurityState::Neutral);
+		NewSecurityState = ESecurityState::Neutral;
 		//Message += "{green} Neutral";
 		break;
 	}
@@ -117,7 +121,9 @@ void AMotionDetector::DetectIntruderArray(const TArray<AActor*>& DetectedActors)
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Message);
 	UE_LOG(LogSecuritySystem, Log, TEXT("%s"), *Message);*/
 
-	DetectorComponent->TriggerResponders(DetectorComponent->GetCurrentState());			//DetectorComponent->CurrentState
+
+	//DetectorComponent->TriggerResponders(DetectorComponent->GetCurrentState());			//DetectorComponent->CurrentState
+	DetectorComponent->ChangeState(NewSecurityState);
 
 
 	/*for (AActor* Actor : DetectedActors)

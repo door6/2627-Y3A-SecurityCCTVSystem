@@ -43,6 +43,20 @@ void UResponderComponent::BindToManager(FDetectorDelegate& ManagerDelegate)
 
 void UResponderComponent::Respond(ESecurityState SecurityState)
 {
+	// return if the new security state is the same as the current state
+	if (CurrentState == SecurityState)
+		return;
+
+	// check if any other detector the responder is connected to is still in alarm
+	AActor* Actor = GetOwner();
+	for (const FName& Tag : Actor->Tags)
+	{
+
+		//UE_LOG(LogTemp, Log, TEXT("Tag: %s"), *Tag.ToString());
+	}
+
+	CurrentState = SecurityState;
+
 	// debug messages
 	FString DebugMessage = "{yellow}" + GetOwner()->GetActorLabel() + ": {white} Responed: switch to ";
 	FString LogMessage = GetOwner()->GetActorLabel() + ": Responed: switch to ";

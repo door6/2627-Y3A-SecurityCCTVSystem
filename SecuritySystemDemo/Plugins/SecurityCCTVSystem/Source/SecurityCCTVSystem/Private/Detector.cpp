@@ -13,7 +13,7 @@ UDetectorComponent::UDetectorComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	// ...
 }
@@ -24,6 +24,19 @@ void UDetectorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	//Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+
+	if (CooldownTimer == 0.0f)
+		return;
+
+	if (CooldownTimer >= AlertTime)
+	{
+		TriggerResponders(ESecurityState::Neutral);
+		CooldownTimer = 0.0f;
+		return;
+	}
+
+	CooldownTimer += DeltaTime;
+	UE_LOG(LogSecuritySystem, Log, TEXT("%s: CooldownTimer = %f"), *GetOwner()->GetActorLabel(), CooldownTimer);
 }
 
 // Called when the game starts
@@ -41,18 +54,37 @@ void UDetectorComponent::BindManager()
 	NotifyManagerDelegate.AddUniqueDynamic(SecurityManager, &USecurityManagerSubsystem::TriggerResponders);
 }
 
-inline const ESecurityState UDetectorComponent::GetCurrentState()
+inline void UDetectorComponent::SetAlertTime(float NewAlertTime)
+{
+	AlertTime = NewAlertTime;
+}
+
+inline ESecurityState UDetectorComponent::GetCurrentState()
 {
 	return CurrentState;
 }
 
-inline const void UDetectorComponent::SetCurrentState(ESecurityState NewState)
+void UDetectorComponent::ChangeState(ESecurityState NewState)
 {
-	CurrentState = NewState;
+	// return if the new security state is the same as the current state
+	if (CurrentState == NewState)
+		return;
+
+	// if it needs to switch to neutral, start the cooldown timer
+	if (NewState == ESecurityState::Neutral)
+	{
+		CooldownTimer += UE_SMALL_NUMBER;
+		return;
+	}
+
+	// otherwise change state and trigger responders
+	TriggerResponders(NewState);
 }
 
 void UDetectorComponent::TriggerResponders(ESecurityState SecurityState)
 {
+	CurrentState = SecurityState;
+
 	//debug messages
 	FString DetectorName = GetOwner()->GetActorLabel();
 	FString DebugMessage = "{yellow}" + DetectorName + ": {white} Switch to ";

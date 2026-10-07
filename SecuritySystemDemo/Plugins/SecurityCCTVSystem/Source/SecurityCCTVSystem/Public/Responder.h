@@ -32,10 +32,7 @@ protected:
 
 private:
 	UFUNCTION(Category = "Security System")
-	void Respond(ESecurityState SecurityState);	
-
-	UPROPERTY(EditAnywhere, Category = "Security System")
-	float CooldownTimer = 3.0f;
+	void Respond(ESecurityState SecurityState);
 
 	ESecurityState CurrentState = ESecurityState::Neutral;
 };

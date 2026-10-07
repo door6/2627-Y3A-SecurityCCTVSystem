@@ -73,7 +73,7 @@ void FSecurityManagerInterface::CustomizeDetails(IDetailLayoutBuilder& DetailBui
             ]
             .ValueContent()
             [
-                BuildRespondersDropdown(DetectorActor, &DetailBuilder)
+                BuildRespondersDropdown(DetectorActor, World, &DetailBuilder)
             ];
     }  
 }
@@ -92,13 +92,13 @@ FReply FSecurityManagerInterface::OnDeleteResponderClicked(FString DetectorName,
     return FReply::Handled();
 }
 
-TSharedRef<SWidget> FSecurityManagerInterface::BuildRespondersDropdown(AActor* DetectorActor, IDetailLayoutBuilder* DetailBuilder)
+TSharedRef<SWidget> FSecurityManagerInterface::BuildRespondersDropdown(AActor* DetectorActor, UWorld* World, IDetailLayoutBuilder* DetailBuilder)
 {
     return SNew(SComboButton)
-        .OnGetMenuContent_Lambda([this, DetectorActor, DetailBuilder]() -> TSharedRef<SWidget>
+        .OnGetMenuContent_Lambda([this, DetectorActor, World, DetailBuilder]() -> TSharedRef<SWidget>
             {
                 FMenuBuilder MenuBuilder(true, nullptr);
-                TArray<AActor*> ResponderCandidates = GetResponderCandidates();
+                TArray<AActor*> ResponderCandidates = GetResponderCandidates(World);
                 // fill dropdown with all actors with responder component
                 for (AActor* Candidate : ResponderCandidates)
                 {
@@ -121,11 +121,11 @@ TSharedRef<SWidget> FSecurityManagerInterface::BuildRespondersDropdown(AActor* D
         ];
 }
 
-TArray<AActor*> FSecurityManagerInterface::GetResponderCandidates() const
+TArray<AActor*> FSecurityManagerInterface::GetResponderCandidates(UWorld* World) const
 {
     TArray<AActor*> Responders;
 
-    for (TObjectIterator<AActor> It; It; ++It)
+    for (TActorIterator<AActor> It(World); It; ++It)
     {
         if (It->FindComponentByClass<UResponderComponent>())
             Responders.Add(*It);
