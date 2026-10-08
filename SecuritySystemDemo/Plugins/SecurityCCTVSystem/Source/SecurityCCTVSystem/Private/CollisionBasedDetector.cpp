@@ -29,11 +29,9 @@ ACollisionBasedDetector::ACollisionBasedDetector()
 
 	//add a collider shape component
 	ColliderBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
-	//ColliderBoxComponent->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 	ColliderBoxComponent->SetupAttachment(Root);
 	ColliderBoxComponent->SetGenerateOverlapEvents(true);
-	ColliderBoxComponent->SetBoxExtent(FVector(300.f, 300.f, 300.f), true);	//false
-	//ColliderBoxComponent->SetCollisionProfileName(TEXT("Trigger"), false);
+	ColliderBoxComponent->SetBoxExtent(FVector(300.f, 300.f, 300.f), true);
 
 	//set debug colors
 	DebugColor = FColorList::Green;

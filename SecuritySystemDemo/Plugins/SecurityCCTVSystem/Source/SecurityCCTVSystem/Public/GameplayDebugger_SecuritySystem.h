@@ -29,9 +29,12 @@ public:
 	static void AddOnScreenDebugMessage(const FString& Message, float DelayTime = 5.0f);
 
 private:
-	TArray<AActor*> Detectors;
-	TArray<AActor*> Responders;
-	USecurityManagerSubsystem* SecurityManager = nullptr;
+	//TArray<AActor*> Detectors;
+	//TArray<AActor*> Responders;
+	//USecurityManagerSubsystem* SecurityManager = nullptr;
+	TArray<TWeakObjectPtr<AActor>> Detectors;
+	TArray<TWeakObjectPtr<AActor>>  Responders;
+	TWeakObjectPtr<USecurityManagerSubsystem> SecurityManager;
 
 	static inline TArray<FDebugMessage> PendingMessages;
 };

@@ -28,13 +28,14 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 {
 	UWorld* World = OwnerPC->GetWorld();
 
-	if (!SecurityManager)
+	// if pointer to the security manager doesn't exist, get a security manager and create arrays of detectors and responders
+	if (!SecurityManager.IsValid())	//!SecurityManager
 	{			
 		if (!World)
 			return;
 
 		SecurityManager = World->GetSubsystem<USecurityManagerSubsystem>();
-		if (!SecurityManager)
+		if (!SecurityManager.IsValid())	//!SecurityManager
 		{
 			this->AddTextLine("{red} No Security Manager!!");
 			return;
@@ -55,23 +56,23 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 				continue;
 		}
 	}
-	
-	//FString Message = FString::Printf(TEXT("Detectors = %d"), Detectors.Num());
-	//this->AddTextLine(Message);
 
+	// display all pending debug messages
 	for (FDebugMessage& DebugMessage : PendingMessages)
 	{
 		this->AddTextLine(DebugMessage.Message);
 		DebugMessage.Timer -= World->GetDeltaSeconds();
 	}
+	// remove all messages whose timer reached 0
 	PendingMessages.RemoveAll([](const FDebugMessage& DebugMessage)
 	{
 		return DebugMessage.Timer <= 0.0f;
 	});
 
-	for (AActor* Detector : Detectors)
+	// call detectors' debug drawing functions
+	for (TWeakObjectPtr<AActor> Detector : Detectors)		//for (AActor* Detector : Detectors)
 	{
-		if (!Detector)
+		if (!Detector.IsValid())	//!Detector
 			continue;
 
 		AMotionDetector* MotionDetector = Cast<AMotionDetector>(Detector);
@@ -87,36 +88,6 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 			continue;
 		}
 	}
-
-	/*UAIPerceptionComponent* PerceptionComponent = nullptr;
-	APawn* MyPawn = Cast<APawn>(DebugActor);
-	if (MyPawn)
-	{
-		AController* Controller = MyPawn->GetController();
-		if (AAIController* AIC = Cast<AAIController>(Controller))
-		{
-			PerceptionComponent = AIC->GetPerceptionComponent();
-		}
-		else
-		{
-			PerceptionComponent = MyPawn->FindComponentByClass<UAIPerceptionComponent>();
-			// try the controller if the Pawn doesn't have it
-			if (PerceptionComponent == nullptr && Controller)
-			{
-				PerceptionComponent = Controller->FindComponentByClass<UAIPerceptionComponent>();
-			}
-		}
-	}
-
-	if (PerceptionComponent == nullptr && DebugActor != nullptr)
-	{
-		PerceptionComponent = DebugActor->FindComponentByClass<UAIPerceptionComponent>();
-	}
-
-	if (PerceptionComponent)
-	{
-		PerceptionComponent->DescribeSelfToGameplayDebugger(this);
-	}*/
 }
 
 void FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage(const FString& Message, float DelayTime)

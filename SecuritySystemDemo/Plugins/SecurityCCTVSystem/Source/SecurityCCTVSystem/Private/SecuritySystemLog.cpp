@@ -3,10 +3,3 @@
 
 #include "SecuritySystemLog.h"
 
-SecurityDebug::SecurityDebug()
-{
-}
-
-SecurityDebug::~SecurityDebug()
-{
-}

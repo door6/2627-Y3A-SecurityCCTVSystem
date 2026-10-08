@@ -3,32 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "UObject/Class.h"
 #include "ESecurityState.generated.h"
 
-/**
- * 
-
-UCLASS()
-class SECURITYCCTVSYSTEM_API UESecurityState : public UEnum
-{
-	GENERATED_BODY()
-
-public:
-    enum
-    {
-        Alarm,
-        Neutral
-    };
-	
-};
- */
-
-
-
-/**
- * Custom enum to demonstrate how to expose enums to Blueprints.
- */
 UENUM(BlueprintType)
 enum class ESecurityState : uint8
 {

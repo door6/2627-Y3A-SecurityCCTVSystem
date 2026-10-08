@@ -6,15 +6,3 @@
 #include "Logging/StructuredLog.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogSecuritySystem, Log, All);
-
-/**
- * 
- */
-class SecurityDebug
-{
-public:
-	SecurityDebug();
-	~SecurityDebug();
-
-
-};
