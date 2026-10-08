@@ -56,6 +56,9 @@ void ACollisionBasedDetector::BeginPlay()
 	// bind collider overlap delegates
 	ColliderBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ACollisionBasedDetector::OnColliderBoxBeginOverlap);
 	ColliderBoxComponent->OnComponentEndOverlap.AddDynamic(this, &ACollisionBasedDetector::OnColliderBoxEndOverlap);
+
+	FGameplayDebuggerCategory_SecuritySystem::OnGameplayDebugDraw.AddUObject(this, &ACollisionBasedDetector::DescribeSelfToGameplayDebugger);
+	//DetectorComponent->OnGameplayDebugDraw.AddUObject(this, &ACollisionBasedDetector::DescribeSelfToGameplayDebugger);
 	
 }
 

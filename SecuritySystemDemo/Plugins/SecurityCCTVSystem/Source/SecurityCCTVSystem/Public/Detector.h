@@ -5,9 +5,18 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "ESecurityState.h"
+
+//#if WITH_GAMEPLAY_DEBUGGER_MENU
+//#include "GameplayDebugger_SecuritySystem.h"
+//#endif // WITH_GAMEPLAY_DEBUGGER_MENU
+
 #include "Detector.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNotifyManagerDelegate, const FString&, DetectorName, ESecurityState, SecurityState);
+
+//#if WITH_GAMEPLAY_DEBUGGER_MENU
+//DECLARE_MULTICAST_DELEGATE_OneParam(FGameplayDebugDraw, FGameplayDebuggerCategory*);
+//#endif // WITH_GAMEPLAY_DEBUGGER_MENU
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SECURITYCCTVSYSTEM_API UDetectorComponent : public UActorComponent
@@ -28,6 +37,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Security System")
 	void ChangeState(ESecurityState NewState);
+
+//#if WITH_GAMEPLAY_DEBUGGER_MENU
+	//FGameplayDebugDraw OnGameplayDebugDraw;
+//#endif //WITH_GAMEPLAY_DEBUGGER_MENU
 
 protected:
 	// Called when the game starts

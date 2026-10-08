@@ -65,7 +65,9 @@ void AMotionDetector::Tick(float DeltaTime)
 void AMotionDetector::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	FGameplayDebuggerCategory_SecuritySystem::OnGameplayDebugDraw.AddUObject(this, &AMotionDetector::DescribeSelfToGameplayDebugger);
+	//DetectorComponent->OnGameplayDebugDraw.AddUObject(this, &AMotionDetector::DescribeSelfToGameplayDebugger);
 }
 
 void AMotionDetector::DetectIntruders(const TArray<AActor*>& DetectedActors)

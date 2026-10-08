@@ -43,14 +43,16 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 
 		for (TActorIterator<AActor> It(World); It; ++It)
 		{
-			AActor* Actor = *It;
-			if (Actor->FindComponentByClass<UDetectorComponent>())
+			AActor* Actor = *It;	
+			if (UDetectorComponent* DetectorComponent = Actor->FindComponentByClass<UDetectorComponent>())	//(Actor->FindComponentByClass<UDetectorComponent>())
 			{
-				Detectors.AddUnique(Actor);
-			}
-			else if (Actor->FindComponentByClass<UResponderComponent>())
+				//DetectorComponents.AddUnique(Actor);
+				DetectorComponents.AddUnique(DetectorComponent);
+			}			
+			else if (UResponderComponent* ResponderComponent = Actor->FindComponentByClass<UResponderComponent>())	//(Actor->FindComponentByClass<UResponderComponent>())
 			{
-				Responders.AddUnique(Actor);
+				//ResponderComponents.AddUnique(Actor);
+				ResponderComponents.AddUnique(ResponderComponent);
 			}
 			else
 				continue;
@@ -70,12 +72,17 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 	});
 
 	// call detectors' debug drawing functions
-	for (TWeakObjectPtr<AActor> Detector : Detectors)		//for (AActor* Detector : Detectors)
+	OnGameplayDebugDraw.Broadcast(this);
+
+	for (TWeakObjectPtr<UDetectorComponent> DetectorComponent : DetectorComponents)		//for (AActor* Detector : Detectors)
 	{
-		if (!Detector.IsValid())	//!Detector
+		if (!DetectorComponent.IsValid())	//!Detector
 			continue;
 
-		AMotionDetector* MotionDetector = Cast<AMotionDetector>(Detector);
+		//DetectorComponent->OnGameplayDebugDraw.Broadcast(this);
+		
+
+		/*AMotionDetector* MotionDetector = Cast<AMotionDetector>(Detector);
 		if (MotionDetector)
 		{
 			MotionDetector->DescribeSelfToGameplayDebugger(this);
@@ -86,7 +93,7 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 		{
 			CollisionBasedDetector->DescribeSelfToGameplayDebugger(this);
 			continue;
-		}
+		}*/
 	}
 }
 

@@ -9,7 +9,11 @@
 
 class AActor;
 class APlayerController;
+class UDetectorComponent;
+class UResponderComponent;
 class USecurityManagerSubsystem;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FGameplayDebugDraw, FGameplayDebuggerCategory*);
 
 struct SECURITYCCTVSYSTEM_API FDebugMessage
 {
@@ -28,12 +32,16 @@ public:
 
 	static void AddOnScreenDebugMessage(const FString& Message, float DelayTime = 5.0f);
 
+	static void BindToGameplayDebugDraw();
+
+	static inline FGameplayDebugDraw OnGameplayDebugDraw;
+
 private:
 	//TArray<AActor*> Detectors;
 	//TArray<AActor*> Responders;
 	//USecurityManagerSubsystem* SecurityManager = nullptr;
-	TArray<TWeakObjectPtr<AActor>> Detectors;
-	TArray<TWeakObjectPtr<AActor>>  Responders;
+	TArray<TWeakObjectPtr<UDetectorComponent>> DetectorComponents;
+	TArray<TWeakObjectPtr<UResponderComponent>> ResponderComponents;
 	TWeakObjectPtr<USecurityManagerSubsystem> SecurityManager;
 
 	static inline TArray<FDebugMessage> PendingMessages;
