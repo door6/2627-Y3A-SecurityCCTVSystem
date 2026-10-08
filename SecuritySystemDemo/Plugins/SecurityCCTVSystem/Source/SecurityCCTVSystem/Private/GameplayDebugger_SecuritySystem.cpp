@@ -13,6 +13,7 @@
 #include "Responder.h"
 #include "EngineUtils.h"
 #include "MotionDetector.h"
+#include "CollisionBasedDetector.h"
 
 FGameplayDebuggerCategory_SecuritySystem::FGameplayDebuggerCategory_SecuritySystem()
 {
@@ -77,6 +78,13 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 		if (MotionDetector)
 		{
 			MotionDetector->DescribeSelfToGameplayDebugger(this);
+			continue;
+		}
+		ACollisionBasedDetector* CollisionBasedDetector = Cast<ACollisionBasedDetector>(Detector);
+		if (CollisionBasedDetector)
+		{
+			CollisionBasedDetector->DescribeSelfToGameplayDebugger(this);
+			continue;
 		}
 	}
 
