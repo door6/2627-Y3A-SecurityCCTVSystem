@@ -72,7 +72,26 @@ void AMotionDetector::DetectIntruders(const TArray<AActor*>& DetectedActors)
 	TArray<AActor*> PerceivedActors;
 	PerceptionComponent->GetCurrentlyPerceivedActors(SightConfig->GetSenseImplementation(), PerceivedActors);
 
-	ESecurityState NewSecurityState = ESecurityState::Neutral;
+	switch (PerceivedActors.IsEmpty())
+	{
+	case true:
+		DetectorComponent->ChangeState(ESecurityState::Neutral);
+		return;
+	case false:
+		// log all perceived actors
+		FString Message = GetActorLabel() + ": Perceived actors = ";
+		for (AActor* Actor : PerceivedActors)
+		{
+			Message += Actor->GetActorLabel() + ", ";
+		}
+		UE_LOG(LogSecuritySystem, Log, TEXT("%s"), *Message);
+
+		DetectorComponent->ChangeState(ESecurityState::Alarm);
+		return;
+	}
+
+
+	/*ESecurityState NewSecurityState = ESecurityState::Neutral;
 	switch (DetectorComponent->GetCurrentState())
 	{
 	case ESecurityState::Neutral:
@@ -101,7 +120,7 @@ void AMotionDetector::DetectIntruders(const TArray<AActor*>& DetectedActors)
 		break;
 	}
 
-	DetectorComponent->ChangeState(NewSecurityState);
+	DetectorComponent->ChangeState(NewSecurityState);*/
 }
 
 /*void AMotionDetector::DetectIntruderOld(AActor* Actor, FAIStimulus Stimulus)

@@ -50,5 +50,5 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	FColor DetectionDebugColor;
 
-	TArray<AActor*> OverlappedActors;
+	TSet<TWeakObjectPtr<AActor>> OverlappedActors;
 };

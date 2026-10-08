@@ -36,7 +36,7 @@ void UDetectorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	}
 
 	CooldownTimer += DeltaTime;
-	UE_LOG(LogSecuritySystem, Log, TEXT("%s: CooldownTimer = %f"), *GetOwner()->GetActorLabel(), CooldownTimer);
+	//UE_LOG(LogSecuritySystem, Log, TEXT("%s: CooldownTimer = %f"), *GetOwner()->GetActorLabel(), CooldownTimer);
 }
 
 // Called when the game starts
@@ -66,6 +66,13 @@ inline ESecurityState UDetectorComponent::GetCurrentState()
 
 void UDetectorComponent::ChangeState(ESecurityState NewState)
 {
+	// if state changes to alarm while in cooldown, stop cooldown
+	if (NewState == ESecurityState::Alarm && CooldownTimer > 0.0f)
+	{
+		CooldownTimer = 0.0f;
+		return;
+	}
+
 	// return if the new security state is the same as the current state
 	if (CurrentState == NewState)
 		return;
@@ -99,6 +106,8 @@ void UDetectorComponent::TriggerResponders(ESecurityState SecurityState)
 		DebugMessage += "{red} Alarm";
 		LogMessage += " Alarm";
 		break;
+	default:
+		return;
 	}
 #if WITH_GAMEPLAY_DEBUGGER_MENU
 	FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage(DebugMessage);

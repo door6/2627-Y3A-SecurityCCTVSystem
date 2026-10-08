@@ -46,22 +46,25 @@ void UResponderComponent::Respond(ESecurityState SecurityState)
 	// debug messages
 	FString DebugMessage = "{yellow}" + GetOwner()->GetActorLabel() + ": {white} Responed: switch to ";
 	FString LogMessage = GetOwner()->GetActorLabel() + ": Responed: switch to ";
-	if (SecurityState == ESecurityState::Alarm)
+	switch (SecurityState)
 	{
+	case ESecurityState::Alarm:
 		LogMessage += "Alarm";
 		DebugMessage += "{red} Alarm";
 
 		// increase the count of bound detectors in the alarm state
 		AlarmCounter++;
-	}
-	else 
-	{ 
+		break;
+	case ESecurityState::Neutral:
 		LogMessage += "Neutral";
 		DebugMessage += "{green} Neutral";
 
 		// if there are still bound detectors in the alarm state, return
 		if (--AlarmCounter > 0)
 			return;
+		break;
+	default:
+		return;
 	}
 
 	// return if the new security state is the same as the current state
