@@ -85,7 +85,7 @@ TSharedRef<SDockTab> FSecurityCCTVSystemModule::SpawnSecuritySystemTab(const FSp
 
 	TSharedRef<IDetailsView> DetailsView = PropertyModule.CreateDetailView(DetailsViewArgs);
 
-	// Pull the subsystem from the currently active editor world
+	// get the subsystem from the currently active editor world
 	UWorld* EditorWorld = GEditor ? GEditor->GetEditorWorldContext().World() : nullptr;
 	USecurityManagerSubsystem* Subsystem = EditorWorld ? EditorWorld->GetSubsystem<USecurityManagerSubsystem>() : nullptr;
 

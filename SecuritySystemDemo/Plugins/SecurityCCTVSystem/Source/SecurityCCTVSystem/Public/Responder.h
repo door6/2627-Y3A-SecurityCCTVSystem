@@ -23,6 +23,9 @@ public:
 
 	void BindToManager(FDetectorDelegate& ManagerDelegate);
 
+	UFUNCTION(BlueprintCallable, Category = "Security System")
+	inline ESecurityState GetCurrentState();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

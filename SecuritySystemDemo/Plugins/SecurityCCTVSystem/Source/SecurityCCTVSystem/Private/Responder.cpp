@@ -41,6 +41,11 @@ void UResponderComponent::BindToManager(FDetectorDelegate& ManagerDelegate)
 	ManagerDelegate.AddUniqueDynamic(this, &UResponderComponent::Respond);
 }
 
+inline ESecurityState UResponderComponent::GetCurrentState()
+{
+	return CurrentState;
+}
+
 void UResponderComponent::Respond(ESecurityState SecurityState)
 {
 	// debug messages
