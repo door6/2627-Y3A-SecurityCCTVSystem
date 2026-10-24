@@ -35,8 +35,8 @@ private:
 	UFUNCTION()
 	void OnColliderBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* CubeMeshComponent;
+	//UPROPERTY(VisibleAnywhere)
+	//UStaticMeshComponent* CubeMeshComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	UBoxComponent* ColliderBoxComponent;

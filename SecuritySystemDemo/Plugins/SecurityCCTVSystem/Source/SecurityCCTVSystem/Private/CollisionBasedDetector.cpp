@@ -21,11 +21,11 @@ ACollisionBasedDetector::ACollisionBasedDetector()
 	SetRootComponent(Root);
 
 	//add a cube mesh component
-	CubeMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
-	UStaticMesh* CubeMesh = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object;
-	CubeMeshComponent->SetStaticMesh(CubeMesh);
-	CubeMeshComponent->SetCanEverAffectNavigation(false);
-	CubeMeshComponent->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
+	//CubeMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
+	//UStaticMesh* CubeMesh = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object;
+	//CubeMeshComponent->SetStaticMesh(CubeMesh);
+	//CubeMeshComponent->SetCanEverAffectNavigation(false);
+	//CubeMeshComponent->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 
 	//add a collider shape component
 	ColliderBoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
