@@ -25,8 +25,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* CubeMeshComponent = nullptr;
+	//UPROPERTY(VisibleAnywhere)
+	//UStaticMeshComponent* CubeMeshComponent = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	USceneCaptureComponent2D* SceneCaptureComponent = nullptr;
