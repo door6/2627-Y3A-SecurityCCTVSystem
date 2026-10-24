@@ -37,8 +37,8 @@ private:
 	//UFUNCTION()
 	//void DetectIntruderOld(AActor* Actor, FAIStimulus Stimulus);
 
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* CubeMeshComponent;
+	//UPROPERTY(VisibleAnywhere)
+	//UStaticMeshComponent* CubeMeshComponent;
 
 	UAIPerceptionComponent* PerceptionComponent;
 
