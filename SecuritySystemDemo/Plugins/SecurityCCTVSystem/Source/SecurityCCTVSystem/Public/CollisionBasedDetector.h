@@ -16,9 +16,7 @@ class SECURITYCCTVSYSTEM_API ACollisionBasedDetector : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ACollisionBasedDetector();
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 #if WITH_GAMEPLAY_DEBUGGER_MENU
@@ -26,7 +24,6 @@ public:
 #endif // WITH_GAMEPLAY_DEBUGGER_MENU
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
@@ -35,15 +32,14 @@ private:
 	UFUNCTION()
 	void OnColliderBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	//UPROPERTY(VisibleAnywhere)
-	//UStaticMeshComponent* CubeMeshComponent;
-
-	UPROPERTY(EditAnywhere, Category = "Security System")
-	UBoxComponent* ColliderBoxComponent;
+	// components
+	UPROPERTY(VisibleAnywhere, Category = "Security System")
+	TObjectPtr<UBoxComponent> ColliderBoxComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "Security System")
-	UDetectorComponent* DetectorComponent;
+	TObjectPtr<UDetectorComponent> DetectorComponent;
 
+	// variables
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	FColor DebugColor;
 
