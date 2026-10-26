@@ -28,11 +28,15 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 {
 	UWorld* World = OwnerPC->GetWorld();
 
+	// check to avoid crashes if the world cannot be acceessed
+	if (!World)
+		return;
+
 	// if pointer to the security manager doesn't exist, get a security manager and create arrays of detectors and responders
-	if (!SecurityManager.IsValid())	//!SecurityManager
+	/*if (!SecurityManager.IsValid())	//!SecurityManager
 	{			
-		if (!World)
-			return;
+		//if (!World)
+			//return;
 
 		SecurityManager = World->GetSubsystem<USecurityManagerSubsystem>();
 		if (!SecurityManager.IsValid())	//!SecurityManager
@@ -57,7 +61,7 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 			else
 				continue;
 		}
-	}
+	}*/
 
 	// display all pending debug messages
 	for (FDebugMessage& DebugMessage : PendingMessages)
@@ -74,10 +78,10 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 	// call detectors' debug drawing functions
 	OnGameplayDebugDraw.Broadcast(this);
 
-	for (TWeakObjectPtr<UDetectorComponent> DetectorComponent : DetectorComponents)		//for (AActor* Detector : Detectors)
+	/*for (TWeakObjectPtr<UDetectorComponent> DetectorComponent : DetectorComponents)		//for (AActor* Detector : Detectors)
 	{
 		if (!DetectorComponent.IsValid())	//!Detector
-			continue;
+			continue;*/
 
 		//DetectorComponent->OnGameplayDebugDraw.Broadcast(this);
 		
@@ -94,7 +98,7 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 			CollisionBasedDetector->DescribeSelfToGameplayDebugger(this);
 			continue;
 		}*/
-	}
+	//}
 }
 
 void FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage(const FString& Message, float DelayTime)

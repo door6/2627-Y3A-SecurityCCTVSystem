@@ -17,9 +17,7 @@ class SECURITYCCTVSYSTEM_API AMotionDetector : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AMotionDetector();
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 #if WITH_GAMEPLAY_DEBUGGER_MENU
@@ -27,30 +25,25 @@ public:
 #endif // WITH_GAMEPLAY_DEBUGGER_MENU
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
 	UFUNCTION()
 	void DetectIntruders(const TArray<AActor*>& DetectedActors);
 
-	//UFUNCTION()
-	//void DetectIntruderOld(AActor* Actor, FAIStimulus Stimulus);
-
-	//UPROPERTY(VisibleAnywhere)
-	//UStaticMeshComponent* CubeMeshComponent;
-
-	UAIPerceptionComponent* PerceptionComponent;
+	// components
+	TObjectPtr<UAIPerceptionComponent> PerceptionComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Security System", Instanced)
-	UAISenseConfig_Sight* SightConfig;
+	TObjectPtr<UAISenseConfig_Sight> SightConfig;
 
+	UPROPERTY(VisibleAnywhere, Category = "Security System")
+	TObjectPtr<UDetectorComponent> DetectorComponent;
+
+	// variables
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	FColor LoseSightRangeDebugColor;
 
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	FColor DetectionDebugColor;
-
-	UPROPERTY(VisibleAnywhere, Category = "Security System")
-	UDetectorComponent* DetectorComponent;
 };

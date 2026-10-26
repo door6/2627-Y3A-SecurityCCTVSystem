@@ -14,23 +14,20 @@ class SECURITYCCTVSYSTEM_API ASecurityCamera : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ASecurityCamera();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	//UPROPERTY(VisibleAnywhere)
-	//UStaticMeshComponent* CubeMeshComponent = nullptr;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
 
-	UPROPERTY(EditAnywhere, Category = "Security System")
-	USceneCaptureComponent2D* SceneCaptureComponent = nullptr;
+	UPROPERTY(VisibleAnywhere, Category = "Security System")
+	TObjectPtr<USceneCaptureComponent2D> SceneCaptureComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Detector Component")
-	UDetectorComponent* DetectorComponent = nullptr;
+	UPROPERTY(VisibleAnywhere, Category = "Security System")
+	TObjectPtr<UDetectorComponent> DetectorComponent;
 };

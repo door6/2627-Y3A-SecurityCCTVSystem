@@ -32,7 +32,7 @@ public:
 
 	static void AddOnScreenDebugMessage(const FString& Message, float DelayTime = 5.0f);
 
-	static void BindToGameplayDebugDraw();
+	//static void BindToGameplayDebugDraw();
 
 	static inline FGameplayDebugDraw OnGameplayDebugDraw;
 
@@ -40,9 +40,10 @@ private:
 	//TArray<AActor*> Detectors;
 	//TArray<AActor*> Responders;
 	//USecurityManagerSubsystem* SecurityManager = nullptr;
-	TArray<TWeakObjectPtr<UDetectorComponent>> DetectorComponents;
-	TArray<TWeakObjectPtr<UResponderComponent>> ResponderComponents;
-	TWeakObjectPtr<USecurityManagerSubsystem> SecurityManager;
+
+	//TArray<TWeakObjectPtr<UDetectorComponent>> DetectorComponents;
+	//TArray<TWeakObjectPtr<UResponderComponent>> ResponderComponents;
+	//TWeakObjectPtr<USecurityManagerSubsystem> SecurityManager;
 
 	static inline TArray<FDebugMessage> PendingMessages;
 };

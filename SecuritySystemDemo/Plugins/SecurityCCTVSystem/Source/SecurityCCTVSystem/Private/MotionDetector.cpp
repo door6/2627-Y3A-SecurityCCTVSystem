@@ -12,23 +12,14 @@
 #include "GameplayDebugger_SecuritySystem.h"
 #endif // WITH_GAMEPLAY_DEBUGGER_MENU
 
-// Sets default values
 AMotionDetector::AMotionDetector()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	//so actor can be moved in the editor
 	USceneComponent* Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	Root->SetMobility(EComponentMobility::Static);
 	SetRootComponent(Root);
-
-	//add a cube mesh component
-	//CubeMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
-	//UStaticMesh* CubeMesh = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object;
-	//CubeMeshComponent->SetStaticMesh(CubeMesh);
-	//CubeMeshComponent->SetCanEverAffectNavigation(false);
-	//CubeMeshComponent->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 
 	//add ai perception component and create sight configuration for it
 	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception Component"));
@@ -54,14 +45,11 @@ AMotionDetector::AMotionDetector()
 	DetectorComponent = CreateDefaultSubobject<UDetectorComponent>(TEXT("Detector Component"));
 }
 
-// Called every frame
 void AMotionDetector::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
+	//Super::Tick(DeltaTime);
 }
 
-// Called when the game starts or when spawned
 void AMotionDetector::BeginPlay()
 {
 	Super::BeginPlay();

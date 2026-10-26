@@ -3,11 +3,9 @@
 
 #include "SecurityCamera.h"
 
-// Sets default values
 ASecurityCamera::ASecurityCamera()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	//so actor can be moved in the editor
 	USceneComponent* Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -15,15 +13,14 @@ ASecurityCamera::ASecurityCamera()
 	SetRootComponent(Root);
 
 	//add a cube mesh component
-	/*CubeMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
+	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
 	UStaticMesh* CubeMesh = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object;
-	CubeMeshComponent->SetStaticMesh(CubeMesh);
-	CubeMeshComponent->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);*/
+	StaticMeshComponent->SetStaticMesh(CubeMesh);
+	StaticMeshComponent->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 
 	//add scene capture component 2d
 	SceneCaptureComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("Scene Capture Component 2D"));
 	SceneCaptureComponent->SetupAttachment(Root);
-	//SceneCaptureComponent2D->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
 	SceneCaptureComponent->HiddenActors.AddUnique(this);
 
 	//add detector component
@@ -31,16 +28,12 @@ ASecurityCamera::ASecurityCamera()
 	DetectorComponent->SetAlertTime(0.0f);	// so the switch between security states is instant
 }
 
-// Called when the game starts or when spawned
 void ASecurityCamera::BeginPlay()
 {
 	Super::BeginPlay();	
 }
 
-// Called every frame
 void ASecurityCamera::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
 }
 
