@@ -65,7 +65,7 @@ void ACollisionBasedDetector::BeginPlay()
 void ACollisionBasedDetector::OnColliderBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	OverlappedActors.Add(OtherActor);
-	DetectorComponent->ChangeState(ESecurityState::Alarm);
+	DetectorComponent->CheckCanStateBeChanged(ESecurityState::Alarm);
 }
 
 void ACollisionBasedDetector::OnColliderBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -75,7 +75,7 @@ void ACollisionBasedDetector::OnColliderBoxEndOverlap(UPrimitiveComponent* Overl
 	// return to neutral state only if there are no overlapped actors
 	if (OverlappedActors.IsEmpty())
 	{
-		DetectorComponent->ChangeState(ESecurityState::Neutral);
+		DetectorComponent->CheckCanStateBeChanged(ESecurityState::Neutral);
 	}
 }
 

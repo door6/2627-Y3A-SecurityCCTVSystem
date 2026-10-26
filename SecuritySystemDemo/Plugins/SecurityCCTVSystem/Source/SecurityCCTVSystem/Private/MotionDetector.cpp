@@ -78,7 +78,7 @@ void AMotionDetector::DetectIntruders(const TArray<AActor*>& DetectedActors)
 	switch (PerceivedActors.IsEmpty())
 	{
 	case true:
-		DetectorComponent->ChangeState(ESecurityState::Neutral);
+		DetectorComponent->CheckCanStateBeChanged(ESecurityState::Neutral);
 		return;
 	case false:
 		// log all perceived actors
@@ -89,7 +89,7 @@ void AMotionDetector::DetectIntruders(const TArray<AActor*>& DetectedActors)
 		}
 		UE_LOG(LogSecuritySystem, Log, TEXT("%s"), *Message);
 
-		DetectorComponent->ChangeState(ESecurityState::Alarm);
+		DetectorComponent->CheckCanStateBeChanged(ESecurityState::Alarm);
 		return;
 	}
 

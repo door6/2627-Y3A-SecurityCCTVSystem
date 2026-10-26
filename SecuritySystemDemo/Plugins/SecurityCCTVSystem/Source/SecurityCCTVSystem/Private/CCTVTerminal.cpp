@@ -348,5 +348,5 @@ void ACCTVTerminal::TriggerResponders()
 	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal: TriggerResponders"));
 
 	//DetectorComponent->TriggerResponders(NewSecurityState);
-	DetectorComponent->ChangeState(NewSecurityState);
+	DetectorComponent->CheckCanStateBeChanged(NewSecurityState);
 }

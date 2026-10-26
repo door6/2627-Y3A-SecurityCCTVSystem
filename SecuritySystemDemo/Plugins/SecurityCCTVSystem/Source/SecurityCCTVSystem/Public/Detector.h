@@ -36,7 +36,7 @@ public:
 	inline ESecurityState GetCurrentState();
 
 	UFUNCTION(BlueprintCallable, Category = "Security System")
-	void ChangeState(ESecurityState NewState);
+	void CheckCanStateBeChanged(ESecurityState NewState);
 
 //#if WITH_GAMEPLAY_DEBUGGER_MENU
 	//FGameplayDebugDraw OnGameplayDebugDraw;
@@ -47,7 +47,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	void TriggerResponders(ESecurityState SecurityState);		// broadcast new state ( new functio name ? )
+	void ChangeStateAndNotifyManager(ESecurityState SecurityState);
 
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	float AlertTime = 2.0f;

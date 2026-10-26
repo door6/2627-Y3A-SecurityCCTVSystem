@@ -8,44 +8,32 @@
 #include "GameplayDebugger_SecuritySystem.h"
 #endif // WITH_GAMEPLAY_DEBUGGER_MENU
 
-// Sets default values for this component's properties
 UDetectorComponent::UDetectorComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
-// Called every frame
 void UDetectorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	//Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-
+	// if detector is not in cooldown, return
 	if (CooldownTimer == 0.0f)
 		return;
 
+	// if cooldown timer exceeds the alert time, change state to neutral and reset timer
 	if (CooldownTimer >= AlertTime)
 	{
-		TriggerResponders(ESecurityState::Neutral);
+		ChangeStateAndNotifyManager(ESecurityState::Neutral);
 		CooldownTimer = 0.0f;
 		return;
 	}
 
+	// otherwise increase cooldown timer
 	CooldownTimer += DeltaTime;
-	//UE_LOG(LogSecuritySystem, Log, TEXT("%s: CooldownTimer = %f"), *GetOwner()->GetActorLabel(), CooldownTimer);
 }
 
-// Called when the game starts
 void UDetectorComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-
 }
 
 void UDetectorComponent::BindManager()
@@ -64,7 +52,7 @@ inline ESecurityState UDetectorComponent::GetCurrentState()
 	return CurrentState;
 }
 
-void UDetectorComponent::ChangeState(ESecurityState NewState)
+void UDetectorComponent::CheckCanStateBeChanged(ESecurityState NewState)
 {
 	// if state changes to alarm while in cooldown, stop cooldown
 	if (NewState == ESecurityState::Alarm && CooldownTimer > 0.0f)
@@ -84,11 +72,11 @@ void UDetectorComponent::ChangeState(ESecurityState NewState)
 		return;
 	}
 
-	// otherwise change state and trigger responders
-	TriggerResponders(NewState);
+	// otherwise change state and notify manager
+	ChangeStateAndNotifyManager(NewState);
 }
 
-void UDetectorComponent::TriggerResponders(ESecurityState SecurityState)
+void UDetectorComponent::ChangeStateAndNotifyManager(ESecurityState SecurityState)
 {
 	CurrentState = SecurityState;
 
