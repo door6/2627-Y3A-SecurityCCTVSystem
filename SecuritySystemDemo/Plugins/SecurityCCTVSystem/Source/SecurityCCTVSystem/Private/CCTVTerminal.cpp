@@ -351,21 +351,22 @@ void ACCTVTerminal::TriggerResponders()
 		return;
 	}
 
-	ESecurityState NewSecurityState;
+	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal: TriggerResponders"));
+
+	//ESecurityState NewSecurityState;
 	switch (DetectorComponent->GetCurrentState())		//DetectorComponent->CurrentState
 	{
 	case ESecurityState::Neutral:
-		NewSecurityState = ESecurityState::Alarm;
+		//NewSecurityState = ESecurityState::Alarm;
+		DetectorComponent->CheckCanStateBeChanged(ESecurityState::Alarm);
 		break;
 	case ESecurityState::Alarm:
-		NewSecurityState = ESecurityState::Neutral;
+		//NewSecurityState = ESecurityState::Neutral;
+		DetectorComponent->CheckCanStateBeChanged(ESecurityState::Neutral);
 		break;
 	}
 	//DetectorComponent->CurrentState = NewSecurityState;
 	//DetectorComponent->SetCurrentState(NewSecurityState);
 
-	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal: TriggerResponders"));
-
 	//DetectorComponent->TriggerResponders(NewSecurityState);
-	DetectorComponent->CheckCanStateBeChanged(NewSecurityState);
 }

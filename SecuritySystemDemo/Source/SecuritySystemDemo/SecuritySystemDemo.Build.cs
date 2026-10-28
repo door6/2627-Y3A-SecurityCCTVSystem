@@ -8,7 +8,7 @@ public class SecuritySystemDemo : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "SecurityCCTVSystem" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "SecurityCCTVSystem" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

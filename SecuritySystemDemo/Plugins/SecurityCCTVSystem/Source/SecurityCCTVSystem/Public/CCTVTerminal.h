@@ -37,6 +37,8 @@ public:
 	TObjectPtr<UTextureRenderTarget2D> TextureRenderTarget;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UMaterialInterface> RenderMaterial;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UMaterialInstanceDynamic> DynamicMaterialInstance;
 
 protected:
 	virtual void BeginPlay() override;
@@ -44,9 +46,6 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UMaterialInstanceDynamic> DynamicMaterialInstance;
 
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	float InteractRadius;
