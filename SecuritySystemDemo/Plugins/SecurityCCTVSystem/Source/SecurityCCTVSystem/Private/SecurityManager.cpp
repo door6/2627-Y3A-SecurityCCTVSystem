@@ -76,28 +76,17 @@ void ASecurityManager::TriggerResponders(const FString& DetectorName, ESecurityS
 
 
 
-void USecurityManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
-{
-
-	//LoadConfig();
-
-	//InputManager = NewObject<AInputManager>();
-}
 
 void USecurityManagerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
 
-
 	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), AInputManager::StaticClass());
-	if (FoundActor)
+	if (!FoundActor)
 	{
-		InputManager = Cast<AInputManager>(FoundActor);
+		InWorld.SpawnActor<AInputManager>();
 	}
-	else
-	{
-		UE_LOG(LogSecuritySystem, Error, TEXT("InputManager NOT found"));
-	}
+	
 
 	//UE_LOG(LogSecuritySystem, Log, TEXT("Number of bound detectors during BeginPlay = %d"), DetectorDelegates.Num());
 	/*UE_LOG(LogSecuritySystem, Log, TEXT("Number of bound detectors during BeginPlay = %d"), DetectorResponders.Num());

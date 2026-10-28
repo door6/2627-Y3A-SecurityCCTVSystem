@@ -90,8 +90,6 @@ class SECURITYCCTVSYSTEM_API USecurityManagerSubsystem : public UWorldSubsystem
 	GENERATED_BODY()
 
 public:
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
 	void BindResponderToDetector(const FString& DetectorName, const FString& ResponderName);
