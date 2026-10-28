@@ -31,7 +31,9 @@ ACCTVTerminal::ACCTVTerminal()
 		RenderMaterial = MaterialFinder.Object;
 	}
 
+	// set default values
 	InteractRadius = 500.f;
+	//TerminalWidgetClass = UCCTVTerminalWidget::StaticClass();
 
 #if 0
 	InputMapping = NewObject<UCCTVInputMappingContext>();
@@ -101,13 +103,20 @@ void ACCTVTerminal::BeginPlay()
 		ASecurityCamera* SecurityCamera = Cast<ASecurityCamera>(Actor);
 
 		if (!SecurityCamera->DetectorComponent)
-			UE_LOG(LogSecuritySystem, Error, TEXT("NO DETECTOR COMPONENT"));
+			UE_LOG(LogSecuritySystem, Error, TEXT("%s has NO detector component"), *SecurityCamera->GetActorLabel());
 		
 		SecurityCameras.AddUnique(SecurityCamera);
 	}
 	//CurrentCamera = SecurityCameras[0];
 	SecurityCameras[CurrentCameraIndex]->SceneCaptureComponent->TextureTarget = TextureRenderTarget;	//can have only one texture target, if there are multiple cctvs it will be displayed only to the last one
 
+	if (!TerminalWidgetClass)
+	{
+		UE_LOG(LogSecuritySystem, Error, TEXT("TerminalWidgetClass is NULL"));
+		return;
+	}
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	TerminalWidget = CreateWidget<UUserWidget>(PlayerController, TerminalWidgetClass);
 
 
 	//InteractInputAction = NewObject<UCCTVInteractInputAction>();
@@ -199,12 +208,22 @@ void ACCTVTerminal::Tick(float DeltaTime)
 {
 }
 
+const bool ACCTVTerminal::IsInUse()
+{
+	return InUse;
+}
+
 void ACCTVTerminal::TurnOn()
 {
 	if (InUse)
 		return;
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!PlayerController)
+	{
+		UE_LOG(LogSecuritySystem, Error, TEXT("PlayerController is NULL"));
+		return;
+	}
 
 	//check whether player is inside terminals interact radius
 	FVector PlayerLocation = PlayerController->PlayerCameraManager->GetCameraLocation();
@@ -216,7 +235,7 @@ void ACCTVTerminal::TurnOn()
 		return;*/
 
 	//interact radius check	
-	UE_LOG(LogSecuritySystem, Log, TEXT("TerminalLocation: %f %f %f"), this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
+	//UE_LOG(LogSecuritySystem, Log, TEXT("TerminalLocation: %f %f %f"), this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
 	FVector PlayerToTerminalVector = this->GetActorLocation() - PlayerLocation;
 	double SquaredDistance = PlayerToTerminalVector.SizeSquared();
 	if (SquaredDistance >= FMath::Square(InteractRadius))
@@ -232,16 +251,20 @@ void ACCTVTerminal::TurnOn()
 		UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal not in front of the player"));
 		return;
 	}
+
+	InUse = true;
+	UE_LOG(LogSecuritySystem, Log, TEXT("InUse: %s"), InUse ? TEXT("true") : TEXT("false"));
 	
 
-	TerminalWidget = CreateWidget<UCCTVTerminalWidget>(PlayerController, UCCTVTerminalWidget::StaticClass());
+	//TerminalWidget = CreateWidget<UCCTVTerminalWidget>(PlayerController, UCCTVTerminalWidget::StaticClass());
 	if (!TerminalWidget)
+	{
 		UE_LOG(LogSecuritySystem, Error, TEXT("TerminalWidget is NULL"));
-	if (!PlayerController)
-		UE_LOG(LogSecuritySystem, Error, TEXT("PlayerController is NULL"));
+		return;
+	}
 
-	TerminalWidget->CCTVTerminal = this;
-	UE_LOG(LogSecuritySystem, Log, TEXT("Terminal set: %s"), *TerminalWidget->CCTVTerminal->GetName());
+	//TerminalWidget->CCTVTerminal = this;
+	//UE_LOG(LogSecuritySystem, Log, TEXT("Terminal set: %s"), *TerminalWidget->CCTVTerminal->GetName());
 	//TerminalWidget->BindButtonsToOnClicked();
 	PlayerController->FlushPressedKeys();
 	PlayerController->bShowMouseCursor = true;
@@ -255,8 +278,8 @@ void ACCTVTerminal::TurnOn()
 	TerminalWidget->AddToViewport();
 	UE_LOG(LogSecuritySystem, Log, TEXT("AddToViewport called, IsInViewport: %s"), TerminalWidget->IsInViewport() ? TEXT("true") : TEXT("false"));
 
-	InUse = true;
-	UE_LOG(LogSecuritySystem, Log, TEXT("InUse: %s"), InUse ? TEXT("true") : TEXT("false"));
+	//InUse = true;
+	//UE_LOG(LogSecuritySystem, Log, TEXT("InUse: %s"), InUse ? TEXT("true") : TEXT("false"));
 }
 
 void ACCTVTerminal::TurnOff()
@@ -274,15 +297,16 @@ void ACCTVTerminal::TurnOff()
 		return;
 	}
 
+	InUse = false;
 	UE_LOG(LogSecuritySystem, Log, TEXT("Terminal turned off"));
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
 	//TerminalWidget->RemoveFromViewport();		//maybe pass widget as parameter?
-	TerminalWidget->UnbindButtonsFromOnClicked();
-	TerminalWidget->CCTVTerminal = nullptr;
+	//TerminalWidget->UnbindButtonsFromOnClicked();
+	//TerminalWidget->CCTVTerminal = nullptr;
 	TerminalWidget->RemoveFromParent();
-	TerminalWidget = nullptr;
+	//TerminalWidget = nullptr;
 	FInputModeGameOnly GameMode;
 	PlayerController->SetInputMode(GameMode);
 	//FSlateApplication::Get().SetFocusToGameViewport();
@@ -290,7 +314,7 @@ void ACCTVTerminal::TurnOff()
 	FInputModeGameOnly InputMode;
 	PlayerController->SetInputMode(InputMode);
 
-	InUse = false;
+	//InUse = false;
 }
 
 void ACCTVTerminal::SwitchToNextCamera()

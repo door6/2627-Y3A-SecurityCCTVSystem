@@ -8,11 +8,14 @@
 #include "CCTVTerminal.h"	// DONT move this to .h !!!
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetRenderingLibrary.h"
-#include "SecuritySystemLog.h"
+//#include "SecuritySystemLog.h"
+#include "Logging/StructuredLog.h"
+
+DECLARE_LOG_CATEGORY_EXTERN(LogTerminalWidget, Log, All);
 
 TSharedRef<SWidget> UCCTVTerminalWidget::RebuildWidget()
 {
-	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminalWidget:NativeConstruct"));
+	//UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminalWidget:NativeConstruct"));
 
 	//UPanelWidget* RootWidget = Cast<UPanelWidget>(GetRootWidget());
 	/*UCanvasPanel**/ Root = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass());
@@ -20,7 +23,7 @@ TSharedRef<SWidget> UCCTVTerminalWidget::RebuildWidget()
 	WidgetTree->RootWidget = Cast<UWidget>(Root);
 
 	if (!WidgetTree->RootWidget)
-		UE_LOG(LogSecuritySystem, Error, TEXT("RootWidget is NULL"));
+		UE_LOG(LogTerminalWidget, Error, TEXT("RootWidget is NULL"));
 
 	NextCameraButton = WidgetTree->ConstructWidget<UButton>(UButton::StaticClass(), TEXT("NextCameraButton"));
 	//NextCameraButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::SwitchToNextCamera);
@@ -65,7 +68,7 @@ TSharedRef<SWidget> UCCTVTerminalWidget::RebuildWidget()
 	//CCTVTerminal = Cast<ACCTVTerminal>(FoundActors[0]);
 	if (!FoundActor)
 	{
-		UE_LOG(LogSecuritySystem, Warning, TEXT("NO CCTVTerminal in the scene"));
+		UE_LOG(LogTerminalWidget, Warning, TEXT("NO CCTVTerminal in the scene"));
 
 		RenderMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/SecurityCCTVSystem/M_Screen.M_Screen"));
 		//or move object finder to constructor ?
@@ -131,18 +134,37 @@ void UCCTVTerminalWidget::NativeConstruct()
 		ExitButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::TurnOff);*/
 }
 
+void UCCTVTerminalWidget::NativeDestruct()
+{
+	Super::NativeDestruct();
+
+	UnbindButtonsFromOnClicked();
+}
+
 void UCCTVTerminalWidget::BindButtonsToOnClicked()
 {
-	if (NextCameraButton)
-		NextCameraButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::SwitchToNextCamera);
-	if (PreviousCameraButton)
-		PreviousCameraButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::SwitchToPreviousCamera);
-	if (TriggerRespondersButton)
-		TriggerRespondersButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::TriggerResponders);
-	if (ExitButton)
-		ExitButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::TurnOff);
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACCTVTerminal::StaticClass(), FoundActors);
+	for (AActor* Actor : FoundActors)
+	{
+		ACCTVTerminal* CCTVTerminal = Cast<ACCTVTerminal>(Actor);
+		if (CCTVTerminal->IsInUse())
+		{
+			if (NextCameraButton)
+				NextCameraButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::SwitchToNextCamera);
+			if (PreviousCameraButton)
+				PreviousCameraButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::SwitchToPreviousCamera);
+			if (TriggerRespondersButton)
+				TriggerRespondersButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::TriggerResponders);
+			if (ExitButton)
+				ExitButton->OnClicked.AddDynamic(CCTVTerminal, &ACCTVTerminal::TurnOff);
 
-	UE_LOG(LogSecuritySystem, Log, TEXT("Buttons bound"));
+			UE_LOG(LogTerminalWidget, Log, TEXT("Buttons bound to %s"), *CCTVTerminal->GetActorLabel());
+
+			return;
+		}			
+	}
+	UE_LOG(LogTerminalWidget, Warning, TEXT("No CCTV terminal is in use"));
 }
 
 void UCCTVTerminalWidget::UnbindButtonsFromOnClicked()
@@ -156,6 +178,7 @@ void UCCTVTerminalWidget::UnbindButtonsFromOnClicked()
 	if (ExitButton)
 		ExitButton->OnClicked.Clear();
 
-	UE_LOG(LogSecuritySystem, Log, TEXT("Buttons removed"));
+	UE_LOG(LogTerminalWidget, Log, TEXT("Buttons removed"));
 }
 
+DEFINE_LOG_CATEGORY(LogTerminalWidget);

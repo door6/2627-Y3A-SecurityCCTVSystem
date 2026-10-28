@@ -41,8 +41,8 @@ void AInputManager::BeginPlay()
 				FEnhancedActionKeyMapping CCTVMapping = InputMapping->InteractMapping;
 				//FEnhancedActionKeyMapping CCTVMapping = InputMapping->GetMapping(InputMapping->InteractKeyIndex);
 				//FEnhancedActionKeyMapping& CCTVMapping = InputMapping->GetInteractKeyMapping();
-				FString Name = CCTVMapping.GetDisplayName().ToString();
-				UE_LOG(LogTerminalInput, Warning, TEXT("CCTVMapping DisplayName: %s"), *Name);		//display name returns nothing
+				//FString Name = CCTVMapping.GetDisplayName().ToString();
+				//UE_LOG(LogTerminalInput, Warning, TEXT("CCTVMapping DisplayName: %s"), *Name);		//display name returns nothing
 				if (!CCTVMapping.Action)
 					UE_LOG(LogTerminalInput, Error, TEXT("CCTVMapping.Action is NULL"));
 

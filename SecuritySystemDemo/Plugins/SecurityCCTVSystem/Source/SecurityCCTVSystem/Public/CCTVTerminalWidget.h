@@ -9,38 +9,46 @@
 #include "Components/CanvasPanel.h"
 #include "CCTVTerminalWidget.generated.h"
 
-class ACCTVTerminal;
+//class ACCTVTerminal;
 
 /**
  * 
  */
 UCLASS()
-class SECURITYCCTVSYSTEM_API UCCTVTerminalWidget : public UUserWidget
+class UCCTVTerminalWidget : public UUserWidget		// SECURITYCCTVSYSTEM_API
 {
 	GENERATED_BODY()
 
+public:
 	virtual TSharedRef<SWidget> RebuildWidget() override;
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
+private:
 	UPROPERTY(EditAnywhere, meta = (BindWidgetOptional))
-	UCanvasPanel* Root = nullptr;
+	//UCanvasPanel* Root = nullptr;
+	TObjectPtr<UCanvasPanel> Root;
 	//UWidget* Root = nullptr;
 	
 	UPROPERTY(EditAnywhere, meta = (BindWidgetOptional))
-	UButton* NextCameraButton = nullptr;
+	//UButton* NextCameraButton = nullptr;
+	TObjectPtr<UButton> NextCameraButton;
 	UPROPERTY(EditAnywhere, meta = (BindWidgetOptional))
-	UButton* PreviousCameraButton = nullptr;
+	//UButton* PreviousCameraButton = nullptr;
+	TObjectPtr<UButton> PreviousCameraButton;
 	UPROPERTY(EditAnywhere, meta = (BindWidgetOptional))
-	UButton* TriggerRespondersButton = nullptr;
+	//UButton* TriggerRespondersButton = nullptr;
+	TObjectPtr<UButton> TriggerRespondersButton;
 	UPROPERTY(EditAnywhere, meta = (BindWidgetOptional))
-	UButton* ExitButton = nullptr;
+	//UButton* ExitButton = nullptr;
+	TObjectPtr<UButton> ExitButton;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidgetOptional))
-	UImage* Screen = nullptr;
+	//UImage* Screen = nullptr;
+	TObjectPtr<UImage> Screen;
 
-public:
 	void BindButtonsToOnClicked();
 	void UnbindButtonsFromOnClicked();
 
-	ACCTVTerminal* CCTVTerminal = nullptr;
+	//ACCTVTerminal* CCTVTerminal = nullptr;
 };
