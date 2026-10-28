@@ -7,11 +7,9 @@
 
 #include "SecuritySystemLog.h"
 
-// Sets default values
 ACCTVTerminal::ACCTVTerminal()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	//so actor can be moved in the editor
 	USceneComponent* Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -23,7 +21,6 @@ ACCTVTerminal::ACCTVTerminal()
 	UStaticMesh* Mesh = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Plane.Plane'")).Object;
 	MeshComponent->SetStaticMesh(Mesh);
 	MeshComponent->AttachToComponent(Root, FAttachmentTransformRules::KeepRelativeTransform);
-	//MeshComponent->SetupAttachment(Root);
 
 	MeshComponent->SetRelativeScale3D(FVector(3.0f, 3.0f, 1.0f));
 	MeshComponent->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
@@ -33,6 +30,8 @@ ACCTVTerminal::ACCTVTerminal()
 	{
 		RenderMaterial = MaterialFinder.Object;
 	}
+
+	InteractRadius = 500.f;
 
 #if 0
 	InputMapping = NewObject<UCCTVInputMappingContext>();
@@ -66,7 +65,6 @@ ACCTVTerminal::ACCTVTerminal()
 #endif
 }
 
-// Called when the game starts or when spawned
 void ACCTVTerminal::BeginPlay()
 {
 	Super::BeginPlay();
@@ -197,11 +195,8 @@ void ACCTVTerminal::BeginPlay()
 	
 }
 
-// Called every frame
 void ACCTVTerminal::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
 }
 
 void ACCTVTerminal::TurnOn()
@@ -271,7 +266,7 @@ void ACCTVTerminal::TurnOff()
 		UE_LOG(LogSecuritySystem, Error, TEXT("TerminalWidget is NULLPTR"));
 		return;
 	}
-	UE_LOG(LogSecuritySystem, Log, TEXT("Attempt to TurnOff: %s"), *TerminalWidget->CCTVTerminal->GetName());
+	//UE_LOG(LogSecuritySystem, Log, TEXT("Attempt to TurnOff: %s"), *TerminalWidget->CCTVTerminal->GetName());
 
 	if (!InUse)
 	{

@@ -16,15 +16,12 @@ class SECURITYCCTVSYSTEM_API ACCTVTerminal : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	ACCTVTerminal();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Security System")
@@ -40,28 +37,27 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Security System")
 	void TriggerResponders();
 
+
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* MeshComponent;
+	TObjectPtr<UStaticMeshComponent> MeshComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UTextureRenderTarget2D> TextureRenderTarget;
-	//UTextureRenderTarget2D* TextureRenderTarget;
 
 	UPROPERTY(VisibleAnywhere)
-	UMaterialInterface* RenderMaterial;
+	TObjectPtr<UMaterialInterface> RenderMaterial;
 
 	UPROPERTY(VisibleAnywhere)
-	UMaterialInstanceDynamic* DynamicMaterialInstance;
+	TObjectPtr<UMaterialInstanceDynamic> DynamicMaterialInstance;
 
 	UPROPERTY(EditAnywhere)
-	UCCTVTerminalWidget* TerminalWidget = nullptr;
-
+	TObjectPtr<UCCTVTerminalWidget> TerminalWidget;
 
 	UPROPERTY(EditAnywhere, Category = "Security System")
-	float InteractRadius = 500.f;
+	float InteractRadius;
 
 private:
-	TArray<ASecurityCamera*> SecurityCameras;
+	TArray<TWeakObjectPtr<ASecurityCamera>> SecurityCameras;
 	int CurrentCameraIndex = 0;
 	bool InUse = false;
 };
