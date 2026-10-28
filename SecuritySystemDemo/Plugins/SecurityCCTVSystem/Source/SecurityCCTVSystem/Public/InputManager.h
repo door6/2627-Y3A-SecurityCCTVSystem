@@ -3,19 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "UObject/Object.h"
 #include "GameFramework/Actor.h"
-//#include "InputAction.h"
 #include "CCTVInteractInputAction.h"
 #include "CCTVInputMappingContext.h"
 
 #include "InputManager.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class SECURITYCCTVSYSTEM_API AInputManager : public AActor
+class AInputManager : public AActor
 {
 	GENERATED_BODY()
 
@@ -28,14 +23,8 @@ public:
 	void AccessCCTVTerminal();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UCCTVInteractInputAction* InteractInputAction;
+	TObjectPtr<UCCTVInteractInputAction> InteractInputAction;
 
-	UPROPERTY(EditAnywhere, Blueprintable, BlueprintType, Category = "Security System")
-	UCCTVInputMappingContext* InputMapping;
-	//TObjectPtr<UCCTVInputMappingContext> InputMapping;
-
-	//temp for testing
-	UPROPERTY(EditAnywhere)
-	FKey MyKey = EKeys::E;
-	
+	UPROPERTY(EditAnywhere, Blueprintable, BlueprintType, Category = Input)		//"Security System"
+	TObjectPtr<UCCTVInputMappingContext> InputMapping;
 };

@@ -11,7 +11,7 @@
  * 
  */
 UCLASS(/*ClassGroup = (Custom), meta = (EditAnywhere, Blueprintable, BlueprintType)*/)
-class SECURITYCCTVSYSTEM_API UCCTVInputMappingContext : public UInputMappingContext
+class UCCTVInputMappingContext : public UInputMappingContext
 {
 	GENERATED_BODY()
 	

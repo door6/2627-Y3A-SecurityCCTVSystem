@@ -2,7 +2,7 @@
 
 
 #include "CCTVInputMappingContext.h"
-#include "SecuritySystemLog.h"
+//#include "SecuritySystemLog.h"
 
 UCCTVInputMappingContext::UCCTVInputMappingContext()
 {
@@ -39,10 +39,10 @@ void UCCTVInputMappingContext::PostInitProperties()
         DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVTriggerInputAction, EKeys::V));
         DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVExitInputAction, EKeys::Escape));
 
-        UE_LOG(LogSecuritySystem, Log, TEXT("1 Mappings size: %d"), Mappings.Num());
-        UE_LOG(LogSecuritySystem, Log, TEXT("2 Mappings size: %d"), GetMappings().Num());
+        //UE_LOG(LogSecuritySystem, Log, TEXT("1 Mappings size: %d"), Mappings.Num());
+        //UE_LOG(LogSecuritySystem, Log, TEXT("2 Mappings size: %d"), GetMappings().Num());
 
-        UE_LOG(LogSecuritySystem, Log, TEXT("this=%p Mappings.Num()=%d GetMappings().Num()=%d"),
-            this, Mappings.Num(), GetMappings().Num());
+        //UE_LOG(LogSecuritySystem, Log, TEXT("this=%p Mappings.Num()=%d GetMappings().Num()=%d"),
+            //this, Mappings.Num(), GetMappings().Num());
     }
 }

@@ -81,11 +81,11 @@ void USecurityManagerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
 
-	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), AInputManager::StaticClass());
+	/*AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), AInputManager::StaticClass());
 	if (!FoundActor)
 	{
 		InWorld.SpawnActor<AInputManager>();
-	}
+	}*/
 	
 
 	//UE_LOG(LogSecuritySystem, Log, TEXT("Number of bound detectors during BeginPlay = %d"), DetectorDelegates.Num());

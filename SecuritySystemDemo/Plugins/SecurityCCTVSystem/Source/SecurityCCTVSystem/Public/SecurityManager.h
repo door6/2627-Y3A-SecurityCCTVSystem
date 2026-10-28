@@ -8,7 +8,7 @@
 #include "Subsystems/WorldSubsystem.h"
 //#include "Responder.h"
 
-#include "InputManager.h"
+//#include "InputManager.h"
 
 #include "SecurityManager.generated.h"
 
@@ -103,7 +103,7 @@ public:
 
 	TMap<FString, FDetectorDelegate> DetectorDelegates;
 
-	UPROPERTY()
-	TObjectPtr<AInputManager> InputManager;
+	//UPROPERTY()
+	//TObjectPtr<AInputManager> InputManager;
 
 };

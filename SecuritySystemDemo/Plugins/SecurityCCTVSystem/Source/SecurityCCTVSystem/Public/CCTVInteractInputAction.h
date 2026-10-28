@@ -10,7 +10,7 @@
  * 
  */
 UCLASS(Blueprintable, BlueprintType)
-class SECURITYCCTVSYSTEM_API UCCTVInteractInputAction : public UInputAction
+class UCCTVInteractInputAction : public UInputAction
 {
 	GENERATED_BODY()
 	
@@ -21,7 +21,7 @@ class SECURITYCCTVSYSTEM_API UCCTVInteractInputAction : public UInputAction
 };
 
 UCLASS(Blueprintable, BlueprintType)
-class SECURITYCCTVSYSTEM_API UCCTVNextCamInputAction : public UInputAction
+class UCCTVNextCamInputAction : public UInputAction
 {
 	GENERATED_BODY()
 
@@ -29,12 +29,10 @@ class SECURITYCCTVSYSTEM_API UCCTVNextCamInputAction : public UInputAction
 	{
 		ValueType = EInputActionValueType::Boolean;
 	};
-
-	//maybe should store corresponding cctv terminal function 
 };
 
 UCLASS(Blueprintable, BlueprintType)
-class SECURITYCCTVSYSTEM_API UCCTVPrevCamInputAction : public UInputAction
+class UCCTVPrevCamInputAction : public UInputAction
 {
 	GENERATED_BODY()
 
@@ -45,7 +43,7 @@ class SECURITYCCTVSYSTEM_API UCCTVPrevCamInputAction : public UInputAction
 };
 
 UCLASS(Blueprintable, BlueprintType)
-class SECURITYCCTVSYSTEM_API UCCTVTriggerInputAction : public UInputAction
+class UCCTVTriggerInputAction : public UInputAction
 {
 	GENERATED_BODY()
 
@@ -56,7 +54,7 @@ class SECURITYCCTVSYSTEM_API UCCTVTriggerInputAction : public UInputAction
 };
 
 UCLASS(Blueprintable, BlueprintType)
-class SECURITYCCTVSYSTEM_API UCCTVExitInputAction : public UInputAction
+class UCCTVExitInputAction : public UInputAction
 {
 	GENERATED_BODY()
 
