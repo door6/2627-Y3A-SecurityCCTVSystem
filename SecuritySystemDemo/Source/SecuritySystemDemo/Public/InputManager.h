@@ -22,9 +22,6 @@ public:
 
 	void AccessCCTVTerminal();
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	TObjectPtr<UCCTVInteractInputAction> InteractInputAction;
-
-	UPROPERTY(EditAnywhere, Blueprintable, BlueprintType, Category = Input)		//"Security System"
+	UPROPERTY(EditAnywhere, Blueprintable, BlueprintType, Category = Input)
 	TObjectPtr<UCCTVInputMappingContext> InputMapping;
 };

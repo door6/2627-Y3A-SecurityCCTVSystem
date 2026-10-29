@@ -8,33 +8,17 @@
 #include "GameplayDebugger_SecuritySystem.h"
 #endif // WITH_GAMEPLAY_DEBUGGER_MENU
 
-// Sets default values for this component's properties
 UResponderComponent::UResponderComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
-
-	// ...
 }
 
-
-// Called when the game starts
 void UResponderComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
 }
 
 
-// Called every frame
-void UResponderComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	//Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
 
 void UResponderComponent::BindToManager(FDetectorDelegate& ManagerDelegate)
 {

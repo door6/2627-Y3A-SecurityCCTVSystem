@@ -32,37 +32,6 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 	if (!World)
 		return;
 
-	// if pointer to the security manager doesn't exist, get a security manager and create arrays of detectors and responders
-	/*if (!SecurityManager.IsValid())	//!SecurityManager
-	{			
-		//if (!World)
-			//return;
-
-		SecurityManager = World->GetSubsystem<USecurityManagerSubsystem>();
-		if (!SecurityManager.IsValid())	//!SecurityManager
-		{
-			this->AddTextLine("{red} No Security Manager!!");
-			return;
-		}
-
-		for (TActorIterator<AActor> It(World); It; ++It)
-		{
-			AActor* Actor = *It;	
-			if (UDetectorComponent* DetectorComponent = Actor->FindComponentByClass<UDetectorComponent>())	//(Actor->FindComponentByClass<UDetectorComponent>())
-			{
-				//DetectorComponents.AddUnique(Actor);
-				DetectorComponents.AddUnique(DetectorComponent);
-			}			
-			else if (UResponderComponent* ResponderComponent = Actor->FindComponentByClass<UResponderComponent>())	//(Actor->FindComponentByClass<UResponderComponent>())
-			{
-				//ResponderComponents.AddUnique(Actor);
-				ResponderComponents.AddUnique(ResponderComponent);
-			}
-			else
-				continue;
-		}
-	}*/
-
 	// display all pending debug messages
 	for (FDebugMessage& DebugMessage : PendingMessages)
 	{
@@ -77,28 +46,6 @@ void FGameplayDebuggerCategory_SecuritySystem::CollectData(APlayerController* Ow
 
 	// call detectors' debug drawing functions
 	OnGameplayDebugDraw.Broadcast(this);
-
-	/*for (TWeakObjectPtr<UDetectorComponent> DetectorComponent : DetectorComponents)		//for (AActor* Detector : Detectors)
-	{
-		if (!DetectorComponent.IsValid())	//!Detector
-			continue;*/
-
-		//DetectorComponent->OnGameplayDebugDraw.Broadcast(this);
-		
-
-		/*AMotionDetector* MotionDetector = Cast<AMotionDetector>(Detector);
-		if (MotionDetector)
-		{
-			MotionDetector->DescribeSelfToGameplayDebugger(this);
-			continue;
-		}
-		ACollisionBasedDetector* CollisionBasedDetector = Cast<ACollisionBasedDetector>(Detector);
-		if (CollisionBasedDetector)
-		{
-			CollisionBasedDetector->DescribeSelfToGameplayDebugger(this);
-			continue;
-		}*/
-	//}
 }
 
 void FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage(const FString& Message, float DelayTime)

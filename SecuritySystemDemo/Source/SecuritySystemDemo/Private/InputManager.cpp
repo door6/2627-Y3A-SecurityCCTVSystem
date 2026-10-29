@@ -6,7 +6,6 @@
 #include "InputTriggers.h"
 #include "EnhancedInputSubsystems.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
-//#include "SecuritySystemLog.h"
 #include "CCTVTerminal.h"
 #include "Kismet/GameplayStatics.h"
 #include "Logging/StructuredLog.h"
@@ -15,16 +14,12 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTerminalInput, Log, All);
 
 AInputManager::AInputManager()
 {
-	//InputMapping = NewObject<UCCTVInputMappingContext>();
 }
 
 void AInputManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-
-	//InputMapping = NewObject<UCCTVInputMappingContext>();
 	if (ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController())
 	{
 		UE_LOG(LogTerminalInput, Log, TEXT("Local player found"));
@@ -36,15 +31,13 @@ void AInputManager::BeginPlay()
 			{
 				UE_LOG(LogTerminalInput, Log, TEXT("Input mapping found"));
 				InputSystem->AddMappingContext(InputMapping, 0);
-				UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
 
 				FEnhancedActionKeyMapping CCTVMapping = InputMapping->InteractMapping;
-				//FEnhancedActionKeyMapping CCTVMapping = InputMapping->GetMapping(InputMapping->InteractKeyIndex);
-				//FEnhancedActionKeyMapping& CCTVMapping = InputMapping->GetInteractKeyMapping();
-				//FString Name = CCTVMapping.GetDisplayName().ToString();
-				//UE_LOG(LogTerminalInput, Warning, TEXT("CCTVMapping DisplayName: %s"), *Name);		//display name returns nothing
 				if (!CCTVMapping.Action)
 					UE_LOG(LogTerminalInput, Error, TEXT("CCTVMapping.Action is NULL"));
+
+				APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+				UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
 
 				Input->BindAction(CCTVMapping.Action, ETriggerEvent::Triggered, this, &AInputManager::AccessCCTVTerminal);
 			}
@@ -56,13 +49,6 @@ void AInputManager::AccessCCTVTerminal()
 {
 	UE_LOG(LogTerminalInput, Log, TEXT("AccessCCTVTerminal Triggered"));
 
-	/*AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ACCTVTerminal::StaticClass());
-	if (FoundActor)
-	{
-		TObjectPtr<ACCTVTerminal> CCTVTerminal = Cast<ACCTVTerminal>(FoundActor);
-		CCTVTerminal->TurnOn(FInputActionValue());
-	}*/
-
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACCTVTerminal::StaticClass(), FoundActors);
 	for (AActor* Actor : FoundActors)
@@ -70,9 +56,6 @@ void AInputManager::AccessCCTVTerminal()
 		TObjectPtr<ACCTVTerminal> CCTVTerminal = Cast<ACCTVTerminal>(Actor);
 		CCTVTerminal->TurnOn();
 	}
-
-	//fix widget being bound only to the first terminal
-	//maybe turn it into uobject and have the manager call the binding action sfunction from its begin play
 }
 
 DEFINE_LOG_CATEGORY(LogTerminalInput);

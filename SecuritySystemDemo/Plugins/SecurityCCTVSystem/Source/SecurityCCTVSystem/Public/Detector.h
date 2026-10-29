@@ -5,18 +5,9 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "ESecurityState.h"
-
-//#if WITH_GAMEPLAY_DEBUGGER_MENU
-//#include "GameplayDebugger_SecuritySystem.h"
-//#endif // WITH_GAMEPLAY_DEBUGGER_MENU
-
 #include "Detector.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNotifyManagerDelegate, const FString&, DetectorName, ESecurityState, SecurityState);
-
-//#if WITH_GAMEPLAY_DEBUGGER_MENU
-//DECLARE_MULTICAST_DELEGATE_OneParam(FGameplayDebugDraw, FGameplayDebuggerCategory*);
-//#endif // WITH_GAMEPLAY_DEBUGGER_MENU
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SECURITYCCTVSYSTEM_API UDetectorComponent : public UActorComponent
@@ -24,9 +15,7 @@ class SECURITYCCTVSYSTEM_API UDetectorComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
 	UDetectorComponent();
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void BindManager();
@@ -38,12 +27,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Security System")
 	void CheckCanStateBeChanged(ESecurityState NewState);
 
-//#if WITH_GAMEPLAY_DEBUGGER_MENU
-	//FGameplayDebugDraw OnGameplayDebugDraw;
-//#endif //WITH_GAMEPLAY_DEBUGGER_MENU
-
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private:

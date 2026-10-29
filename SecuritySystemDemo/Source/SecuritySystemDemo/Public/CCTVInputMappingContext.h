@@ -7,31 +7,15 @@
 #include "CCTVInteractInputAction.h"
 #include "CCTVInputMappingContext.generated.h"
 
-/**
- * 
- */
-UCLASS(/*ClassGroup = (Custom), meta = (EditAnywhere, Blueprintable, BlueprintType)*/)
+UCLASS()
 class UCCTVInputMappingContext : public UInputMappingContext
 {
 	GENERATED_BODY()
-	
-private:
-	//UPROPERTY(EditAnywhere, Category = "Security System")
-	/*UCCTVInteractInputAction* CCTVInteractInputAction;
-	UCCTVNextCamInputAction* CCTVNextCamInputAction;
-	UCCTVPrevCamInputAction* CCTVPrevCamInputAction;
-	UCCTVTriggerInputAction* CCTVTriggerInputAction;
-	UCCTVExitInputAction* CCTVExitInputAction;*/
 
 public:
-	//UPROPERTY(EditAnywhere, Category = "Security System")
 	FEnhancedActionKeyMapping InteractMapping;
-	//int InteractKeyIndex;
 
 	UCCTVInputMappingContext();
-
 	FEnhancedActionKeyMapping& GetInteractKeyMapping();
-
 	void PostInitProperties();
-
 };

@@ -17,7 +17,6 @@ class SECURITYCCTVSYSTEM_API ACollisionBasedDetector : public AActor
 	
 public:	
 	ACollisionBasedDetector();
-	virtual void Tick(float DeltaTime) override;
 
 #if WITH_GAMEPLAY_DEBUGGER_MENU
 	virtual void DescribeSelfToGameplayDebugger(FGameplayDebuggerCategory* DebuggerCategory) const;

@@ -33,46 +33,12 @@ ACCTVTerminal::ACCTVTerminal()
 
 	// set default values
 	InteractRadius = 500.f;
-	//TerminalWidgetClass = UCCTVTerminalWidget::StaticClass();
-
-#if 0
-	InputMapping = NewObject<UCCTVInputMappingContext>();
-	//UE_LOG(LogSecuritySystem, Log, TEXT("Creation: Mappings size: %d"), InputMapping->GetMappings().Num());
-	UWorld* World = GetWorld();
-	if (World)
-	{
-		UE_LOG(LogSecuritySystem, Log, TEXT("World found"));
-		if (ULocalPlayer* LocalPlayer = World->GetFirstLocalPlayerFromController())
-		{
-			UE_LOG(LogSecuritySystem, Log, TEXT("Local player found"));
-			if (UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-			{
-				UE_LOG(LogSecuritySystem, Log, TEXT("Input system found"));
-				if (!InputMapping)
-				{
-					UE_LOG(LogSecuritySystem, Log, TEXT("Input mapping found"));
-					InputSystem->AddMappingContext(InputMapping, 0);
-					UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(InputComponent);
-
-					//UE_LOG(LogSecuritySystem, Log, TEXT("Last: Mappings size: %d"), InputMapping->GetMappings().Num());
-
-					//FEnhancedActionKeyMapping CCTVMapping = InputMapping->GetMapping(InputMapping->InteractKeyIndex);
-					FEnhancedActionKeyMapping CCTVMapping = InputMapping->GetInteractKeyMapping();
-
-					Input->BindAction(CCTVMapping.Action, ETriggerEvent::Triggered, this, &ACCTVTerminal::TurnOn);
-				}
-			}
-		}
-	}
-#endif
 }
 
 void ACCTVTerminal::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//TextureRenderTarget->ConstructTexture2D(this, "RenderTexture", RF_NoFlags);
-	//TextureRenderTarget = UKismetRenderingLibrary::CreateRenderTarget2D(this, 1024, 1024, ETextureRenderTargetFormat::RTF_RGBA32f, FLinearColor::Black, false);
 	AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), this->StaticClass());
 	if (FoundActor && FoundActor != this)
 	{
@@ -82,19 +48,9 @@ void ACCTVTerminal::BeginPlay()
 	else
 		TextureRenderTarget = UKismetRenderingLibrary::CreateRenderTarget2D(this, 1024, 1024, ETextureRenderTargetFormat::RTF_RGBA32f, FLinearColor::Black, false);
 
-	//DynamicMaterialInstance = UMaterialInstanceDynamic::Create(ParentMaterial, this);
-	//DynamicMaterialInstance = MeshComponent->CreateAndSetMaterialInstanceDynamic(0);
-	//DynamicMaterialInstance->SetTextureParameterValue(FName("ScreenTexture"), TextureRenderTarget);
-
 	DynamicMaterialInstance = UMaterialInstanceDynamic::Create(RenderMaterial, this);
 	MeshComponent->SetMaterial(0, DynamicMaterialInstance);
 	DynamicMaterialInstance->SetTextureParameterValue(FName("ScreenTexture"), TextureRenderTarget);
-
-	//material->SetTextureParameterValue(TEXT("TextureInput"), RenderTarget2D);
-	//MeshComponent->SetMaterial(0, material);
-
-	//RenderMaterial = new UMaterial();
-	//UMaterialInstanceDynamic* ExampleMID = UMaterialInstanceDynamic::Create(ExampleMaterial);
 
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASecurityCamera::StaticClass(), FoundActors);
@@ -107,8 +63,8 @@ void ACCTVTerminal::BeginPlay()
 		
 		SecurityCameras.AddUnique(SecurityCamera);
 	}
-	//CurrentCamera = SecurityCameras[0];
-	SecurityCameras[CurrentCameraIndex]->SceneCaptureComponent->TextureTarget = TextureRenderTarget;	//can have only one texture target, if there are multiple cctvs it will be displayed only to the last one
+
+	SecurityCameras[CurrentCameraIndex]->SceneCaptureComponent->TextureTarget = TextureRenderTarget;
 
 	if (!TerminalWidgetClass)
 	{
@@ -116,97 +72,9 @@ void ACCTVTerminal::BeginPlay()
 		return;
 	}
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	TerminalWidget = CreateWidget<UUserWidget>(PlayerController, TerminalWidgetClass);
-
-
-	//InteractInputAction = NewObject<UCCTVInteractInputAction>();
-	//InteractInputAction->ValueType = EInputActionValueType::Boolean;
-
-	// Create a Hold Trigger
-	//UInputTriggerHold* HoldTrigger = NewObject<UInputTriggerHold>();
-	//HoldTrigger->HoldTimeThreshold = 0.5f; // Hold time in seconds
-
-	// Add the trigger to the action
-	//InteractInputAction->Triggers.Add(HoldTrigger);
-
-	/*APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-
-	if (PlayerController)
-	{
-		EnableInput(PlayerController);
-	}
-	if (InputComponent)
-	{
-		UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
-		EnhancedInputComponent->BindAction(InteractInputAction, ETriggerEvent::Triggered, this, &ACCTVTerminal::TurnOn);
-	}*/
-
-	/*bBlockInput = false;
-	EnableInput(GetWorld()->GetFirstPlayerController());
-	UInputComponent* InputComponent = this->InputComponent;
-	InputComponent->BindAction("InteractKey", IE_Pressed, this, &ACCTVTerminal::TurnOn);*/
-
-	//APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	//PlayerController->InputComponent->BindAction("CCTVTerminalInteractKey", IE_Pressed, this, &ACCTVTerminal::TurnOn);
-
-
-	/*APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-
-	if (PlayerController)
-	{
-		EnableInput(PlayerController);
-	}
-	if (InputComponent)
-	{
-		UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
-		EnhancedInputComponent->BindAction(InteractInputAction, ETriggerEvent::Triggered, this, &ACCTVTerminal::TurnOn);
-	}*/
-
-
-	/*UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-
-	Subsystem->GetPlayerInput()->GetEnhancedActionMappings();
-	Subsystem->GetPlayerInput()->AddActionMapping();
-	Subsystem->ClearAllMappings();
-	Subsystem->AddMappingContext(InputMapping, 0);*/
-
-#if 0
-	UInputSettings* MyInputSettings = UInputSettings::GetInputSettings();
-	FInputActionKeyMapping ActionMapping;
-
-	FInputChord NewKey; // this value can be retrieved from key selector widget
-	NewKey.Key = EKeys::E;
-
-	ActionMapping.ActionName = FName("CCTVTerminalInteractAction");
-	ActionMapping.Key = NewKey.Key;
-
-	MyInputSettings->AddActionMapping(ActionMapping);
-	MyInputSettings->SaveConfig();
-
-	TArray<FInputActionKeyMapping> OutMappings;
-	MyInputSettings->GetActionMappingByName("CCTVTerminalInteractAction", OutMappings);
-
-
-	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-	const UEnhancedInputLocalPlayerSubsystem* InputSubsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-
-	UEnhancedInputUserSettings* UserSettings = InputSubsystem->GetUserSettings();
-	if (!UserSettings)
-	{
-		UE_LOG(LogSecuritySystem, Error, TEXT("UserSettings is NULL"));
-		return;
-	}
-	//UserSettings->RegisterInputMappingContext();
-
-	UEnhancedPlayerMappableKeyProfile* CurrentProfile = UserSettings->GetCurrentKeyProfile();
-#endif
-
-	
+	TerminalWidget = CreateWidget<UUserWidget>(PlayerController, TerminalWidgetClass);	
 }
 
-void ACCTVTerminal::Tick(float DeltaTime)
-{
-}
 
 const bool ACCTVTerminal::IsInUse()
 {
@@ -227,15 +95,6 @@ void ACCTVTerminal::TurnOn()
 
 	//check whether player is inside terminals interact radius
 	FVector PlayerLocation = PlayerController->PlayerCameraManager->GetCameraLocation();
-	//radius check
-	/*UE_LOG(LogSecuritySystem, Log, TEXT("PlayerLocation: %f %f %f"), PlayerLocation.X, PlayerLocation.Y, PlayerLocation.Z);
-	double SquaredDistance = FVector::DistSquared(PlayerLocation, this->GetActorLocation());
-	UE_LOG(LogSecuritySystem, Log, TEXT("TerminalLocation: %f %f %f"), this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
-	if (SquaredDistance >= FMath::Square(InteractRadius))
-		return;*/
-
-	//interact radius check	
-	//UE_LOG(LogSecuritySystem, Log, TEXT("TerminalLocation: %f %f %f"), this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
 	FVector PlayerToTerminalVector = this->GetActorLocation() - PlayerLocation;
 	double SquaredDistance = PlayerToTerminalVector.SizeSquared();
 	if (SquaredDistance >= FMath::Square(InteractRadius))
@@ -253,33 +112,22 @@ void ACCTVTerminal::TurnOn()
 	}
 
 	InUse = true;
-	UE_LOG(LogSecuritySystem, Log, TEXT("InUse: %s"), InUse ? TEXT("true") : TEXT("false"));
+	UE_LOG(LogSecuritySystem, Log, TEXT("%s: InUse"), *GetActorLabel());
 	
-
-	//TerminalWidget = CreateWidget<UCCTVTerminalWidget>(PlayerController, UCCTVTerminalWidget::StaticClass());
 	if (!TerminalWidget)
 	{
 		UE_LOG(LogSecuritySystem, Error, TEXT("TerminalWidget is NULL"));
 		return;
 	}
 
-	//TerminalWidget->CCTVTerminal = this;
-	//UE_LOG(LogSecuritySystem, Log, TEXT("Terminal set: %s"), *TerminalWidget->CCTVTerminal->GetName());
-	//TerminalWidget->BindButtonsToOnClicked();
 	PlayerController->FlushPressedKeys();
 	PlayerController->bShowMouseCursor = true;
-	//FInputModeGameAndUI Mode;
 	FInputModeUIOnly InputMode;
 	InputMode.SetWidgetToFocus(TerminalWidget->TakeWidget());
-	//Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
-	//Mode.SetHideCursorDuringCapture(false);
 	PlayerController->SetInputMode(InputMode);
 	TerminalWidget->AddToViewport();
 	UE_LOG(LogSecuritySystem, Log, TEXT("AddToViewport called, IsInViewport: %s"), TerminalWidget->IsInViewport() ? TEXT("true") : TEXT("false"));
-
-	//InUse = true;
-	//UE_LOG(LogSecuritySystem, Log, TEXT("InUse: %s"), InUse ? TEXT("true") : TEXT("false"));
 }
 
 void ACCTVTerminal::TurnOff()
@@ -289,7 +137,6 @@ void ACCTVTerminal::TurnOff()
 		UE_LOG(LogSecuritySystem, Error, TEXT("TerminalWidget is NULLPTR"));
 		return;
 	}
-	//UE_LOG(LogSecuritySystem, Log, TEXT("Attempt to TurnOff: %s"), *TerminalWidget->CCTVTerminal->GetName());
 
 	if (!InUse)
 	{
@@ -301,20 +148,10 @@ void ACCTVTerminal::TurnOff()
 	UE_LOG(LogSecuritySystem, Log, TEXT("Terminal turned off"));
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-
-	//TerminalWidget->RemoveFromViewport();		//maybe pass widget as parameter?
-	//TerminalWidget->UnbindButtonsFromOnClicked();
-	//TerminalWidget->CCTVTerminal = nullptr;
 	TerminalWidget->RemoveFromParent();
-	//TerminalWidget = nullptr;
 	FInputModeGameOnly GameMode;
 	PlayerController->SetInputMode(GameMode);
-	//FSlateApplication::Get().SetFocusToGameViewport();
 	PlayerController->bShowMouseCursor = false;
-	FInputModeGameOnly InputMode;
-	PlayerController->SetInputMode(InputMode);
-
-	//InUse = false;
 }
 
 void ACCTVTerminal::SwitchToNextCamera()
@@ -353,20 +190,13 @@ void ACCTVTerminal::TriggerResponders()
 
 	UE_LOG(LogSecuritySystem, Log, TEXT("CCTVTerminal: TriggerResponders"));
 
-	//ESecurityState NewSecurityState;
-	switch (DetectorComponent->GetCurrentState())		//DetectorComponent->CurrentState
+	switch (DetectorComponent->GetCurrentState())
 	{
 	case ESecurityState::Neutral:
-		//NewSecurityState = ESecurityState::Alarm;
 		DetectorComponent->CheckCanStateBeChanged(ESecurityState::Alarm);
 		break;
 	case ESecurityState::Alarm:
-		//NewSecurityState = ESecurityState::Neutral;
 		DetectorComponent->CheckCanStateBeChanged(ESecurityState::Neutral);
 		break;
 	}
-	//DetectorComponent->CurrentState = NewSecurityState;
-	//DetectorComponent->SetCurrentState(NewSecurityState);
-
-	//DetectorComponent->TriggerResponders(NewSecurityState);
 }

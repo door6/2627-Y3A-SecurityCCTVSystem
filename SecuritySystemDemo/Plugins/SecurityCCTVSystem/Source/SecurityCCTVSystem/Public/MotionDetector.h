@@ -18,7 +18,6 @@ class SECURITYCCTVSYSTEM_API AMotionDetector : public AActor
 	
 public:	
 	AMotionDetector();
-	virtual void Tick(float DeltaTime) override;
 
 #if WITH_GAMEPLAY_DEBUGGER_MENU
 	virtual void DescribeSelfToGameplayDebugger(FGameplayDebuggerCategory* DebuggerCategory) const;

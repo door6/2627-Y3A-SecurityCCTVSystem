@@ -15,11 +15,8 @@ class SECURITYCCTVSYSTEM_API UResponderComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
+public:
 	UResponderComponent();
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void BindToManager(FDetectorDelegate& ManagerDelegate);
 

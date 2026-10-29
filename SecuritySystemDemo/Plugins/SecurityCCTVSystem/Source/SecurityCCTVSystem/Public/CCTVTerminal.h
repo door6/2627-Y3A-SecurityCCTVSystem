@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "Materials/Material.h"
-//#include "CCTVTerminalWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "SecurityCamera.h"
 #include "CCTVTerminal.generated.h"
@@ -18,7 +17,6 @@ class SECURITYCCTVSYSTEM_API ACCTVTerminal : public AActor
 	
 public:	
 	ACCTVTerminal();
-	virtual void Tick(float DeltaTime) override;
 
 	const bool inline IsInUse();
 
@@ -50,11 +48,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Security System")
 	float InteractRadius;
 
-	UPROPERTY(EditAnywhere, Category = "Security System")		// BlueprintReadOnly, 
+	UPROPERTY(EditAnywhere, Category = "Security System") 
 	TSubclassOf<UUserWidget> TerminalWidgetClass;
 
-	UPROPERTY(/*EditAnywhere*/)
-	//TObjectPtr<UCCTVTerminalWidget> TerminalWidget;
+	UPROPERTY()
 	TObjectPtr<UUserWidget> TerminalWidget;
 
 	TArray<TWeakObjectPtr<ASecurityCamera>> SecurityCameras;

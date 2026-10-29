@@ -27,24 +27,13 @@ public:
 	FGameplayDebuggerCategory_SecuritySystem();
 
 	virtual void CollectData(APlayerController* OwnerPC, AActor* DebugActor) override;
-
 	static TSharedRef<FGameplayDebuggerCategory> MakeInstance();
 
 	static void AddOnScreenDebugMessage(const FString& Message, float DelayTime = 5.0f);
 
-	//static void BindToGameplayDebugDraw();
-
 	static inline FGameplayDebugDraw OnGameplayDebugDraw;
 
 private:
-	//TArray<AActor*> Detectors;
-	//TArray<AActor*> Responders;
-	//USecurityManagerSubsystem* SecurityManager = nullptr;
-
-	//TArray<TWeakObjectPtr<UDetectorComponent>> DetectorComponents;
-	//TArray<TWeakObjectPtr<UResponderComponent>> ResponderComponents;
-	//TWeakObjectPtr<USecurityManagerSubsystem> SecurityManager;
-
 	static inline TArray<FDebugMessage> PendingMessages;
 };
 

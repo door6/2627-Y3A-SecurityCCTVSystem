@@ -32,8 +32,3 @@ void ASecurityCamera::BeginPlay()
 {
 	Super::BeginPlay();	
 }
-
-void ASecurityCamera::Tick(float DeltaTime)
-{
-}
-

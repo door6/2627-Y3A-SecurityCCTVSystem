@@ -2,7 +2,6 @@
 
 
 #include "MotionDetector.h"
-//#include "Perception/AISenseConfig_Sight.h"
 #include "SecuritySystemLog.h"
 
 #if WITH_GAMEPLAY_DEBUGGER_MENU
@@ -45,17 +44,11 @@ AMotionDetector::AMotionDetector()
 	DetectorComponent = CreateDefaultSubobject<UDetectorComponent>(TEXT("Detector Component"));
 }
 
-void AMotionDetector::Tick(float DeltaTime)
-{
-	//Super::Tick(DeltaTime);
-}
-
 void AMotionDetector::BeginPlay()
 {
 	Super::BeginPlay();
 
 	FGameplayDebuggerCategory_SecuritySystem::OnGameplayDebugDraw.AddUObject(this, &AMotionDetector::DescribeSelfToGameplayDebugger);
-	//DetectorComponent->OnGameplayDebugDraw.AddUObject(this, &AMotionDetector::DescribeSelfToGameplayDebugger);
 }
 
 void AMotionDetector::DetectIntruders(const TArray<AActor*>& DetectedActors)
@@ -80,62 +73,7 @@ void AMotionDetector::DetectIntruders(const TArray<AActor*>& DetectedActors)
 		DetectorComponent->CheckCanStateBeChanged(ESecurityState::Alarm);
 		return;
 	}
-
-
-	/*ESecurityState NewSecurityState = ESecurityState::Neutral;
-	switch (DetectorComponent->GetCurrentState())
-	{
-	case ESecurityState::Neutral:
-		// return if current state is neutral and no actors were perceived
-		if (PerceivedActors.IsEmpty())
-		{
-			UE_LOG(LogSecuritySystem, Log, TEXT("%s: State: Neutral, ActorArray: Empty"), *GetActorLabel());
-			return;
-		}
-		NewSecurityState = ESecurityState::Alarm;
-		break;
-	case ESecurityState::Alarm:
-		// return if current state is alarm and actors were perceived
-		if (!PerceivedActors.IsEmpty())
-		{
-			UE_LOG(LogSecuritySystem, Log, TEXT("%s: State: Alarm, ActorArray: Not empty"), *GetActorLabel());
-			FString Message = "Perceived actors: ";
-			for (AActor* Actor : PerceivedActors)
-			{
-				Message += Actor->GetActorLabel() + ", ";
-			}
-			UE_LOG(LogSecuritySystem, Log, TEXT("%s"), *Message);
-			return;
-		}
-		NewSecurityState = ESecurityState::Neutral;
-		break;
-	}
-
-	DetectorComponent->ChangeState(NewSecurityState);*/
 }
-
-/*void AMotionDetector::DetectIntruderOld(AActor* Actor, FAIStimulus Stimulus)
-{
-	if (Stimulus.SensingSucceeded)
-	{
-		if (DetectorComponent->GetCurrentState() != ESecurityState::Alarm)
-		{
-#if WITH_GAMEPLAY_DEBUGGER_MENU
-			FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage("Detected");
-#endif // WITH_GAMEPLAY_DEBUGGER_MENU
-		}
-	}
-	else
-	{
-		if (DetectorComponent->GetCurrentState() != ESecurityState::Neutral)
-		{
-#if WITH_GAMEPLAY_DEBUGGER_MENU
-			FGameplayDebuggerCategory_SecuritySystem::AddOnScreenDebugMessage("Forgotten");
-#endif // WITH_GAMEPLAY_DEBUGGER_MENU
-		}
-
-	}
-}*/
 
 #if WITH_GAMEPLAY_DEBUGGER_MENU
 // implemented based on the DescribeSelfToGameplayDebugger from AIPerceptionComponent and AISenseConfig_Sight

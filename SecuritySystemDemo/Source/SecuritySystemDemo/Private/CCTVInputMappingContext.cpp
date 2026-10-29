@@ -2,16 +2,9 @@
 
 
 #include "CCTVInputMappingContext.h"
-//#include "SecuritySystemLog.h"
 
 UCCTVInputMappingContext::UCCTVInputMappingContext()
 {
-	/*CCTVInteractInputAction = NewObject<UCCTVInteractInputAction>();
-
-	InteractKey = FEnhancedActionKeyMapping(CCTVInteractInputAction, EKeys::E);
-	InteractKeyIndex = Mappings.Add(InteractKey);
-
-	UE_LOG(LogSecuritySystem, Log, TEXT("Mappings size: %d"), GetMappings().Num());*/
 }
 
 FEnhancedActionKeyMapping& UCCTVInputMappingContext::GetInteractKeyMapping()
@@ -32,17 +25,11 @@ void UCCTVInputMappingContext::PostInitProperties()
         UCCTVExitInputAction* CCTVExitInputAction = NewObject<UCCTVExitInputAction>(this);
 
         InteractMapping = FEnhancedActionKeyMapping(CCTVInteractInputAction, EKeys::F);
-        /*InteractKeyIndex =*/ DefaultKeyMappings.Mappings.Add(InteractMapping);
+        DefaultKeyMappings.Mappings.Add(InteractMapping);
 
         DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVNextCamInputAction, EKeys::Right));
         DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVPrevCamInputAction, EKeys::Left));
         DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVTriggerInputAction, EKeys::V));
         DefaultKeyMappings.Mappings.Add(FEnhancedActionKeyMapping(CCTVExitInputAction, EKeys::Escape));
-
-        //UE_LOG(LogSecuritySystem, Log, TEXT("1 Mappings size: %d"), Mappings.Num());
-        //UE_LOG(LogSecuritySystem, Log, TEXT("2 Mappings size: %d"), GetMappings().Num());
-
-        //UE_LOG(LogSecuritySystem, Log, TEXT("this=%p Mappings.Num()=%d GetMappings().Num()=%d"),
-            //this, Mappings.Num(), GetMappings().Num());
     }
 }

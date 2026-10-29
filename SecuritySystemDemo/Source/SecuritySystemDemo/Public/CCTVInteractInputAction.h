@@ -6,9 +6,7 @@
 #include "InputAction.h"
 #include "CCTVInteractInputAction.generated.h"
 
-/**
- * 
- */
+
 UCLASS(Blueprintable, BlueprintType)
 class UCCTVInteractInputAction : public UInputAction
 {
